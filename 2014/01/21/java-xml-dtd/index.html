@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="xml," />
 
 
 
@@ -93,12 +93,17 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="杜庆峰">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="最近在看spring源码，涉及到xml文档的解析、xml文档的格式验证，发现自己对xml解析的基础较为薄弱，本篇博客复习下DOM方式解析xml（即spring解析xml的方式）。">
+<meta name="keywords" content="xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java实现对XML格式的验证">
+<meta property="og:url" content="http://yoursite.com/2014/01/21/java-xml-dtd/index.html">
 <meta property="og:site_name" content="杜庆峰">
+<meta property="og:description" content="最近在看spring源码，涉及到xml文档的解析、xml文档的格式验证，发现自己对xml解析的基础较为薄弱，本篇博客复习下DOM方式解析xml（即spring解析xml的方式）。">
+<meta property="og:updated_time" content="2017-07-16T11:34:57.163Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="杜庆峰">
+<meta name="twitter:title" content="java实现对XML格式的验证">
+<meta name="twitter:description" content="最近在看spring源码，涉及到xml文档的解析、xml文档的格式验证，发现自己对xml解析的基础较为薄弱，本篇博客复习下DOM方式解析xml（即spring解析xml的方式）。">
 
 
 
@@ -126,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2014/01/21/java-xml-dtd/"/>
 
 
 
 
 
-  <title>杜庆峰</title>
+  <title>java实现对XML格式的验证 | 杜庆峰</title>
   
 
 
@@ -157,9 +162,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -262,9 +265,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -290,9 +293,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2014/01/21/java-xml-dtd/" itemprop="url">java实现对XML格式的验证</a></h1>
+          <h1 class="post-title" itemprop="name headline">java实现对XML格式的验证</h1>
         
 
         <div class="post-meta">
@@ -361,50 +362,213 @@
       
 
       
+        <p>最近在看spring源码，涉及到xml文档的解析、xml文档的格式验证，发现自己对xml解析的基础较为薄弱，本篇博客复习下DOM方式解析xml（即spring解析xml的方式）。</p>
+<a id="more"></a>
+<p>   DOM解析XML是将整个XML作为一个对象，占用内存较多。另外一个java官方的XML解析方式SAX是边扫描边解析，自顶向下依次解析，占用内存较少。</p>
+<h1 id="一、java实现对XML格式的验证"><a href="#一、java实现对XML格式的验证" class="headerlink" title="一、java实现对XML格式的验证"></a>一、java实现对XML格式的验证</h1><p>  可以使用两种验证模式（DTD、XSD）保证XML文件格式正确，DTD和XSD均是XML约束描述语言，是XML文件的验证机制。本文以DTD为例。<br>  DTD文件格式请参考：<a href="http://www.cnblogs.com/zhengcheng/p/4278899.html" target="_blank" rel="external">http://www.cnblogs.com/zhengcheng/p/4278899.html</a><br>  看下面student.xml:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE 学生名册 SYSTEM &quot;student.dtd&quot;&gt;
+&lt;学生名册&gt;
+    &lt;学生 学号=&quot;t1&quot;&gt;
+        &lt;姓名&gt;张三&lt;/姓名&gt;
+        &lt;性别&gt;男&lt;/性别&gt;
+        &lt;年龄&gt;20&lt;/年龄&gt;
+    &lt;/学生&gt;
+    &lt;学生 学号=&quot;t2&quot;&gt;
+        &lt;姓名&gt;李四&lt;/姓名&gt;
+        &lt;性别&gt;女&lt;/性别&gt;
+        &lt;年龄&gt;19&lt;/年龄&gt;
+    &lt;/学生&gt;
+&lt;/学生名册&gt;
+</code></pre><p>  我们看到上面这个XML指定的DTD验证文件为student.dtd:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;!ELEMENT 学生名册  (学生*)&gt;
+&lt;!ELEMENT 学生 (姓名,性别,年龄)&gt;
+&lt;!ELEMENT 姓名 (#PCDATA)&gt;
+&lt;!ELEMENT 性别 (#PCDATA)&gt;
+&lt;!ELEMENT 年龄 (#PCDATA)&gt;
+&lt;!ATTLIST 学生 学号 ID #REQUIRED&gt;
+</code></pre><p>  那么java DOM解析XML如何实现验证？</p>
+<p>  下面使用DOM解析student.xml:</p>
+<pre><code>public class test {
+
+    public static void main(String[] args) {
+        DocumentBuilderFactory buildFactory = DocumentBuilderFactory.newInstance();
+        //开启XML格式验证
+        buildFactory.setValidating(true);
+        try {
+            DocumentBuilder build = buildFactory.newDocumentBuilder();
+            //指定验证出错处理类MyErrorHandle
+            build.setErrorHandler(new MyErrorHandler());
+            //自定义解析方式，如果不设置，则使用默认实现
+            build.setEntityResolver(new MyResolveEntity());
+            Document doc = build.parse(&quot;student.xml&quot;);
+
+            getStudents(doc);
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void getStudents(Document doc) {
+        Element root = doc.getDocumentElement();
+        NodeList nodeList = root.getElementsByTagName(&quot;学生&quot;);
+
+        for(int i=0;i&lt;nodeList.getLength();i++){
+            Node node = nodeList.item(i);
+            NamedNodeMap map = node.getAttributes();
+            System.out.println(map.item(0).getTextContent());
+
+            //子节点
+            NodeList childList = node.getChildNodes();
+            for(int j=0;j&lt;childList.getLength();j++){
+                Node childNode = childList.item(j);
+                System.out.println(childNode.getTextContent());
+            }
+        }
+    }
+}
+
+public class MyErrorHandler implements ErrorHandler{
+
+    @Override
+    public void warning(SAXParseException exception) throws SAXException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void error(SAXParseException exception) throws SAXException {
+        System.out.println(&quot;发生了错误！&quot;+exception.getMessage());
+
+    }
+
+    @Override
+    public void fatalError(SAXParseException exception) throws SAXException {
+        // TODO Auto-generated method stub
+
+    }
+
+}
+
+public class MyResolveEntity implements EntityResolver{
+
+    @Override
+    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+        return new InputSource(&quot;student.dtd&quot;);
+        //return null;
+    }
+
+}
+</code></pre><p>  如果不设置setEntityResolver，则会使用XML中指定位置的DTD文件进行验证，</p>
+<pre><code>&lt;!DOCTYPE 学生名册 SYSTEM &quot;student.dtd&quot;&gt;
+</code></pre><p>  student.dtd即指定了验证文件的位置。</p>
+<h1 id="二、spring源码中对XML文件的验证的处理"><a href="#二、spring源码中对XML文件的验证的处理" class="headerlink" title="二、spring源码中对XML文件的验证的处理"></a>二、spring源码中对XML文件的验证的处理</h1><p>  在spring中，为网络地址：</p>
+<pre><code>&lt;!DOCTYPE beans PUBLIC  &quot;-//SPRING//DTD BEAN//EN&quot;  
+&quot;http://www.springframework.org/dtd/spring-beans.dtd&quot;&gt;
+</code></pre><p>  publicId：-//SPRING//DTD BEAN//EN<br>  systemId：<a href="http://www.springframework.org/dtd/spring-beans.dtd" target="_blank" rel="external">http://www.springframework.org/dtd/spring-beans.dtd</a></p>
+<p>  如果设置了setEntityResolver，则会按照EntityResolver进行XML验证：先去项目中寻找spring-beans.xsd，如果未获取到则按照网络地址寻找。</p>
+<p>  以spring中 Spring-beans.dtd为例：<br>    public class BeansDtdResolver implements EntityResolver {</p>
+<pre><code>    private static final String DTD_EXTENSION = &quot;.dtd&quot;;
+
+    private static final String DTD_NAME = &quot;spring-beans&quot;;
+
+    private static final Log logger = LogFactory.getLog(BeansDtdResolver.class);
+
+
+    @Override
+    public InputSource resolveEntity(String publicId, String systemId) throws IOException {
+        if (logger.isTraceEnabled()) {
+            logger.trace(&quot;Trying to resolve XML entity with public ID [&quot; + publicId +
+                    &quot;] and system ID [&quot; + systemId + &quot;]&quot;);
+        }
+        if (systemId != null &amp;&amp; systemId.endsWith(DTD_EXTENSION)) {
+            int lastPathSeparator = systemId.lastIndexOf(&quot;/&quot;);
+            int dtdNameStart = systemId.indexOf(DTD_NAME, lastPathSeparator);
+            if (dtdNameStart != -1) {
+                String dtdFile = DTD_NAME + DTD_EXTENSION;
+                if (logger.isTraceEnabled()) {
+                    logger.trace(&quot;Trying to locate [&quot; + dtdFile + &quot;] in Spring jar on classpath&quot;);
+                }
+                try {
+                    Resource resource = new ClassPathResource(dtdFile, getClass());
+                    InputSource source = new InputSource(resource.getInputStream());
+                    source.setPublicId(publicId);
+                    source.setSystemId(systemId);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(&quot;Found beans DTD [&quot; + systemId + &quot;] in classpath: &quot; + dtdFile);
+                    }
+                    return source;
+                }
+                catch (IOException ex) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(&quot;Could not resolve beans DTD [&quot; + systemId + &quot;]: not found in classpath&quot;, ex);
+                    }
+                }
+
+            }
+        }
+
+        // Use the default behavior -&gt; download from website or wherever.
+        return null;
+    }
+}
+</code></pre>
+      
+    </div>
+
+    <div>
+      
         
-          <p>最近在看spring源码，涉及到xml文档的解析、xml文档的格式验证，发现自己对xml解析的基础较为薄弱，本篇博客复习下DOM方式解析xml（即spring解析xml的方式）。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2014/01/21/java-xml-dtd/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+
+      
+    </div>
+
+    <div>
+      
         
+
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
-      
-    </div>
-
-    <div>
       
     </div>
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/xml/" rel="tag"># xml</a>
+          
+        </div>
+      
+
+      
+      
+      
 
       
 
       
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -412,6 +576,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -432,8 +600,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://img.juimg.com/tuku/yulantu/140121/328274-140121144F084.jpg"
@@ -515,6 +692,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、java实现对XML格式的验证"><span class="nav-number">1.</span> <span class="nav-text">一、java实现对XML格式的验证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、spring源码中对XML文件的验证的处理"><span class="nav-number">2.</span> <span class="nav-text">二、spring源码中对XML文件的验证的处理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -628,10 +821,10 @@
   
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
 
-  
+
 
   
 
