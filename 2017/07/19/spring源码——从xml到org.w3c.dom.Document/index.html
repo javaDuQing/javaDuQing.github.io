@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="xml,spring源码," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="从以下这一小段代码说起： new XmlBeanFactory(new ClassPathResource(&amp;quot;springContext.xml&amp;quot;));   这小段看似简单仅仅实例化了两个对象，但是这只是表象。">
+<meta name="keywords" content="xml,spring源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring源码——从xml到org.w3c.dom.Document">
+<meta property="og:url" content="http://yoursite.com/2017/07/19/spring源码——从xml到org.w3c.dom.Document/index.html">
+<meta property="og:site_name" content="杜庆峰">
+<meta property="og:description" content="从以下这一小段代码说起： new XmlBeanFactory(new ClassPathResource(&amp;quot;springContext.xml&amp;quot;));   这小段看似简单仅仅实例化了两个对象，但是这只是表象。">
+<meta property="og:updated_time" content="2017-07-19T14:45:32.345Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spring源码——从xml到org.w3c.dom.Document">
+<meta name="twitter:description" content="从以下这一小段代码说起： new XmlBeanFactory(new ClassPathResource(&amp;quot;springContext.xml&amp;quot;));   这小段看似简单仅仅实例化了两个对象，但是这只是表象。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/19/spring源码——从xml到org.w3c.dom.Document/"/>
+
+
+
+
+
+  <title>spring源码——从xml到org.w3c.dom.Document | 杜庆峰</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">杜庆峰</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录spring、hibernate源码的研究</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/19/spring源码——从xml到org.w3c.dom.Document/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="杜庆峰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://img.juimg.com/tuku/yulantu/140121/328274-140121144F084.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="杜庆峰">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">spring源码——从xml到org.w3c.dom.Document</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-19T22:33:02+08:00">
+                2017-07-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring源码阅读/" itemprop="url" rel="index">
+                    <span itemprop="name">spring源码阅读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>从以下这一小段代码说起：</p>
+<pre><code>new XmlBeanFactory(new ClassPathResource(&quot;springContext.xml&quot;));
+</code></pre><p>  这小段看似简单仅仅实例化了两个对象，但是这只是表象。<br><a id="more"></a></p>
+<h1 id="一、XmlBeanFactory的构造函数"><a href="#一、XmlBeanFactory的构造函数" class="headerlink" title="一、XmlBeanFactory的构造函数"></a>一、XmlBeanFactory的构造函数</h1><p>  查看代码发现XmlBeanFactory有两个构造函数：</p>
+<pre><code>private final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(this);
+
+public XmlBeanFactory(Resource resource) throws BeansException {
+    this(resource, null);
+}
+
+public XmlBeanFactory(Resource resource, BeanFactory parentBeanFactory) throws BeansException {
+    super(parentBeanFactory);
+    this.reader.loadBeanDefinitions(resource);
+}
+</code></pre><p>   最终会执行的代码是：</p>
+<pre><code>//执行父类带参构造函数
+super(parentBeanFactory);
+//执行XmlBeanDefinitionReader的loadBeanDefinitions
+this.reader.loadBeanDefinitions(resource);
+</code></pre><p>  可以看到this.reader.loadBeanDefinitions才是资源加载的真正实现。XmlBeanFactory相当于 DefaultListableBeanFactory + XmlBeanDefinitionReader，既可以对bean进行一些操作，又可以读取XML。</p>
+<p>  Resource用来封装配置文件。</p>
+<h1 id="二、XmlBeanDefinitionReader读取XML"><a href="#二、XmlBeanDefinitionReader读取XML" class="headerlink" title="二、XmlBeanDefinitionReader读取XML"></a>二、XmlBeanDefinitionReader读取XML</h1><p>  一路走下去，方法到了doLoadBeanDefinitions方法，开始解析XML文件的地方（做了些简化）：</p>
+<pre><code>protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
+       ...
+
+        Document doc = doLoadDocument(inputSource, resource);
+        return registerBeanDefinitions(doc, resource);
+       ...
+}
+</code></pre><p>  进入doLoadDocument(inputSource, resource)，实际上是使用配置的documentLoader来解析XML的：</p>
+<pre><code>protected Document doLoadDocument(InputSource inputSource, Resource resource) throws Exception {
+    return this.documentLoader.loadDocument(inputSource, getEntityResolver(), this.errorHandler,
+            getValidationModeForResource(resource), isNamespaceAware());
+}
+</code></pre><p> 常见的XML解析方式有：DOM、SAX、dom4j等，那么spring中使用的是哪种方式呢？<br> spring中采用的是DOM方式，所要做的一切就是得到org.w3c.dom.Document。<br> loadDocment 传递的参数有：<br> ① EntityResolver ： 指定XML验证方式，实现先从本地获取XSD或者DTD文件<br> ② errorHandler   ： 解析错误处理类<br> ③ ValidationMode ： 验证方式XSD、DTD<br> ④ isNamespaceAware ：是否支持命名空间</p>
+<p><strong>EntityResolver、errorHandler参考：<br><a href="http://blog.csdn.net/disiwei1012/article/details/75209030" target="_blank" rel="external">http://blog.csdn.net/disiwei1012/article/details/75209030</a></strong></p>
+<h2 id="一、验证模式介绍"><a href="#一、验证模式介绍" class="headerlink" title="一、验证模式介绍"></a>一、验证模式介绍</h2><p>ValidationMode:比较常用的验证方式有两种：DTD和XSD</p>
+<p><strong>DTD模式：</strong><br>要使用DTD进行验证，需要在XML文件的头部声明，同时需要制定DTD文件的位置。<br>spring中使用DTD如下：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE beans PUBLIC  &quot;-//SPRING//DTD BEAN 2.0//EN&quot;  &quot;http://www.springframework.org/dtd/spring-beans-2.0.dtd&quot;&gt;
+</code></pre><p>XML的DOCTYPE有两个属性publicId和systemId，这两个东西都可以用来制定DTD文件的位置。所不同的是systemId指定的是具体的资源文件，它可以是相对路径也可以是绝对路径，而publicId则是使用定义的名称查找资源文件</p>
+<p>publicId 是一个公共资源的知名标识，解析器可以根据这个名字得到一个资源（一般是DTD），如果根据这个名字没能找到一个资源，那么会根据systemId（一般是一个URL）来获取这个资源，如果还获取不到，那么会报错。也就是说，publicId和systemId是一个网络资源的标识，前者标识名字，后者标识URL，一般是成对出现。</p>
+<p>解析器获取publicId标识的资源，一般是通过网络下载，这会导致解析速度变慢，或者解析失败。因此，可以在解析前编写验证文件，或者制定验证文件的地址。</p>
+<p>上面的：<br> publicId:-//SPRING//DTD BEAN 2.0//EN<br> systemId:<a href="http://www.springframework.org/dtd/spring-beans-2.0.dtd" target="_blank" rel="external">http://www.springframework.org/dtd/spring-beans-2.0.dtd</a></p>
+<p><strong>XSD模式：</strong><br>  使用XSD验证，除了声明命名空间外xmlns，还要通过schemaLocation来指定该命名空间验证文件的位置。</p>
+<pre><code>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+&lt;/beans&gt; --&gt;
+</code></pre><p>   publicId:null<br>   systemId:<a href="http://www.springframework.org/schema/beans/spring-beans.xsd" target="_blank" rel="external">http://www.springframework.org/schema/beans/spring-beans.xsd</a></p>
+<h2 id="二、spring中对xml的验证"><a href="#二、spring中对xml的验证" class="headerlink" title="二、spring中对xml的验证"></a>二、spring中对xml的验证</h2><p>接着往下走：</p>
+<pre><code>public Document loadDocument(InputSource inputSource, EntityResolver entityResolver,
+            ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception {
+
+        DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);
+        if (logger.isDebugEnabled()) {
+            logger.debug(&quot;Using JAXP provider [&quot; + factory.getClass().getName() + &quot;]&quot;);
+        }
+        DocumentBuilder builder = createDocumentBuilder(factory, entityResolver, errorHandler);
+        return builder.parse(inputSource);
+    }
+</code></pre><p>  和咱们想象的差不多，先创建DocumentBuilderFactory，然后DocumentBuilder，然后parse。</p>
+<pre><code>protected DocumentBuilderFactory createDocumentBuilderFactory(int validationMode, boolean namespaceAware)
+            throws ParserConfigurationException {
+        //创建DocumentBuilderFactory
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        //是否支持命名空间
+        factory.setNamespaceAware(namespaceAware);
+
+        //如果需要进行xml验证，而且是XSD验证，强制支持命名空间
+        if (validationMode != XmlValidationModeDetector.VALIDATION_NONE) {
+            factory.setValidating(true);
+            if (validationMode == XmlValidationModeDetector.VALIDATION_XSD) {
+                // Enforce namespace aware for XSD...
+                factory.setNamespaceAware(true);
+                try {
+                    factory.setAttribute(SCHEMA_LANGUAGE_ATTRIBUTE, XSD_SCHEMA_LANGUAGE);
+                }
+                catch (IllegalArgumentException ex) {
+                    ParserConfigurationException pcex = new ParserConfigurationException(
+                            &quot;Unable to validate using XSD: Your JAXP provider [&quot; + factory +
+                            &quot;] does not support XML Schema. Are you running on Java 1.4 with Apache Crimson? &quot; +
+                            &quot;Upgrade to Apache Xerces (or Java 1.5) for full XSD support.&quot;);
+                    pcex.initCause(ex);
+                    throw pcex;
+                }
+            }
+        }
+
+        return factory;
+    }
+
+//没啥需要解释的
+protected DocumentBuilder createDocumentBuilder(
+            DocumentBuilderFactory factory, EntityResolver entityResolver, ErrorHandler errorHandler)
+            throws ParserConfigurationException {
+
+        DocumentBuilder docBuilder = factory.newDocumentBuilder();
+        if (entityResolver != null) {
+            docBuilder.setEntityResolver(entityResolver);
+        }
+        if (errorHandler != null) {
+            docBuilder.setErrorHandler(errorHandler);
+        }
+        return docBuilder;
+    }
+</code></pre><h2 id="三、另外看下spring的entityResolver"><a href="#三、另外看下spring的entityResolver" class="headerlink" title="三、另外看下spring的entityResolver"></a>三、另外看下spring的entityResolver</h2><p>  如果没有特备指定entityResolver，则使用默认的entityResolver。<br>  getResourceLoader是XmlBeanDefinitionReader父类AbstractBeanDefinitionReader中的方法，查看后发现resourceLoader == null。<br>  所以真正使用的是DelegatingEntityResolver。</p>
+<pre><code>protected EntityResolver getEntityResolver() {
+        if (this.entityResolver == null) {
+            // Determine default EntityResolver to use.
+            ResourceLoader resourceLoader = getResourceLoader();
+            if (resourceLoader != null) {
+                this.entityResolver = new ResourceEntityResolver(resourceLoader);
+            }
+            else {
+                this.entityResolver = new DelegatingEntityResolver(getBeanClassLoader());
+            }
+        }
+        return this.entityResolver;
+    }
+</code></pre><p>  下面在DelegatingEntityResolver：</p>
+<pre><code>public DelegatingEntityResolver(ClassLoader classLoader) {
+        //DTD验证EntityResolver
+        this.dtdResolver = new BeansDtdResolver();
+        //XSD验证EntityResolver
+        this.schemaResolver = new PluggableSchemaResolver(classLoader);
+    }
+</code></pre><p>  在EntityResolver指定本地验证文件的位置，如果找不到，再通过systemId的位置去找。</p>
+<p><strong>以上就得到了org.w3c.dom.Document，不算太曲折！</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/xml/" rel="tag"># xml</a>
+          
+            <a href="/tags/spring源码/" rel="tag"># spring源码</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/16/java-xml-dtd/" rel="next" title="java实现对XML格式的验证">
+                <i class="fa fa-chevron-left"></i> java实现对XML格式的验证
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://img.juimg.com/tuku/yulantu/140121/328274-140121144F084.jpg"
+               alt="杜庆峰" />
+          <p class="site-author-name" itemprop="name">杜庆峰</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/disiwei1012/article" target="_blank" title="CSDN">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  CSDN
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/javaDuQing" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、XmlBeanFactory的构造函数"><span class="nav-number">1.</span> <span class="nav-text">一、XmlBeanFactory的构造函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、XmlBeanDefinitionReader读取XML"><span class="nav-number">2.</span> <span class="nav-text">二、XmlBeanDefinitionReader读取XML</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、验证模式介绍"><span class="nav-number">2.1.</span> <span class="nav-text">一、验证模式介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、spring中对xml的验证"><span class="nav-number">2.2.</span> <span class="nav-text">二、spring中对xml的验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、另外看下spring的entityResolver"><span class="nav-number">2.3.</span> <span class="nav-text">三、另外看下spring的entityResolver</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">杜庆峰</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
