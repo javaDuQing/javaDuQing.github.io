@@ -570,6 +570,40 @@ protected DocumentBuilder createDocumentBuilder(
           
   <div class="comments" id="comments">
     
+  <div onclick="showGitment()" id="gitment_title" class="gitment_title">��ʾ Gitment ����</div>
+  <div id="container" style="display:none"></div>
+  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+  <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+  <script>
+  const myTheme = {
+    render(state, instance) {
+      const container = document.createElement('div');
+      container.lang = "en-US";
+      container.className = 'gitment-container gitment-root-container';
+      container.appendChild(instance.renderHeader(state, instance));
+      container.appendChild(instance.renderEditor(state, instance));
+      container.appendChild(instance.renderComments(state, instance));
+      container.appendChild(instance.renderFooter(state, instance));
+      return container;
+    }
+  }
+  function showGitment() {
+    $("#gitment_title").attr("style", "display:none");
+    $("#container").attr("style", "").addClass("gitment_container");
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      theme: myTheme,
+      owner: '',
+      repo: 'javaDuQing.github.io',
+      oauth: {
+        client_id: '',
+        client_secret: ''
+      }
+    });
+    gitment.render('container');
+  }
+  </script>
+    
   </div>
 
 
@@ -850,6 +884,31 @@ protected DocumentBuilder createDocumentBuilder(
 
 
 
+
+
+   
+   
+   
+   
+   <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+   <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+   
+       <script type="text/javascript">
+           function ShowGitment(){
+               document.getElementById("gitment-display-button").style.display = "none";
+               document.getElementById("gitment-container").style.display = "block";
+               var gitment = new Gitment({
+                   id: document.location.href, 
+                   owner: 'javaDuQing',
+                   repo: 'javaDuQing.github.io',
+                   oauth: {
+                       client_id: 'b2ebec3449cb174d9ea7',
+                       client_secret: 'f1ca031381cb5231a379da71612b52eb14e991a7',
+                   }});
+               gitment.render('gitment-container');
+           }
+       </script>
+   
 
 
   
