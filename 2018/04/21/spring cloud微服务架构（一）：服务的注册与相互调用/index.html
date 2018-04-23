@@ -1,0 +1,176 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>spring cloud微服务架构（一）：服务的注册与相互调用 | 杜庆峰</title>
+  <meta name="author" content="杜庆峰">
+  
+  <meta name="description" content="1 写在前面之前在做的业务系统，大概有10多个大业务模块，每个大业务模块下面差多有接近20个小业务模块，代码量惊人。
+这还不是重点，因为我司是做定制化软件的，根据客户具体的业务需求开发不同的系统，每当要开发一个新系统前，就从已经开发过的系统中选择一个业务接近的系统拷贝一份，然后进行修改。假如A客户需">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="spring cloud微服务架构（一）：服务的注册与相互调用"/>
+  <meta property="og:site_name" content="杜庆峰"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="杜庆峰" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
+  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+</head>
+
+<body id="body" data-spy="scroll" data-target=".toc">
+  <div class="container" id="container">
+	<div class="content">
+	  <div class="page-header">		
+  <h1><a class="brand" href="/">杜庆峰</a><span class="split"></span><span class="title">spring cloud微服务架构（一）：服务的注册与相互调用</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2018-04-21</span></h1>
+</div>		
+
+<div class="row page">
+  <!-- cols -->	
+  
+  
+
+  
+	<div class="col-md-12">
+	  
+
+	  <!-- content -->
+	  <h1 id="1-写在前面"><a href="#1-写在前面" class="headerlink" title="1 写在前面"></a>1 写在前面</h1><p>之前在做的业务系统，大概有10多个大业务模块，每个大业务模块下面差多有接近20个小业务模块，代码量惊人。</p>
+<p>这还不是重点，因为我司是做定制化软件的，根据客户具体的业务需求开发不同的系统，每当要开发一个新系统前，就从已经开发过的系统中选择一个业务接近的系统拷贝一份，然后进行修改。假如A客户需要的业务模块是a、b、c、d、e，新客户B需要的业务模块是a、c、e、f、g，我们只需要把A客户的系统删除b、d模块，新增f模块就可以了，但是这样就会出现一个问题，A、B两个客户的系统存在严重的代码耦合（耦合a、c、e模块）。</p>
+<p>有同事提出了解决方案，“我们做一个标准版的系统吧，包括a、b、c、d、e、f、g、…所有的业务模块！”这就是我司目前的做法。看似是一个不错的想法，但是把所有模块都集中在一个系统中，导致war包过大，代码过多，运维困难，一个错误可能导致系统无法运行。</p>
+<p>我一直在思考，能不能把业务模块单独拿出来做成系统，单独部署，假如又有新客户C需要的业务模块是c、d、f，那么我们就可以从中选择这几个系统进行组合，能够达到组合的效果。这就是我学习spring could的动机（虽然我给公司这样建议了没被采纳！）。</p>
+<p><img src="http://img.blog.csdn.net/20180421114856412?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>在我的方案中，主要解决两个问题：</p>
+<p>1）模块之间的耦合<br>2）模块的复用</p>
+<h1 id="2-微服务架构原理"><a href="#2-微服务架构原理" class="headerlink" title="2 微服务架构原理"></a>2 微服务架构原理</h1><h2 id="2-1-传统开发模式——单应用架构"><a href="#2-1-传统开发模式——单应用架构" class="headerlink" title="2.1 传统开发模式——单应用架构"></a>2.1 传统开发模式——单应用架构</h2><p>先来看一下传统的开发模式，也就是现在我司的开发模式：所有的模块都打包在一个war包里，部署在tomcat里，基本没有外部依赖，这就导致了很多缺点，例如：</p>
+<p>1）效率低：开发都在同一个项目改代码，相互等待，冲突不断<br>2）维护难：代码功功能耦合在一起，新人不知道何从下手<br>3）不灵活：构建时间长，任何小修改都要重构整个项目，耗时<br>4）稳定性差：一个微小的问题，都可能导致整个应用挂掉<br>5）扩展性不够：无法满足高并发下的业务需求</p>
+<p><img src="http://img.blog.csdn.net/20180421115011916?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<h2 id="2-2-微服务架构——多应用架构"><a href="#2-2-微服务架构——多应用架构" class="headerlink" title="2.2 微服务架构——多应用架构"></a>2.2 微服务架构——多应用架构</h2><p>微服务架构是将一个大型复杂软件分成多个子软件，或者称为子服务。各个子软件可被独立部署，这样就解决了模块之间耦合的问题，每一个子软件仅仅关注于完成一件任务，并提供服务，不去关注其他业务模块。模块与模块之间只通过接口进行关联，只关注接口，开发人员只对接口负责。<br>优点可以总结为：</p>
+<p>1）每个微服务都很小，这样能聚焦一个指定的业务功能或业务需求<br>2）一个团队的新成员能够更快投入生产<br>3）微服务只是业务逻辑的代码，不会和HTML,CSS 或其他界面组件混合<br>4）每个微服务都有自己的存储能力，可以有自己的数据库。也可以有统一数据库</p>
+<p><img src="http://img.blog.csdn.net/20180421115047880?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<h1 id="3-spring-cloud-Netflix-Eureka实现多服务注册及服务之间的相互调用"><a href="#3-spring-cloud-Netflix-Eureka实现多服务注册及服务之间的相互调用" class="headerlink" title="3 spring-cloud-Netflix-Eureka实现多服务注册及服务之间的相互调用"></a>3 spring-cloud-Netflix-Eureka实现多服务注册及服务之间的相互调用</h1><p>spring cloud提供了一个服务注册管理中心Eureka，每一个服务（子软件）都可将自己提供的服务在注册中心登记，如果想要寻找某一个服务，在服务注册中心就能够轻松的找到。以点买卖为例：饿了吗客户端就相当于一个餐厅注册中心，客户通过饿了吗查找特定的餐厅（寻找服务），每个餐厅提供一种服务。</p>
+<h2 id="3-1-创建服务注册中心"><a href="#3-1-创建服务注册中心" class="headerlink" title="3.1 创建服务注册中心"></a>3.1 创建服务注册中心</h2><p>spring cloud是基于spring boot的，所以我们创建一个spring boot项目，命名为elema-eureka，pom文件如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">&lt;parent&gt;</div><div class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;</div><div class="line">        &lt;version&gt;1.5.2.RELEASE&lt;/version&gt;</div><div class="line">        &lt;relativePath /&gt; &lt;!-- lookup parent from repository --&gt;</div><div class="line">    &lt;/parent&gt;</div><div class="line"></div><div class="line">    &lt;dependencyManagement&gt;</div><div class="line">        &lt;dependencies&gt;</div><div class="line">            &lt;dependency&gt;</div><div class="line">                &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">                &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">                &lt;version&gt;Dalston.SR3&lt;/version&gt;</div><div class="line">                &lt;type&gt;pom&lt;/type&gt;</div><div class="line">                &lt;scope&gt;import&lt;/scope&gt;</div><div class="line">            &lt;/dependency&gt;</div><div class="line">        &lt;/dependencies&gt;</div><div class="line">    &lt;/dependencyManagement&gt;</div><div class="line"></div><div class="line">    &lt;dependencies&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-cloud-starter-config&lt;/artifactId&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-cloud-starter-eureka-server&lt;/artifactId&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">    &lt;/dependencies&gt;</div></pre></td></tr></table></figure>
+<p>在src/main/resources目录下新建配置文件application.yml，并在其中配置启动端口，有一点需要特别注意，其实eureka服务注册中心其实也是一个服务，默认情况下，eureka会把自己当成一个服务去注册，我们可以在配置文件中禁止这个行为，application.yml文件内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">server:</div><div class="line">  port: 8761</div><div class="line">eureka:</div><div class="line">  client:</div><div class="line">    register-with-eureka: false</div><div class="line">    fetch-registry: false</div></pre></td></tr></table></figure>
+<p>接下来创建spring boot项目启动类，ServerApp.java，使用@EnableEurekaServer注解把该项目标记为eureka注册中心，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@SpringBootApplication</div><div class="line">@EnableEurekaServer</div><div class="line">public class ServerApp &#123;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        new SpringApplicationBuilder(ServerApp.class).web(true).run(args);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>启动项目后，我们就可以访问eureka服务中心可视化界面了。localhost:8761，能够在该页面中清楚的看到哪些服务已经注册了。<br><img src="http://img.blog.csdn.net/20180421115218513?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<h2 id="3-2-创建服务，注册服务"><a href="#3-2-创建服务，注册服务" class="headerlink" title="3.2 创建服务，注册服务"></a>3.2 创建服务，注册服务</h2><p>同样是先创建一个spring boot项目，命名为restaurantA，pom文件内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">&lt;dependencyManagement&gt;</div><div class="line">        &lt;dependencies&gt;</div><div class="line">            &lt;dependency&gt;</div><div class="line">                &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">                &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">                &lt;version&gt;Dalston.SR3&lt;/version&gt;</div><div class="line">                &lt;type&gt;pom&lt;/type&gt;</div><div class="line">                &lt;scope&gt;import&lt;/scope&gt;</div><div class="line">            &lt;/dependency&gt;</div><div class="line">        &lt;/dependencies&gt;</div><div class="line">    &lt;/dependencyManagement&gt;</div><div class="line">    &lt;dependencies&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-cloud-starter-config&lt;/artifactId&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-cloud-starter-eureka&lt;/artifactId&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">    &lt;/dependencies&gt;</div></pre></td></tr></table></figure>
+<p>在src/main/resources目录下新建配置文件application.yml，并在其中配置启动端口，服务名称，及服务注册地址。服务注册地址就写eureka的地址即可，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">spring:</div><div class="line">  application:</div><div class="line">    name: restaurantA</div><div class="line">server:</div><div class="line">  port: 8081</div><div class="line">eureka:</div><div class="line">  client:</div><div class="line">    serviceUrl:</div><div class="line">      defaultZone: http://localhost:8761/eureka/</div></pre></td></tr></table></figure>
+<p>然后编写一个服务提供类，命名为RestaurantController.java，并使用@RestController注解向外提供服务，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@RestController</div><div class="line">public class RestaurantController &#123;</div><div class="line"></div><div class="line">    @RequestMapping(value = &quot;/call&quot;, method = RequestMethod.GET,</div><div class="line">            produces = MediaType.APPLICATION_JSON_VALUE)</div><div class="line">    public String call() &#123;</div><div class="line">        return &quot;restaurantA is open!&quot;;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编写启动类后，然后启动，我们发现在eureka服务中心多了一个名为restaurantA的服务。<br><img src="http://img.blog.csdn.net/20180421115321631?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<h2 id="3-3-创建用户，调用restaurantA服务"><a href="#3-3-创建用户，调用restaurantA服务" class="headerlink" title="3.3 创建用户，调用restaurantA服务"></a>3.3 创建用户，调用restaurantA服务</h2><p>有很多博客区分了服务提供者和服务使用者，其实在某种意义上来说，服务提供者和使用者是没有明确界限的，一个项目既可以做服务提供者也可以做使用者。</p>
+<p>同样创建一个spring boot项目，pom文件内容如下，增加了对JSP支持的依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line">&lt;parent&gt;</div><div class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;</div><div class="line">        &lt;version&gt;1.5.2.RELEASE&lt;/version&gt;</div><div class="line">        &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;</div><div class="line">    &lt;/parent&gt;</div><div class="line">    </div><div class="line">    &lt;properties&gt;</div><div class="line">        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;</div><div class="line">        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;</div><div class="line">        &lt;java.version&gt;1.7&lt;/java.version&gt;</div><div class="line">    &lt;/properties&gt;</div><div class="line">    </div><div class="line">    &lt;dependencyManagement&gt;</div><div class="line">        &lt;dependencies&gt;</div><div class="line">            &lt;dependency&gt;</div><div class="line">                &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">                &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">                &lt;version&gt;Dalston.SR3&lt;/version&gt;</div><div class="line">                &lt;type&gt;pom&lt;/type&gt;</div><div class="line">                &lt;scope&gt;import&lt;/scope&gt;</div><div class="line">            &lt;/dependency&gt;</div><div class="line">        &lt;/dependencies&gt;</div><div class="line">    &lt;/dependencyManagement&gt;</div><div class="line">    </div><div class="line">    &lt;dependencies&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-cloud-starter-config&lt;/artifactId&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-cloud-starter-eureka&lt;/artifactId&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-cloud-starter-ribbon&lt;/artifactId&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">        </div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line"></div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;</div><div class="line">            &lt;scope&gt;test&lt;/scope&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;</div><div class="line">            &lt;optional&gt;true&lt;/optional&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">        </div><div class="line">        &lt;!-- JSP support --&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-boot-starter-aop&lt;/artifactId&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">        </div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.apache.tomcat.embed&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;tomcat-embed-jasper&lt;/artifactId&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">        </div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;javax.servlet&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;jstl&lt;/artifactId&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">       </div><div class="line">    &lt;/dependencies&gt;</div></pre></td></tr></table></figure>
+<p>配置文件application.yml，虽然userA不向外提供服务，但仍然可以向eureka注册，其实也为了能够调用在eureka上注册的其他服务。同时也增加了对JSP文件的支持，可参考spring mvc的配置，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">spring:</div><div class="line">  application:</div><div class="line">    name: userA</div><div class="line">  mvc:</div><div class="line">    view:</div><div class="line">      prefix: /WEB-INF/jsp/</div><div class="line">      suffix: .jsp</div><div class="line">  http:</div><div class="line">    encoding:</div><div class="line">      force: true</div><div class="line">      charset: UTF-8</div><div class="line">      enabled: true</div><div class="line">server:</div><div class="line">  port: 8089</div><div class="line">eureka:</div><div class="line">  client:</div><div class="line">    serviceUrl:</div><div class="line">      defaultZone: http://localhost:8761/eureka/</div></pre></td></tr></table></figure>
+<p>下面编写订餐OrderController.java，并提供JSP订餐页面，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">@Controller</div><div class="line">@Configuration</div><div class="line">public class OrderController &#123;</div><div class="line">	</div><div class="line">	@Bean</div><div class="line">	@LoadBalanced</div><div class="line">	public RestTemplate getRestTemplate() &#123;</div><div class="line">		return new RestTemplate();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	/**</div><div class="line">	 * 跳转到订餐页面</div><div class="line">	 * @param request</div><div class="line">	 * @return</div><div class="line">	 */</div><div class="line">	@RequestMapping(&quot;/toPage&quot;)</div><div class="line">	public String toList(HttpServletRequest request)&#123;</div><div class="line">		return &quot;page/orderDinner/list&quot;;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	@GetMapping(&quot;/order&quot;)</div><div class="line">	@ResponseBody</div><div class="line">	public String router() &#123;</div><div class="line">		RestTemplate tpl = getRestTemplate();</div><div class="line">		String result = tpl.getForObject(&quot;http://restaurantA/call&quot;, String.class);</div><div class="line">		return result;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编写启动类，然后启动，访问订餐页面：<a href="http://localhost:8089/toPage，然后点击“调用订餐按钮”即可调用restaurantA提供的服务！" target="_blank" rel="external">http://localhost:8089/toPage，然后点击“调用订餐按钮”即可调用restaurantA提供的服务！</a><br><img src="http://img.blog.csdn.net/20180421115448523?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p><img src="https://img-blog.csdn.net/20180421122627965?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h2 id="3-4-小节"><a href="#3-4-小节" class="headerlink" title="3.4 小节"></a>3.4 小节</h2><p>上面一共创建了3个项目， elema-eureka：服务注册中心， restaurantA、userA：服务提供者，三者之间的关系如下：</p>
+<p><img src="http://img.blog.csdn.net/20180421115525322?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p><strong>参考：</strong><br>【 微服务架构设计】<a href="https://www.cnblogs.com/wintersun/p/6219259.html" target="_blank" rel="external">https://www.cnblogs.com/wintersun/p/6219259.html</a><br>【微服务架构】<a href="https://www.cnblogs.com/imyalost/p/6792724.html" target="_blank" rel="external">https://www.cnblogs.com/imyalost/p/6792724.html</a></p>
+	  
+
+	  <div>
+  		<center>
+		  <div class="pagination">
+<ul class="pagination">
+	
+	
+	
+	
+	
+	
+		
+			
+			
+		
+	
+		
+	
+	
+	
+		<li class="prev disabled"><a><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+	
+	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
+	
+		<li class="next disabled"><a>next<i class="fa fa-arrow-circle-o-right"></i></a></li>
+	
+</ul>
+</div>
+
+		</center>
+	  </div>
+	  
+	</div> <!-- col-md-9/col-md-12 -->
+	
+  </div><!-- row -->
+
+	</div>
+  </div>
+  <div class="container-narrow">
+	<footer> <p>
+  &copy; 2018 杜庆峰
+  
+      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
+</p> </footer>
+  </div> <!-- container-narrow -->
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.tableofcontents.min.js"></script>
+<script src="/js/tocgenerator.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+</body>
+</html>
