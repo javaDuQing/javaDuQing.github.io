@@ -1,140 +1,312 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> spring源码——从xml到org.w3c.dom.Document · 杜庆峰</title><meta name="description" content="spring源码——从xml到org.w3c.dom.Document - 杜庆峰"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon2.ico"><link rel="stylesheet" href="/css/prontera.css"><link rel="search" type="application/opensearchdescription+xml" href="javaduqing.github.io/atom.xml" title="杜庆峰"></head><body><header class="feature-header"><nav class="component-nav"><ul><div class="logo-container"><a href="/"><h2 class="title">杜庆峰</h2></a></div><a href="/" target="_self" class="li component-nav-item"><p>首页</p></a><a href="/archives" target="_self" class="li component-nav-item"><p>归档</p></a><a href="http://resume.qmail.com/751328118/Maio0Z2Y438" target="_blank" class="li component-nav-item"><p>关于我</p></a><a href="https://blog.csdn.net/disiwei1012/" target="_blank" class="li component-nav-item"><p>老博客</p></a><ul class="shortcut-icons"><a href="https://github.com/javaduqing" target="_blank"><img src="/images/github.svg" class="icon"></a></ul></ul></nav></header><main class="container"><div id="post-container"><div class="post"><article class="post-block"><h1 class="post-title">spring源码——从xml到org.w3c.dom.Document</h1><div class="post-info">Jul 19, 2017</div><div class="post-content"><p>从以下这一小段代码说起：</p>
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>spring源码——从xml到org.w3c.dom.Document | 杜庆峰</title>
+  <meta name="author" content="杜庆峰">
+  
+  <meta name="description" content="从以下这一小段代码说起：
+new XmlBeanFactory(new 
+ClassPathResource(&amp;quot;springContext.xml&amp;quot;));
+
+这小段看似简单仅仅实例化了两个对象，但是这只是表象。
+&amp;lt;!-- more --&amp;gt;
+一、XmlBeanFacto">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="spring源码——从xml到org.w3c.dom.Document"/>
+  <meta property="og:site_name" content="杜庆峰"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="杜庆峰" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
+  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+</head>
+
+<body id="body" data-spy="scroll" data-target=".toc">
+  <div class="container" id="container">
+	<div class="content">
+	  <div class="page-header">		
+  <h1><a class="brand" href="/">杜庆峰</a><span class="split"></span><span class="title">spring源码——从xml到org.w3c.dom.Document</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2017-07-19</span></h1>
+</div>		
+
+<div class="row page">
+  <!-- cols -->	
+  
+  
+
+  
+	<div class="col-md-12">
+	  
+
+	  <!-- content -->
+	  <p>从以下这一小段代码说起：</p>
 <pre><code>new XmlBeanFactory(new 
 ClassPathResource(&quot;springContext.xml&quot;));
-</code></pre><p>  这小段看似简单仅仅实例化了两个对象，但是这只是表象。<br><a id="more"></a></p>
-<h1 id="一、XmlBeanFactory的构造函数"><a href="#一、XmlBeanFactory的构造函数" class="headerlink" title="一、XmlBeanFactory的构造函数"></a>一、XmlBeanFactory的构造函数</h1><p>  查看代码发现XmlBeanFactory有两个构造函数：</p>
+</code></pre>
+<p>这小段看似简单仅仅实例化了两个对象，但是这只是表象。
+&lt;!-- more --&gt;</p>
+<h1>一、XmlBeanFactory的构造函数</h1>
+<p>查看代码发现XmlBeanFactory有两个构造函数：</p>
 <pre><code>private final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(this);
 
 public XmlBeanFactory(Resource resource) throws BeansException {
-    this(resource, null);
+	this(resource, null);
 }
 
 public XmlBeanFactory(Resource resource, BeanFactory parentBeanFactory) throws BeansException {
-    super(parentBeanFactory);
-    this.reader.loadBeanDefinitions(resource);
+	super(parentBeanFactory);
+	this.reader.loadBeanDefinitions(resource);
 }
-</code></pre><p>   最终会执行的代码是：</p>
+</code></pre>
+<p>最终会执行的代码是：</p>
 <pre><code>//执行父类带参构造函数
 super(parentBeanFactory);
 //执行XmlBeanDefinitionReader的loadBeanDefinitions
 this.reader.loadBeanDefinitions(resource);
-</code></pre><p>  可以看到this.reader.loadBeanDefinitions才是资源加载的真正实现。XmlBeanFactory相当于 DefaultListableBeanFactory + XmlBeanDefinitionReader，既可以对bean进行一些操作，又可以读取XML。</p>
-<p>  Resource用来封装配置文件。</p>
-<h1 id="二、XmlBeanDefinitionReader读取XML"><a href="#二、XmlBeanDefinitionReader读取XML" class="headerlink" title="二、XmlBeanDefinitionReader读取XML"></a>二、XmlBeanDefinitionReader读取XML</h1><p>  一路走下去，方法到了doLoadBeanDefinitions方法，开始解析XML文件的地方（做了些简化）：</p>
+</code></pre>
+<p>可以看到this.reader.loadBeanDefinitions才是资源加载的真正实现。XmlBeanFactory相当于 DefaultListableBeanFactory + XmlBeanDefinitionReader，既可以对bean进行一些操作，又可以读取XML。</p>
+<p>Resource用来封装配置文件。</p>
+<h1>二、XmlBeanDefinitionReader读取XML</h1>
+<p>一路走下去，方法到了doLoadBeanDefinitions方法，开始解析XML文件的地方（做了些简化）：</p>
 <pre><code>protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
-       ...
-
-        Document doc = doLoadDocument(inputSource, resource);
-        return registerBeanDefinitions(doc, resource);
+	   ...
+		
+		Document doc = doLoadDocument(inputSource, resource);
+		return registerBeanDefinitions(doc, resource);
        ...
 }
-</code></pre><p>  进入doLoadDocument(inputSource, resource)，实际上是使用配置的documentLoader来解析XML的：</p>
+</code></pre>
+<p>进入doLoadDocument(inputSource, resource)，实际上是使用配置的documentLoader来解析XML的：</p>
 <pre><code>protected Document doLoadDocument(InputSource inputSource, Resource resource) throws Exception {
-    return this.documentLoader.loadDocument(inputSource, getEntityResolver(), this.errorHandler,
-            getValidationModeForResource(resource), isNamespaceAware());
+	return this.documentLoader.loadDocument(inputSource, getEntityResolver(), this.errorHandler,
+			getValidationModeForResource(resource), isNamespaceAware());
 }
-</code></pre><p> 常见的XML解析方式有：DOM、SAX、dom4j等，那么spring中使用的是哪种方式呢？<br> spring中采用的是DOM方式，所要做的一切就是得到org.w3c.dom.Document。<br> loadDocment 传递的参数有：<br> ① EntityResolver ： 指定XML验证方式，实现先从本地获取XSD或者DTD文件<br> ② errorHandler   ： 解析错误处理类<br> ③ ValidationMode ： 验证方式XSD、DTD<br> ④ isNamespaceAware ：是否支持命名空间</p>
-<p><strong>EntityResolver、errorHandler参考：<br><a href="http://blog.csdn.net/disiwei1012/article/details/75209030" target="_blank" rel="external">http://blog.csdn.net/disiwei1012/article/details/75209030</a></strong></p>
-<h2 id="一、验证模式介绍"><a href="#一、验证模式介绍" class="headerlink" title="一、验证模式介绍"></a>一、验证模式介绍</h2><p>ValidationMode:比较常用的验证方式有两种：DTD和XSD</p>
-<p><strong>DTD模式：</strong><br>要使用DTD进行验证，需要在XML文件的头部声明，同时需要制定DTD文件的位置。<br>spring中使用DTD如下：</p>
+</code></pre>
+<p>常见的XML解析方式有：DOM、SAX、dom4j等，那么spring中使用的是哪种方式呢？
+spring中采用的是DOM方式，所要做的一切就是得到org.w3c.dom.Document。
+loadDocment 传递的参数有：
+① EntityResolver ： 指定XML验证方式，实现先从本地获取XSD或者DTD文件
+② errorHandler   ： 解析错误处理类
+③ ValidationMode ： 验证方式XSD、DTD
+④ isNamespaceAware ：是否支持命名空间</p>
+<p><strong>EntityResolver、errorHandler参考：
+http://blog.csdn.net/disiwei1012/article/details/75209030</strong></p>
+<h2>一、验证模式介绍</h2>
+<p>ValidationMode:比较常用的验证方式有两种：DTD和XSD</p>
+<p><strong>DTD模式：</strong>
+要使用DTD进行验证，需要在XML文件的头部声明，同时需要制定DTD文件的位置。
+spring中使用DTD如下：</p>
 <pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;!DOCTYPE beans PUBLIC  &quot;-//SPRING//DTD BEAN 2.0//EN&quot;  &quot;http://www.springframework.org/dtd/spring-beans-2.0.dtd&quot;&gt;
-</code></pre><p>XML的DOCTYPE有两个属性publicId和systemId，这两个东西都可以用来制定DTD文件的位置。所不同的是systemId指定的是具体的资源文件，它可以是相对路径也可以是绝对路径，而publicId则是使用定义的名称查找资源文件</p>
+</code></pre>
+<p>XML的DOCTYPE有两个属性publicId和systemId，这两个东西都可以用来制定DTD文件的位置。所不同的是systemId指定的是具体的资源文件，它可以是相对路径也可以是绝对路径，而publicId则是使用定义的名称查找资源文件</p>
 <p>publicId 是一个公共资源的知名标识，解析器可以根据这个名字得到一个资源（一般是DTD），如果根据这个名字没能找到一个资源，那么会根据systemId（一般是一个URL）来获取这个资源，如果还获取不到，那么会报错。也就是说，publicId和systemId是一个网络资源的标识，前者标识名字，后者标识URL，一般是成对出现。</p>
 <p>解析器获取publicId标识的资源，一般是通过网络下载，这会导致解析速度变慢，或者解析失败。因此，可以在解析前编写验证文件，或者制定验证文件的地址。</p>
-<p>上面的：<br> publicId:-//SPRING//DTD BEAN 2.0//EN<br> systemId:<a href="http://www.springframework.org/dtd/spring-beans-2.0.dtd" target="_blank" rel="external">http://www.springframework.org/dtd/spring-beans-2.0.dtd</a></p>
-<p><strong>XSD模式：</strong><br>  使用XSD验证，除了声明命名空间外xmlns，还要通过schemaLocation来指定该命名空间验证文件的位置。</p>
+<p>上面的：
+publicId:-//SPRING//DTD BEAN 2.0//EN
+systemId:http://www.springframework.org/dtd/spring-beans-2.0.dtd</p>
+<p><strong>XSD模式：</strong>
+使用XSD验证，除了声明命名空间外xmlns，还要通过schemaLocation来指定该命名空间验证文件的位置。</p>
 <pre><code>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+	xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
 &lt;/beans&gt; --&gt;
-</code></pre><p>   publicId:null<br>   systemId:<a href="http://www.springframework.org/schema/beans/spring-beans.xsd" target="_blank" rel="external">http://www.springframework.org/schema/beans/spring-beans.xsd</a></p>
-<h2 id="二、spring中对xml的验证"><a href="#二、spring中对xml的验证" class="headerlink" title="二、spring中对xml的验证"></a>二、spring中对xml的验证</h2><p>接着往下走：</p>
+</code></pre>
+<p>publicId:null
+systemId:http://www.springframework.org/schema/beans/spring-beans.xsd</p>
+<h2>二、spring中对xml的验证</h2>
+<p>接着往下走：</p>
 <pre><code>public Document loadDocument(InputSource inputSource, EntityResolver entityResolver,
-            ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception {
+			ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception {
 
-        DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);
-        if (logger.isDebugEnabled()) {
-            logger.debug(&quot;Using JAXP provider [&quot; + factory.getClass().getName() + &quot;]&quot;);
-        }
-        DocumentBuilder builder = createDocumentBuilder(factory, entityResolver, errorHandler);
-        return builder.parse(inputSource);
-    }
-</code></pre><p>  和咱们想象的差不多，先创建DocumentBuilderFactory，然后DocumentBuilder，然后parse。</p>
+		DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);
+		if (logger.isDebugEnabled()) {
+			logger.debug(&quot;Using JAXP provider [&quot; + factory.getClass().getName() + &quot;]&quot;);
+		}
+		DocumentBuilder builder = createDocumentBuilder(factory, entityResolver, errorHandler);
+		return builder.parse(inputSource);
+	}
+</code></pre>
+<p>和咱们想象的差不多，先创建DocumentBuilderFactory，然后DocumentBuilder，然后parse。</p>
 <pre><code>protected DocumentBuilderFactory createDocumentBuilderFactory(int validationMode, boolean namespaceAware)
-            throws ParserConfigurationException {
-        //创建DocumentBuilderFactory
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			throws ParserConfigurationException {
+	    //创建DocumentBuilderFactory
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         //是否支持命名空间
-        factory.setNamespaceAware(namespaceAware);
+		factory.setNamespaceAware(namespaceAware);
 
         //如果需要进行xml验证，而且是XSD验证，强制支持命名空间
-        if (validationMode != XmlValidationModeDetector.VALIDATION_NONE) {
-            factory.setValidating(true);
-            if (validationMode == XmlValidationModeDetector.VALIDATION_XSD) {
-                // Enforce namespace aware for XSD...
-                factory.setNamespaceAware(true);
-                try {
-                    factory.setAttribute(SCHEMA_LANGUAGE_ATTRIBUTE, XSD_SCHEMA_LANGUAGE);
-                }
-                catch (IllegalArgumentException ex) {
-                    ParserConfigurationException pcex = new ParserConfigurationException(
-                            &quot;Unable to validate using XSD: Your JAXP provider [&quot; + factory +
-                            &quot;] does not support XML Schema. Are you running on Java 1.4 with Apache Crimson? &quot; +
-                            &quot;Upgrade to Apache Xerces (or Java 1.5) for full XSD support.&quot;);
-                    pcex.initCause(ex);
-                    throw pcex;
-                }
-            }
-        }
+		if (validationMode != XmlValidationModeDetector.VALIDATION_NONE) {
+			factory.setValidating(true);
+			if (validationMode == XmlValidationModeDetector.VALIDATION_XSD) {
+				// Enforce namespace aware for XSD...
+				factory.setNamespaceAware(true);
+				try {
+					factory.setAttribute(SCHEMA_LANGUAGE_ATTRIBUTE, XSD_SCHEMA_LANGUAGE);
+				}
+				catch (IllegalArgumentException ex) {
+					ParserConfigurationException pcex = new ParserConfigurationException(
+							&quot;Unable to validate using XSD: Your JAXP provider [&quot; + factory +
+							&quot;] does not support XML Schema. Are you running on Java 1.4 with Apache Crimson? &quot; +
+							&quot;Upgrade to Apache Xerces (or Java 1.5) for full XSD support.&quot;);
+					pcex.initCause(ex);
+					throw pcex;
+				}
+			}
+		}
 
-        return factory;
-    }
+		return factory;
+	}
 
 //没啥需要解释的
 protected DocumentBuilder createDocumentBuilder(
-            DocumentBuilderFactory factory, EntityResolver entityResolver, ErrorHandler errorHandler)
-            throws ParserConfigurationException {
+			DocumentBuilderFactory factory, EntityResolver entityResolver, ErrorHandler errorHandler)
+			throws ParserConfigurationException {
 
-        DocumentBuilder docBuilder = factory.newDocumentBuilder();
-        if (entityResolver != null) {
-            docBuilder.setEntityResolver(entityResolver);
-        }
-        if (errorHandler != null) {
-            docBuilder.setErrorHandler(errorHandler);
-        }
-        return docBuilder;
-    }
-</code></pre><h2 id="三、另外看下spring的entityResolver"><a href="#三、另外看下spring的entityResolver" class="headerlink" title="三、另外看下spring的entityResolver"></a>三、另外看下spring的entityResolver</h2><p>  如果没有特备指定entityResolver，则使用默认的entityResolver。<br>  getResourceLoader是XmlBeanDefinitionReader父类AbstractBeanDefinitionReader中的方法，查看后发现resourceLoader == null。<br>  所以真正使用的是DelegatingEntityResolver。</p>
+		DocumentBuilder docBuilder = factory.newDocumentBuilder();
+		if (entityResolver != null) {
+			docBuilder.setEntityResolver(entityResolver);
+		}
+		if (errorHandler != null) {
+			docBuilder.setErrorHandler(errorHandler);
+		}
+		return docBuilder;
+	}
+</code></pre>
+<h2>三、另外看下spring的entityResolver</h2>
+<p>如果没有特备指定entityResolver，则使用默认的entityResolver。
+getResourceLoader是XmlBeanDefinitionReader父类AbstractBeanDefinitionReader中的方法，查看后发现resourceLoader == null。
+所以真正使用的是DelegatingEntityResolver。</p>
 <pre><code>protected EntityResolver getEntityResolver() {
-        if (this.entityResolver == null) {
-            // Determine default EntityResolver to use.
-            ResourceLoader resourceLoader = getResourceLoader();
-            if (resourceLoader != null) {
-                this.entityResolver = new ResourceEntityResolver(resourceLoader);
-            }
-            else {
-                this.entityResolver = new DelegatingEntityResolver(getBeanClassLoader());
-            }
-        }
-        return this.entityResolver;
-    }
-</code></pre><p>  下面在DelegatingEntityResolver：</p>
+		if (this.entityResolver == null) {
+			// Determine default EntityResolver to use.
+			ResourceLoader resourceLoader = getResourceLoader();
+			if (resourceLoader != null) {
+				this.entityResolver = new ResourceEntityResolver(resourceLoader);
+			}
+			else {
+				this.entityResolver = new DelegatingEntityResolver(getBeanClassLoader());
+			}
+		}
+		return this.entityResolver;
+	}
+</code></pre>
+<p>下面在DelegatingEntityResolver：</p>
 <pre><code>public DelegatingEntityResolver(ClassLoader classLoader) {
         //DTD验证EntityResolver
-        this.dtdResolver = new BeansDtdResolver();
+		this.dtdResolver = new BeansDtdResolver();
         //XSD验证EntityResolver
-        this.schemaResolver = new PluggableSchemaResolver(classLoader);
-    }
-</code></pre><p>  在EntityResolver指定本地验证文件的位置，如果找不到，再通过systemId的位置去找。</p>
+		this.schemaResolver = new PluggableSchemaResolver(classLoader);
+	}
+</code></pre>
+<p>在EntityResolver指定本地验证文件的位置，如果找不到，再通过systemId的位置去找。</p>
 <p><strong>以上就得到了org.w3c.dom.Document，不算太曲折！</strong></p>
-</div></article></div><div id="disqus_thread"></div></div><script>var disqus_shortname = 'angrypowman';
-var disqus_identifier = '2017/07/19/spring源码——从xml到org.w3c.dom.Document/';
-var disqus_title = 'spring源码——从xml到org.w3c.dom.Document';
-var disqus_url = 'javaduqing.github.io/2017/07/19/spring源码——从xml到org.w3c.dom.Document/';
-(function() {
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();</script><script id="dsq-count-scr" src="//angrypowman.disqus.com/count.js" async></script></main><footer class="footer-container"><div class="paginator"><a href="/2017/07/16/java-xml-dtd/" class="next">下一篇</a></div><div class="copyright"><p>© 2017 - 2018 <a href="javaduqing.github.io">杜庆峰</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/AngryPowman/hexo-theme-prontera" target="_blank">hexo-theme-prontera</a>.</p></div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"angrypowman",'auto');ga('send','pageview');</script></body></html>
+	  
+
+	  <div>
+  		<center>
+		  <div class="pagination">
+<ul class="pagination">
+	
+	
+	
+	
+	
+	
+		
+	
+		
+			
+			
+		
+	
+		
+			
+			
+			
+		
+			
+		
+	
+	
+	
+		<li class="prev disabled"><a><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+	
+	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
+	
+		<li class="next"><a href="/2017/07/16/java-xml-dtd/" class="alignright next">next<i class="fa fa-arrow-circle-o-right"></i></a></li>
+	
+</ul>
+</div>
+
+		</center>
+	  </div>
+	  
+	</div> <!-- col-md-9/col-md-12 -->
+	
+  </div><!-- row -->
+
+	</div>
+  </div>
+  <div class="container-narrow">
+	<footer> <p>
+  &copy; 2018 杜庆峰
+  
+      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
+</p> </footer>
+  </div> <!-- container-narrow -->
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.tableofcontents.min.js"></script>
+<script src="/js/tocgenerator.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+
+</body>
+</html>
