@@ -1,78 +1,156 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang=zh>
 <head>
-  <meta charset="utf-8">
-  
-  <title>Faster RCNN算法详解[目标检测] | 杜庆峰</title>
-  <meta name="author" content="杜庆峰">
-  
-  <meta name="description" content="下面的介绍都是基于VGG16 的Faster RCNN网络，各网络的差异在于Conv layers层提取特征时有细微差异，至于后续的RPN层、Pooling层及全连接的分类和目标定位基本相同。
-
-一）、整体框架
-我们先整体的介绍下上图中各层主要的功能
-1)、Conv layers提取特征图：
-作为一">
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-  <meta property="og:title" content="Faster RCNN算法详解[目标检测]"/>
-  <meta property="og:site_name" content="杜庆峰"/>
-
-  
-    <meta property="og:image" content="undefined"/>
-  
-
-  
-    <link rel="alternative" href="/atom.xml" title="杜庆峰" type="application/atom+xml">
-  
-  
-    <link href="/favicon.png" rel="icon">
-  
-  
-  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
-  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
-  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-
-  <script src="/js/jquery-2.0.3.min.js"></script>
-
-  <!-- analytics -->
-  
-
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="下面的介绍都是基于VGG16 的Faster RCNN网络，各网络的差异在于Conv layers层提取特征时有细微差异，至于后续的RPN层、Pooling层及全连接的分类和目标定位基本相同。  一）、整体框架 我们先整体的介绍下上图中各层主要的功能 1)、Conv layers提取特征图： 作为一种CNN网络目标检测方法，Faster RCNN首先使用一组基础的conv+relu+poolin">
+<meta name="keywords" content="Mask-RCNN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Faster-RCNN 网络的理解">
+<meta property="og:url" content="javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/index.html">
+<meta property="og:site_name" content="QingFeng Du">
+<meta property="og:description" content="下面的介绍都是基于VGG16 的Faster RCNN网络，各网络的差异在于Conv layers层提取特征时有细微差异，至于后续的RPN层、Pooling层及全连接的分类和目标定位基本相同。  一）、整体框架 我们先整体的介绍下上图中各层主要的功能 1)、Conv layers提取特征图： 作为一种CNN网络目标检测方法，Faster RCNN首先使用一组基础的conv+relu+poolin">
+<meta property="og:image" content="http://img.blog.csdn.net/20180307085324890?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180307085444685?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180307090406197?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180307090532860?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180307090630667?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180307090654520?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180307090713485?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180307090829487?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180307091414531?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180307091526649?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180307091819967?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2018-05-02T01:46:18.483Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Faster-RCNN 网络的理解">
+<meta name="twitter:description" content="下面的介绍都是基于VGG16 的Faster RCNN网络，各网络的差异在于Conv layers层提取特征时有细微差异，至于后续的RPN层、Pooling层及全连接的分类和目标定位基本相同。  一）、整体框架 我们先整体的介绍下上图中各层主要的功能 1)、Conv layers提取特征图： 作为一种CNN网络目标检测方法，Faster RCNN首先使用一组基础的conv+relu+poolin">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20180307085324890?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Faster-RCNN 网络的理解</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
 </head>
 
-<body id="body" data-spy="scroll" data-target=".toc">
-  <div class="container" id="container">
-	<div class="content">
-	  <div class="page-header">		
-  <h1><a class="brand" href="/">杜庆峰</a><span class="split"></span><span class="title">Faster RCNN算法详解[目标检测]</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2018-03-07</span></h1>
-</div>		
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/archives/">Inicio</a></li>
+         
+          <li><a href="/archives/">Articulos</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/04/13/【目标检测】Mask RCNN算法详解/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Post Anterior</span>
+      <span id="i-next" class="info" style="display:none;">Post Siguiente</span>
+      <span id="i-top" class="info" style="display:none;">Arriba</span>
+      <span id="i-share" class="info" style="display:none;">Compartir Post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&text=Faster-RCNN 网络的理解"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&title=Faster-RCNN 网络的理解"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&is_video=false&description=Faster-RCNN 网络的理解"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Faster-RCNN 网络的理解&body=Check out this article: javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&title=Faster-RCNN 网络的理解"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&title=Faster-RCNN 网络的理解"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&title=Faster-RCNN 网络的理解"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&title=Faster-RCNN 网络的理解"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&name=Faster-RCNN 网络的理解&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
 
-<div class="row page">
-  <!-- cols -->	
-  
-  <div class="col-xs-12 col-sm-3 col-md-3 toc"> 
-	<!-- toc -->
-<script type="text/javascript">
-		jQuery(document).ready(function() {
- 		   generateWikiTOC('.note', '.toc',  2 , 2 );
-		});
-</script>
-  </div><!-- col-md-3 -->
-  
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一）、整体框架"><span class="toc-number">1.</span> <span class="toc-text">一）、整体框架</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二-、网络结构"><span class="toc-number">2.</span> <span class="toc-text">二)、网络结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-、Conv-layers"><span class="toc-number">2.1.</span> <span class="toc-text">1)、Conv layers</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-、RPN-Region-Proposal-Networks"><span class="toc-number">2.2.</span> <span class="toc-text">2)、RPN(Region Proposal Networks):</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-、ROI-Pooling"><span class="toc-number">2.3.</span> <span class="toc-text">3)、ROI Pooling:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-、全连接层"><span class="toc-number">2.4.</span> <span class="toc-text">4)、全连接层:</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Faster-RCNN 网络的理解
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">QingFeng Du</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-03-07T01:20:02.000Z" itemprop="datePublished">2018-03-07</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Mask-RCNN/">Mask-RCNN</a>
+    </div>
+
+
+    </div>
+  </header>
   
 
-  
-  <div class="col-xs-12 col-sm-9 col-md-9 note">
-	
-
-	  <!-- content -->
-	  <blockquote>
+  <div class="content" itemprop="articleBody">
+    <blockquote>
 <p>下面的介绍都是基于VGG16 的Faster RCNN网络，各网络的差异在于Conv layers层提取特征时有细微差异，至于后续的RPN层、Pooling层及全连接的分类和目标定位基本相同。</p>
 </blockquote>
 <h1 id="一）、整体框架"><a href="#一）、整体框架" class="headerlink" title="一）、整体框架"></a>一）、整体框架</h1><p><img src="http://img.blog.csdn.net/20180307085324890?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
@@ -176,88 +254,99 @@
 <li>通过全连接和softmax对region proposals进行具体类别的分类</li>
 <li>再次对region proposals进行bounding box regression，获取更高精度的rectangle box</li>
 </ol>
-	  
 
-	  <div>
-  		<center>
-		  <div class="pagination">
-<ul class="pagination">
-	
-	
-	
-	
-	
-	
-		
-	
-		
-	
-		
-			
-		
-	
-		
-			
-		
-	
-		
-			
-			
-		
-	
-	
-	
-		<li class="prev"><a href="/2018/04/13/【目标检测】Mask RCNN算法详解/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
-	
-	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
-	
-		<li class="next disabled"><a>next<i class="fa fa-arrow-circle-o-right"></i></a></li>
-	
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/archives/">Inicio</a></li>
+         
+          <li><a href="/archives/">Articulos</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一）、整体框架"><span class="toc-number">1.</span> <span class="toc-text">一）、整体框架</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二-、网络结构"><span class="toc-number">2.</span> <span class="toc-text">二)、网络结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-、Conv-layers"><span class="toc-number">2.1.</span> <span class="toc-text">1)、Conv layers</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-、RPN-Region-Proposal-Networks"><span class="toc-number">2.2.</span> <span class="toc-text">2)、RPN(Region Proposal Networks):</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-、ROI-Pooling"><span class="toc-number">2.3.</span> <span class="toc-text">3)、ROI Pooling:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-、全连接层"><span class="toc-number">2.4.</span> <span class="toc-text">4)、全连接层:</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&text=Faster-RCNN 网络的理解"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&title=Faster-RCNN 网络的理解"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&is_video=false&description=Faster-RCNN 网络的理解"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Faster-RCNN 网络的理解&body=Check out this article: javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&title=Faster-RCNN 网络的理解"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&title=Faster-RCNN 网络的理解"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&title=Faster-RCNN 网络的理解"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&title=Faster-RCNN 网络的理解"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/03/07/【目标检测】Faster RCNN算法详解/&name=Faster-RCNN 网络的理解&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Compartir</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
 </div>
 
-		</center>
-	  </div>
-	  
-	</div> <!-- col-md-9/col-md-12 -->
-	
-  </div><!-- row -->
-
-	</div>
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 QingFeng Du
   </div>
-  <div class="container-narrow">
-	<footer> <p>
-  &copy; 2018 杜庆峰
-  
-      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
-</p> </footer>
-  </div> <!-- container-narrow -->
-  
-<a id="gotop" href="#">   
-  <span>▲</span> 
-</a>
-
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/jquery.tableofcontents.min.js"></script>
-<script src="/js/tocgenerator.min.js"></script>
-<script src="/js/main.js"></script>
-<script src="/js/search.js"></script> 
-
-
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-  $('.fancybox').fancybox();
-})(jQuery);
-</script>
-
-
-
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/archives/">Inicio</a></li>
+         
+          <li><a href="/archives/">Articulos</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
 
 </body>
 </html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

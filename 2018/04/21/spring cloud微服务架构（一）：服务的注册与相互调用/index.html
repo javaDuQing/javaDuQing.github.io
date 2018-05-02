@@ -1,74 +1,153 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang=zh>
 <head>
-  <meta charset="utf-8">
-  
-  <title>spring cloud微服务架构（一）：服务的注册与相互调用 | 杜庆峰</title>
-  <meta name="author" content="杜庆峰">
-  
-  <meta name="description" content="1 写在前面之前在做的业务系统，大概有10多个大业务模块，每个大业务模块下面差多有接近20个小业务模块，代码量惊人。
-这还不是重点，因为我司是做定制化软件的，根据客户具体的业务需求开发不同的系统，每当要开发一个新系统前，就从已经开发过的系统中选择一个业务接近的系统拷贝一份，然后进行修改。假如A客户需">
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-  <meta property="og:title" content="spring cloud微服务架构（一）：服务的注册与相互调用"/>
-  <meta property="og:site_name" content="杜庆峰"/>
-
-  
-    <meta property="og:image" content="undefined"/>
-  
-
-  
-    <link rel="alternative" href="/atom.xml" title="杜庆峰" type="application/atom+xml">
-  
-  
-    <link href="/favicon.png" rel="icon">
-  
-  
-  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
-  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
-  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-
-  <script src="/js/jquery-2.0.3.min.js"></script>
-
-  <!-- analytics -->
-  
-
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="1 写在前面之前在做的业务系统，大概有10多个大业务模块，每个大业务模块下面差多有接近20个小业务模块，代码量惊人。 这还不是重点，因为我司是做定制化软件的，根据客户具体的业务需求开发不同的系统，每当要开发一个新系统前，就从已经开发过的系统中选择一个业务接近的系统拷贝一份，然后进行修改。假如A客户需要的业务模块是a、b、c、d、e，新客户B需要的业务模块是a、c、e、f、g，我们只需要把A客户的系">
+<meta name="keywords" content="2 Spring cloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring cloud微服务架构（一）：服务的注册与相互调用">
+<meta property="og:url" content="javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/index.html">
+<meta property="og:site_name" content="QingFeng Du">
+<meta property="og:description" content="1 写在前面之前在做的业务系统，大概有10多个大业务模块，每个大业务模块下面差多有接近20个小业务模块，代码量惊人。 这还不是重点，因为我司是做定制化软件的，根据客户具体的业务需求开发不同的系统，每当要开发一个新系统前，就从已经开发过的系统中选择一个业务接近的系统拷贝一份，然后进行修改。假如A客户需要的业务模块是a、b、c、d、e，新客户B需要的业务模块是a、c、e、f、g，我们只需要把A客户的系">
+<meta property="og:image" content="http://img.blog.csdn.net/20180421114856412?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180421115011916?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180421115047880?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180421115218513?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180421115321631?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20180421115448523?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="https://img-blog.csdn.net/20180421122627965?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="http://img.blog.csdn.net/20180421115525322?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2018-04-24T01:13:45.421Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spring cloud微服务架构（一）：服务的注册与相互调用">
+<meta name="twitter:description" content="1 写在前面之前在做的业务系统，大概有10多个大业务模块，每个大业务模块下面差多有接近20个小业务模块，代码量惊人。 这还不是重点，因为我司是做定制化软件的，根据客户具体的业务需求开发不同的系统，每当要开发一个新系统前，就从已经开发过的系统中选择一个业务接近的系统拷贝一份，然后进行修改。假如A客户需要的业务模块是a、b、c、d、e，新客户B需要的业务模块是a、c、e、f、g，我们只需要把A客户的系">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20180421114856412?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>spring cloud微服务架构（一）：服务的注册与相互调用</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
 </head>
 
-<body id="body" data-spy="scroll" data-target=".toc">
-  <div class="container" id="container">
-	<div class="content">
-	  <div class="page-header">		
-  <h1><a class="brand" href="/">杜庆峰</a><span class="split"></span><span class="title">spring cloud微服务架构（一）：服务的注册与相互调用</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2018-04-21</span></h1>
-</div>		
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/archives/">Inicio</a></li>
+         
+          <li><a href="/archives/">Articulos</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2018/04/16/Mask RCNN训练自己的数据集/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Post Anterior</span>
+      <span id="i-next" class="info" style="display:none;">Post Siguiente</span>
+      <span id="i-top" class="info" style="display:none;">Arriba</span>
+      <span id="i-share" class="info" style="display:none;">Compartir Post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&text=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&title=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&is_video=false&description=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（一）：服务的注册与相互调用&body=Check out this article: javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&title=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&title=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&title=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&title=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&name=spring cloud微服务架构（一）：服务的注册与相互调用&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
 
-<div class="row page">
-  <!-- cols -->	
-  
-  <div class="col-xs-12 col-sm-3 col-md-3 toc"> 
-	<!-- toc -->
-<script type="text/javascript">
-		jQuery(document).ready(function() {
- 		   generateWikiTOC('.note', '.toc',  2 , 2 );
-		});
-</script>
-  </div><!-- col-md-3 -->
-  
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-写在前面"><span class="toc-number">1.</span> <span class="toc-text">1 写在前面</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-微服务架构原理"><span class="toc-number">2.</span> <span class="toc-text">2 微服务架构原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-传统开发模式——单应用架构"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 传统开发模式——单应用架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-微服务架构——多应用架构"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 微服务架构——多应用架构</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-spring-cloud-Netflix-Eureka实现多服务注册及服务之间的相互调用"><span class="toc-number">3.</span> <span class="toc-text">3 spring-cloud-Netflix-Eureka实现多服务注册及服务之间的相互调用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-创建服务注册中心"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 创建服务注册中心</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-创建服务，注册服务"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 创建服务，注册服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-创建用户，调用restaurantA服务"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 创建用户，调用restaurantA服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-小节"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 小节</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        spring cloud微服务架构（一）：服务的注册与相互调用
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">QingFeng Du</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-04-21T03:56:02.000Z" itemprop="datePublished">2018-04-21</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/2-Spring-cloud/">2 Spring cloud</a>
+    </div>
+
+
+    </div>
+  </header>
   
 
-  
-  <div class="col-xs-12 col-sm-9 col-md-9 note">
-	
-
-	  <!-- content -->
-	  <h1 id="1-写在前面"><a href="#1-写在前面" class="headerlink" title="1 写在前面"></a>1 写在前面</h1><p>之前在做的业务系统，大概有10多个大业务模块，每个大业务模块下面差多有接近20个小业务模块，代码量惊人。</p>
+  <div class="content" itemprop="articleBody">
+    <h1 id="1-写在前面"><a href="#1-写在前面" class="headerlink" title="1 写在前面"></a>1 写在前面</h1><p>之前在做的业务系统，大概有10多个大业务模块，每个大业务模块下面差多有接近20个小业务模块，代码量惊人。</p>
 <p>这还不是重点，因为我司是做定制化软件的，根据客户具体的业务需求开发不同的系统，每当要开发一个新系统前，就从已经开发过的系统中选择一个业务接近的系统拷贝一份，然后进行修改。假如A客户需要的业务模块是a、b、c、d、e，新客户B需要的业务模块是a、c、e、f、g，我们只需要把A客户的系统删除b、d模块，新增f模块就可以了，但是这样就会出现一个问题，A、B两个客户的系统存在严重的代码耦合（耦合a、c、e模块）。</p>
 <p>有同事提出了解决方案，“我们做一个标准版的系统吧，包括a、b、c、d、e、f、g、…所有的业务模块！”这就是我司目前的做法。看似是一个不错的想法，但是把所有模块都集中在一个系统中，导致war包过大，代码过多，运维困难，一个错误可能导致系统无法运行。</p>
 <p>我一直在思考，能不能把业务模块单独拿出来做成系统，单独部署，假如又有新客户C需要的业务模块是c、d、f，那么我们就可以从中选择这几个系统进行组合，能够达到组合的效果。这就是我学习spring could的动机（虽然我给公司这样建议了没被采纳！）。</p>
@@ -108,84 +187,99 @@
 <h2 id="3-4-小节"><a href="#3-4-小节" class="headerlink" title="3.4 小节"></a>3.4 小节</h2><p>上面一共创建了3个项目， elema-eureka：服务注册中心， restaurantA、userA：服务提供者，三者之间的关系如下：</p>
 <p><img src="http://img.blog.csdn.net/20180421115525322?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
 <p><strong>参考：</strong><br>【 微服务架构设计】<a href="https://www.cnblogs.com/wintersun/p/6219259.html" target="_blank" rel="external">https://www.cnblogs.com/wintersun/p/6219259.html</a><br>【微服务架构】<a href="https://www.cnblogs.com/imyalost/p/6792724.html" target="_blank" rel="external">https://www.cnblogs.com/imyalost/p/6792724.html</a></p>
-	  
 
-	  <div>
-  		<center>
-		  <div class="pagination">
-<ul class="pagination">
-	
-	
-	
-	
-	
-	
-		
-	
-		
-			
-			
-		
-	
-		
-	
-		
-	
-		
-	
-	
-	
-		<li class="prev disabled"><a><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
-	
-	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
-	
-		<li class="next disabled"><a>next<i class="fa fa-arrow-circle-o-right"></i></a></li>
-	
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/archives/">Inicio</a></li>
+         
+          <li><a href="/archives/">Articulos</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-写在前面"><span class="toc-number">1.</span> <span class="toc-text">1 写在前面</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-微服务架构原理"><span class="toc-number">2.</span> <span class="toc-text">2 微服务架构原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-传统开发模式——单应用架构"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 传统开发模式——单应用架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-微服务架构——多应用架构"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 微服务架构——多应用架构</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-spring-cloud-Netflix-Eureka实现多服务注册及服务之间的相互调用"><span class="toc-number">3.</span> <span class="toc-text">3 spring-cloud-Netflix-Eureka实现多服务注册及服务之间的相互调用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-创建服务注册中心"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 创建服务注册中心</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-创建服务，注册服务"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 创建服务，注册服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-创建用户，调用restaurantA服务"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 创建用户，调用restaurantA服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-小节"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 小节</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&text=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&title=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&is_video=false&description=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（一）：服务的注册与相互调用&body=Check out this article: javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&title=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&title=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&title=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&title=spring cloud微服务架构（一）：服务的注册与相互调用"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/&name=spring cloud微服务架构（一）：服务的注册与相互调用&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Compartir</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
 </div>
 
-		</center>
-	  </div>
-	  
-	</div> <!-- col-md-9/col-md-12 -->
-	
-  </div><!-- row -->
-
-	</div>
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 QingFeng Du
   </div>
-  <div class="container-narrow">
-	<footer> <p>
-  &copy; 2018 杜庆峰
-  
-      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
-</p> </footer>
-  </div> <!-- container-narrow -->
-  
-<a id="gotop" href="#">   
-  <span>▲</span> 
-</a>
-
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/jquery.tableofcontents.min.js"></script>
-<script src="/js/tocgenerator.min.js"></script>
-<script src="/js/main.js"></script>
-<script src="/js/search.js"></script> 
-
-
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-  $('.fancybox').fancybox();
-})(jQuery);
-</script>
-
-
-
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/archives/">Inicio</a></li>
+         
+          <li><a href="/archives/">Articulos</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
 
 </body>
 </html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
