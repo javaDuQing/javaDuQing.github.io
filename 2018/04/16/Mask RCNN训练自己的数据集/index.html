@@ -6,16 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="我使用mask rcnn训练了自己的数据集用来识别舌头，测试结果如下：  1 写在前面 基于Mask RCNN开源项目：https://github.com/matterport/Mask_RCNN 图片标记工具基于开源项目：https://github.com/wkentaro/labelme 训练图片大小不一致，训练图片数据集1498张 训练工具GPU GTX 1080ti，训练用时约5h">
+    <meta name="description" content="我使用mask rcnn训练了自己的数据集用来识别舌头，测试结果如下：   1 写在前面 基于Mask RCNN开源项目：https://github.com/matterport/Mask_RCNN 图片标记工具基于开源项目：https://github.com/wkentaro/labelme 训练图片大小不一致，训练图片数据集1498张 训练工具GPU GTX 1080ti，训练用时约5h">
 <meta name="keywords" content="Mask-RCNN">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mask-RCNN 训练自己的数据集">
 <meta property="og:url" content="javaduqing.github.io/2018/04/16/Mask RCNN训练自己的数据集/index.html">
 <meta property="og:site_name" content="Du Qingfeng">
-<meta property="og:description" content="我使用mask rcnn训练了自己的数据集用来识别舌头，测试结果如下：  1 写在前面 基于Mask RCNN开源项目：https://github.com/matterport/Mask_RCNN 图片标记工具基于开源项目：https://github.com/wkentaro/labelme 训练图片大小不一致，训练图片数据集1498张 训练工具GPU GTX 1080ti，训练用时约5h">
+<meta property="og:description" content="我使用mask rcnn训练了自己的数据集用来识别舌头，测试结果如下：   1 写在前面 基于Mask RCNN开源项目：https://github.com/matterport/Mask_RCNN 图片标记工具基于开源项目：https://github.com/wkentaro/labelme 训练图片大小不一致，训练图片数据集1498张 训练工具GPU GTX 1080ti，训练用时约5h">
 <meta property="og:image" content="http://img.blog.csdn.net/20180413144836142?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20180413144853504?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:image" content="http://img.blog.csdn.net/20180413144933044?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20180413150512345?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20180413150704993?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img.blog.csdn.net/20180413151127521?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
@@ -25,10 +24,10 @@
 <meta property="og:image" content="https://img-blog.csdn.net/20180413153653472?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="https://img-blog.csdn.net/20180413153757802?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="https://img-blog.csdn.net/20180413153856683?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:updated_time" content="2018-05-02T01:46:08.493Z">
+<meta property="og:updated_time" content="2018-05-02T02:41:12.854Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mask-RCNN 训练自己的数据集">
-<meta name="twitter:description" content="我使用mask rcnn训练了自己的数据集用来识别舌头，测试结果如下：  1 写在前面 基于Mask RCNN开源项目：https://github.com/matterport/Mask_RCNN 图片标记工具基于开源项目：https://github.com/wkentaro/labelme 训练图片大小不一致，训练图片数据集1498张 训练工具GPU GTX 1080ti，训练用时约5h">
+<meta name="twitter:description" content="我使用mask rcnn训练了自己的数据集用来识别舌头，测试结果如下：   1 写在前面 基于Mask RCNN开源项目：https://github.com/matterport/Mask_RCNN 图片标记工具基于开源项目：https://github.com/wkentaro/labelme 训练图片大小不一致，训练图片数据集1498张 训练工具GPU GTX 1080ti，训练用时约5h">
 <meta name="twitter:image" content="http://img.blog.csdn.net/20180413144836142?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
     
     
@@ -114,7 +113,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#"><span class="toc-number">1.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-写在前面"><span class="toc-number">2.</span> <span class="toc-text">1 写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-准备训练数据集"><span class="toc-number">3.</span> <span class="toc-text">2 准备训练数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-训练完整代码"><span class="toc-number">4.</span> <span class="toc-text">3 训练完整代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-完整测试代码"><span class="toc-number">5.</span> <span class="toc-text">4 完整测试代码</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-写在前面"><span class="toc-number">1.</span> <span class="toc-text">1 写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-准备训练数据集"><span class="toc-number">2.</span> <span class="toc-text">2 准备训练数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-训练完整代码"><span class="toc-number">3.</span> <span class="toc-text">3 训练完整代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-完整测试代码"><span class="toc-number">4.</span> <span class="toc-text">4 完整测试代码</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -155,14 +154,15 @@
   <div class="content" itemprop="articleBody">
     <p>我使用mask rcnn训练了自己的数据集用来识别舌头，测试结果如下：<br><img src="http://img.blog.csdn.net/20180413144836142?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
 <p><img src="http://img.blog.csdn.net/20180413144853504?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
-<h2 id=""><a href="#" class="headerlink" title=""></a><img src="http://img.blog.csdn.net/20180413144933044?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></h2><h2 id="1-写在前面"><a href="#1-写在前面" class="headerlink" title="1 写在前面"></a>1 写在前面</h2><ul>
+<hr>
+<h2 id="1-写在前面"><a href="#1-写在前面" class="headerlink" title="1 写在前面"></a>1 写在前面</h2><ul>
 <li>基于Mask RCNN开源项目：<a href="https://github.com/matterport/Mask_RCNN" target="_blank" rel="external">https://github.com/matterport/Mask_RCNN</a></li>
 <li>图片标记工具基于开源项目：<a href="https://github.com/wkentaro/labelme" target="_blank" rel="external">https://github.com/wkentaro/labelme</a></li>
 <li>训练图片大小不一致，训练图片数据集1498张</li>
 <li>训练工具GPU GTX 1080ti，训练用时约5h</li>
 </ul>
 <blockquote>
-<p>有关labelme的安装与使用可参考我的另一篇博文：<a href="https://blog.csdn.net/disiwei1012/article/details/79508954" target="_blank" rel="external">https://blog.csdn.net/disiwei1012/article/details/79508954</a></p>
+<p>labelme的安装与使用：<a href="https://blog.csdn.net/disiwei1012/article/details/79508954" target="_blank" rel="external">https://blog.csdn.net/disiwei1012/article/details/79508954</a></p>
 <p>有关Mask RCNN、Faster RCNN的原理解读可参考我的另两篇博文：<br><a href="https://blog.csdn.net/disiwei1012/article/details/79508839" target="_blank" rel="external">https://blog.csdn.net/disiwei1012/article/details/79508839</a><br><a href="https://blog.csdn.net/disiwei1012/article/details/79466088" target="_blank" rel="external">https://blog.csdn.net/disiwei1012/article/details/79466088</a></p>
 </blockquote>
 <h2 id="2-准备训练数据集"><a href="#2-准备训练数据集" class="headerlink" title="2 准备训练数据集"></a>2 准备训练数据集</h2><p><strong>1、使用labelme标注图片保存后，会产生与原图像同名后缀为json的文件，如下：</strong></p>
@@ -220,7 +220,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#"><span class="toc-number">1.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-写在前面"><span class="toc-number">2.</span> <span class="toc-text">1 写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-准备训练数据集"><span class="toc-number">3.</span> <span class="toc-text">2 准备训练数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-训练完整代码"><span class="toc-number">4.</span> <span class="toc-text">3 训练完整代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-完整测试代码"><span class="toc-number">5.</span> <span class="toc-text">4 完整测试代码</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-写在前面"><span class="toc-number">1.</span> <span class="toc-text">1 写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-准备训练数据集"><span class="toc-number">2.</span> <span class="toc-text">2 准备训练数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-训练完整代码"><span class="toc-number">3.</span> <span class="toc-text">3 训练完整代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-完整测试代码"><span class="toc-number">4.</span> <span class="toc-text">4 完整测试代码</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
