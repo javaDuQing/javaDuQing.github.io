@@ -7,7 +7,7 @@
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="1 写在前面之前在做的业务系统，大概有10多个大业务模块，每个大业务模块下面差多有接近20个小业务模块，代码量惊人。 这还不是重点，因为我司是做定制化软件的，根据客户具体的业务需求开发不同的系统，每当要开发一个新系统前，就从已经开发过的系统中选择一个业务接近的系统拷贝一份，然后进行修改。假如A客户需要的业务模块是a、b、c、d、e，新客户B需要的业务模块是a、c、e、f、g，我们只需要把A客户的系">
-<meta name="keywords" content="2 Spring cloud">
+<meta name="keywords" content="Spring cloud">
 <meta property="og:type" content="article">
 <meta property="og:title" content="spring cloud微服务架构（一）：服务的注册与相互调用">
 <meta property="og:url" content="javaduqing.github.io/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/index.html">
@@ -21,7 +21,7 @@
 <meta property="og:image" content="http://img.blog.csdn.net/20180421115448523?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="https://img-blog.csdn.net/20180421122627965?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img.blog.csdn.net/20180421115525322?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZGlzaXdlaTEwMTI=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-05-02T02:40:00.123Z">
+<meta property="og:updated_time" content="2018-05-02T02:45:00.044Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring cloud微服务架构（一）：服务的注册与相互调用">
 <meta name="twitter:description" content="1 写在前面之前在做的业务系统，大概有10多个大业务模块，每个大业务模块下面差多有接近20个小业务模块，代码量惊人。 这还不是重点，因为我司是做定制化软件的，根据客户具体的业务需求开发不同的系统，每当要开发一个新系统前，就从已经开发过的系统中选择一个业务接近的系统拷贝一份，然后进行修改。假如A客户需要的业务模块是a、b、c、d、e，新客户B需要的业务模块是a、c、e、f、g，我们只需要把A客户的系">
@@ -86,10 +86,10 @@
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
+      <span id="i-prev" class="info" style="display:none;">Post Anterior</span>
+      <span id="i-next" class="info" style="display:none;">Post Siguiente</span>
+      <span id="i-top" class="info" style="display:none;">Arriba</span>
+      <span id="i-share" class="info" style="display:none;">Compartir Post</span>
     </span>
     <br/>
     <div id="share" style="display: none">
@@ -138,7 +138,7 @@
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        <a class="tag-link" href="/tags/2-Spring-cloud/">2 Spring cloud</a>
+        <a class="tag-link" href="/tags/Spring-cloud/">Spring cloud</a>
     </div>
 
 
@@ -235,7 +235,7 @@
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Compartir</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
     </div>
 
