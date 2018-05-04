@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="1 雪崩效应简单是来说，在分布式系统中，假如有一个请求需要调用A服务，但A服务出现了问题，则这个请求就会阻塞，那么只要调用服务A的请求都会阻塞，当阻塞的请求越来越多，占用的计算机资源就越来越多。进一步来说，就是一个服务出现问题，可能导致所有的请求都不可用，从而导致整个分布式系统都不可用，这就是“雪崩效应”。   如果要是考虑服务与服务之间的依赖关系，则连带作用更强，系统崩坏的速度更快！  举例来说">
+<meta name="keywords" content="Spring cloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理">
+<meta property="og:url" content="javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/index.html">
+<meta property="og:site_name" content="Du Qingfeng">
+<meta property="og:description" content="1 雪崩效应简单是来说，在分布式系统中，假如有一个请求需要调用A服务，但A服务出现了问题，则这个请求就会阻塞，那么只要调用服务A的请求都会阻塞，当阻塞的请求越来越多，占用的计算机资源就越来越多。进一步来说，就是一个服务出现问题，可能导致所有的请求都不可用，从而导致整个分布式系统都不可用，这就是“雪崩效应”。   如果要是考虑服务与服务之间的依赖关系，则连带作用更强，系统崩坏的速度更快！  举例来说">
+<meta property="og:image" content="//img-blog.csdn.net/20180503221524991?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="//img-blog.csdn.net/20180504091840800?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="//img-blog.csdn.net/20180504093420350?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="//img-blog.csdn.net/20180504093804560?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="//img-blog.csdn.net/20180504103714768?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2018-05-04T02:50:32.097Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理">
+<meta name="twitter:description" content="1 雪崩效应简单是来说，在分布式系统中，假如有一个请求需要调用A服务，但A服务出现了问题，则这个请求就会阻塞，那么只要调用服务A的请求都会阻塞，当阻塞的请求越来越多，占用的计算机资源就越来越多。进一步来说，就是一个服务出现问题，可能导致所有的请求都不可用，从而导致整个分布式系统都不可用，这就是“雪崩效应”。   如果要是考虑服务与服务之间的依赖关系，则连带作用更强，系统崩坏的速度更快！  举例来说">
+<meta name="twitter:image" content="//img-blog.csdn.net/20180503221524991?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2018/04/21/spring cloud微服务架构（一）：服务的注册与相互调用/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&text=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&title=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&is_video=false&description=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理&body=Check out this article: javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&title=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&title=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&title=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&title=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&name=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-雪崩效应"><span class="toc-number">1.</span> <span class="toc-text">1 雪崩效应</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Hystrix如何去解决雪崩"><span class="toc-number">2.</span> <span class="toc-text">2 Hystrix如何去解决雪崩</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-隔离技术"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 隔离技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-熔断机制"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 熔断机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-总执行流程"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 总执行流程</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Du Qingfeng</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-05-01T02:49:02.000Z" itemprop="datePublished">2018-05-01</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Spring-cloud/">Spring cloud</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="1-雪崩效应"><a href="#1-雪崩效应" class="headerlink" title="1 雪崩效应"></a>1 雪崩效应</h1><p>简单是来说，在分布式系统中，假如有一个请求需要调用A服务，但A服务出现了问题，则这个请求就会阻塞，那么只要调用服务A的请求都会阻塞，当阻塞的请求越来越多，占用的计算机资源就越来越多。进一步来说，就是一个服务出现问题，可能导致所有的请求都不可用，从而导致整个分布式系统都不可用，这就是“雪崩效应”。</p>
+<p><img src="//img-blog.csdn.net/20180503221524991?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<blockquote>
+<p>如果要是考虑服务与服务之间的依赖关系，则连带作用更强，系统崩坏的速度更快！</p>
+</blockquote>
+<p>举例来说：火车购票系统提供两种服务，查票服务和订票服务</p>
+<ol>
+<li>如果不考虑两个服务之间的依赖关系：查票服务出现问题，则查票的请求全部阻塞，占用大量的系统资源，久而久之，导致整个系统无法响应请求</li>
+<li>如果考虑依赖关系：订票服务依赖查票服务，查票服务出现问题，不仅仅查票的请求会全部阻塞，订票的服务也会阻塞，整个系统迅速崩坏！</li>
+</ol>
+<h1 id="2-Hystrix如何去解决雪崩"><a href="#2-Hystrix如何去解决雪崩" class="headerlink" title="2 Hystrix如何去解决雪崩"></a>2 Hystrix如何去解决雪崩</h1><h2 id="2-1-隔离技术"><a href="#2-1-隔离技术" class="headerlink" title="2.1 隔离技术"></a>2.1 隔离技术</h2><p>例如，货船为了进行防止漏水和火灾的扩散,会将货仓分隔为多个，如下图所示：</p>
+<p><img src="//img-blog.csdn.net/20180504091840800?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<ul>
+<li>线程池隔离</li>
+</ul>
+<p>例如，淘宝的一个商品页面至少包含三方面信息，商品基本信息、商品价格、买家评论。一个商品页面的请求依赖于三个服务，基本信息服务A、价格服务B、评论服务C。因为是一个请求（线程）调用三个服务，调用顺序为：A-&gt;B-&gt;C，如果其中A服务出现问题，则另外两个服务都无法调用；如果B服务出现问题，则C服务无法调用。【横向调用】</p>
+<p><img src="//img-blog.csdn.net/20180504093420350?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<p>线程隔离主要解决的问题就是，A、B、C服务之间无调用顺序的限制，不论哪个服务出现问题，都不会影响其他服务的调用。但是前提是A、B、C服务之间相互独立。<strong>基本原理是，为每个服务维护一个线程池，用户的请求将不再直接访问服务，而是通过线程池中的空闲线程来访问服务。</strong>【纵向调用】</p>
+<p><img src="//img-blog.csdn.net/20180504093804560?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<ul>
+<li>信号量隔离</li>
+</ul>
+<p>该隔离技术，是限制某个服务的并发数量，对服务的并发数量设置一个阈值，超过该阈值则服务暂停接受新的请求。</p>
+<h2 id="2-2-熔断机制"><a href="#2-2-熔断机制" class="headerlink" title="2.2 熔断机制"></a>2.2 熔断机制</h2><p>如果某个目标服务调用慢或者有大量超时，如5秒内20次调用失败，此时，熔断该服务的调用，对于后续调用请求，不在继续调用目标服务，直接返回，快速释放资源。如果目标服务情况好转则恢复调用。熔断机制在Hystrix中，位于隔离技术之前。</p>
+<blockquote>
+<p>1、判断是否进行熔断的依据是：计算错误率，当错误率超过预设的值（默认是50%）且10秒内超过20个请求，则开启熔断。<br>2、 对于被熔断的请求，并不是永久被切断，而是被暂停一段时间之后，允许部分请求通过，若请求都是健康的，则对请求健康恢复（取消熔断），如果不是健康的，则继续熔断。</p>
+</blockquote>
+<h2 id="2-3-总执行流程"><a href="#2-3-总执行流程" class="headerlink" title="2.3 总执行流程"></a>2.3 总执行流程</h2><p><img src="//img-blog.csdn.net/20180504103714768?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<ol>
+<li>首先判断是否有缓存，如果有则直接返回结果</li>
+<li>无缓存，则判断断路器是否打开，如果打开则执行回退方法，返回结果</li>
+<li>熔断器未打开，则判断线程池/信号量是否到底阈值，如果到达阈值，则执行回退方法，返回结果</li>
+<li>若未达到阈值，则执行命令，如果成功返回结果；失败返回回退方法的执行结果</li>
+</ol>
+<p>参考：<br>[1] Hystrix GitHub官网：<a href="https://github.com/Netflix/Hystrix/wiki" target="_blank" rel="external">https://github.com/Netflix/Hystrix/wiki</a><br>[2] 杨恩雄-2017《疯狂Spring Cloud微服务架构实战》</p>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-雪崩效应"><span class="toc-number">1.</span> <span class="toc-text">1 雪崩效应</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Hystrix如何去解决雪崩"><span class="toc-number">2.</span> <span class="toc-text">2 Hystrix如何去解决雪崩</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-隔离技术"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 隔离技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-熔断机制"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 熔断机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-总执行流程"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 总执行流程</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&text=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&title=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&is_video=false&description=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理&body=Check out this article: javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&title=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&title=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&title=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&title=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/&name=spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Du Qingfeng
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
