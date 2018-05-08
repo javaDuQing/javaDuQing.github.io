@@ -13,16 +13,16 @@
 <meta property="og:url" content="javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/index.html">
 <meta property="og:site_name" content="Du Qingfeng">
 <meta property="og:description" content="1 雪崩效应简单是来说，在分布式系统中，假如有一个请求需要调用A服务，但A服务出现了问题，则这个请求就会阻塞，那么只要调用服务A的请求都会阻塞，当阻塞的请求越来越多，占用的计算机资源就越来越多。进一步来说，就是一个服务出现问题，可能导致所有的请求都不可用，从而导致整个分布式系统都不可用，这就是“雪崩效应”。   如果要是考虑服务与服务之间的依赖关系，则连带作用更强，系统崩坏的速度更快！  举例来说">
-<meta property="og:image" content="//img-blog.csdn.net/20180503221524991?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:image" content="//img-blog.csdn.net/20180504091840800?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:image" content="//img-blog.csdn.net/20180504093420350?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:image" content="//img-blog.csdn.net/20180504093804560?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:image" content="//img-blog.csdn.net/20180504103714768?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-05-05T02:57:38.576Z">
+<meta property="og:image" content="http://img-blog.csdn.net/20180503221524991?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img-blog.csdn.net/20180504091840800?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img-blog.csdn.net/20180504093420350?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img-blog.csdn.net/20180504093804560?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img-blog.csdn.net/20180504103714768?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2018-05-08T00:44:45.341Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理">
 <meta name="twitter:description" content="1 雪崩效应简单是来说，在分布式系统中，假如有一个请求需要调用A服务，但A服务出现了问题，则这个请求就会阻塞，那么只要调用服务A的请求都会阻塞，当阻塞的请求越来越多，占用的计算机资源就越来越多。进一步来说，就是一个服务出现问题，可能导致所有的请求都不可用，从而导致整个分布式系统都不可用，这就是“雪崩效应”。   如果要是考虑服务与服务之间的依赖关系，则连带作用更强，系统崩坏的速度更快！  举例来说">
-<meta name="twitter:image" content="//img-blog.csdn.net/20180503221524991?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta name="twitter:image" content="http://img-blog.csdn.net/20180503221524991?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
     
     
         
@@ -85,10 +85,10 @@
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
-      <span id="i-prev" class="info" style="display:none;">Post Anterior</span>
-      <span id="i-next" class="info" style="display:none;">Post Siguiente</span>
-      <span id="i-top" class="info" style="display:none;">Arriba</span>
-      <span id="i-share" class="info" style="display:none;">Compartir Post</span>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
     <br/>
     <div id="share" style="display: none">
@@ -147,7 +147,7 @@
 
   <div class="content" itemprop="articleBody">
     <h1 id="1-雪崩效应"><a href="#1-雪崩效应" class="headerlink" title="1 雪崩效应"></a>1 雪崩效应</h1><p>简单是来说，在分布式系统中，假如有一个请求需要调用A服务，但A服务出现了问题，则这个请求就会阻塞，那么只要调用服务A的请求都会阻塞，当阻塞的请求越来越多，占用的计算机资源就越来越多。进一步来说，就是一个服务出现问题，可能导致所有的请求都不可用，从而导致整个分布式系统都不可用，这就是“雪崩效应”。</p>
-<p><img src="//img-blog.csdn.net/20180503221524991?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<p><img src="http://img-blog.csdn.net/20180503221524991?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
 <blockquote>
 <p>如果要是考虑服务与服务之间的依赖关系，则连带作用更强，系统崩坏的速度更快！</p>
 </blockquote>
@@ -157,14 +157,14 @@
 <li>如果考虑依赖关系：订票服务依赖查票服务，查票服务出现问题，不仅仅查票的请求会全部阻塞，订票的服务也会阻塞，整个系统迅速崩坏！</li>
 </ol>
 <h1 id="2-Hystrix如何去解决雪崩"><a href="#2-Hystrix如何去解决雪崩" class="headerlink" title="2 Hystrix如何去解决雪崩"></a>2 Hystrix如何去解决雪崩</h1><h2 id="2-1-隔离技术"><a href="#2-1-隔离技术" class="headerlink" title="2.1 隔离技术"></a>2.1 隔离技术</h2><p>例如，货船为了进行防止漏水和火灾的扩散,会将货仓分隔为多个，如下图所示：</p>
-<p><img src="//img-blog.csdn.net/20180504091840800?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<p><img src="http://img-blog.csdn.net/20180504091840800?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
 <ul>
 <li>线程池隔离</li>
 </ul>
 <p>例如，淘宝的一个商品页面至少包含三方面信息，商品基本信息、商品价格、买家评论。一个商品页面的请求依赖于三个服务，基本信息服务A、价格服务B、评论服务C。因为是一个请求（线程）调用三个服务，调用顺序为：A-&gt;B-&gt;C，如果其中A服务出现问题，则另外两个服务都无法调用；如果B服务出现问题，则C服务无法调用。【横向调用】</p>
-<p><img src="//img-blog.csdn.net/20180504093420350?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<p><img src="http://img-blog.csdn.net/20180504093420350?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
 <p>线程隔离主要解决的问题就是，A、B、C服务之间无调用顺序的限制，不论哪个服务出现问题，都不会影响其他服务的调用。但是前提是A、B、C服务之间相互独立。<strong>基本原理是，为每个服务维护一个线程池，用户的请求将不再直接访问服务，而是通过线程池中的空闲线程来访问服务。</strong>【纵向调用】</p>
-<p><img src="//img-blog.csdn.net/20180504093804560?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<p><img src="http://img-blog.csdn.net/20180504093804560?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
 <ul>
 <li>信号量隔离</li>
 </ul>
@@ -173,7 +173,7 @@
 <blockquote>
 <p>1、判断是否进行熔断的依据是：计算错误率，当错误率超过预设的值（默认是50%）且10秒内超过20个请求，则开启熔断。<br>2、 对于被熔断的请求，并不是永久被切断，而是被暂停一段时间之后，允许部分请求通过，若请求都是健康的，则对请求健康恢复（取消熔断），如果不是健康的，则继续熔断。</p>
 </blockquote>
-<h2 id="2-3-总执行流程"><a href="#2-3-总执行流程" class="headerlink" title="2.3 总执行流程"></a>2.3 总执行流程</h2><p><img src="//img-blog.csdn.net/20180504103714768?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<h2 id="2-3-总执行流程"><a href="#2-3-总执行流程" class="headerlink" title="2.3 总执行流程"></a>2.3 总执行流程</h2><p><img src="http://img-blog.csdn.net/20180504103714768?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
 <ol>
 <li>首先判断是否有缓存，如果有则直接返回结果</li>
 <li>无缓存，则判断断路器是否打开，如果打开则执行回退方法，返回结果</li>
@@ -229,7 +229,7 @@
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Compartir</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
     </div>
 
