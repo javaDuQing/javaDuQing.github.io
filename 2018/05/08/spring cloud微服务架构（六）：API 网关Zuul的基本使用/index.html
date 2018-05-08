@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Du Qingfeng">
 <meta property="og:description" content="1 什么是网关网关是一种可提供路由资源统一管理的工具， 将”1对N”问题 转换成了”1对1”问题。通过服务路由的功能，可以在对外提供服务时，只暴露 网关中配置的调用地址，而调用方就不需要了解后端具体的微服务主机。  有点Facade设计模式的感觉   服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、均衡负载功能之外，它还具备了权限控">
 <meta property="og:image" content="http://img-blog.csdn.net/20180508094159468?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:updated_time" content="2018-05-08T03:15:34.878Z">
+<meta property="og:updated_time" content="2018-05-08T03:17:19.910Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring cloud微服务架构（六）：API 网关Zuul的基本使用">
 <meta name="twitter:description" content="1 什么是网关网关是一种可提供路由资源统一管理的工具， 将”1对N”问题 转换成了”1对1”问题。通过服务路由的功能，可以在对外提供服务时，只暴露 网关中配置的调用地址，而调用方就不需要了解后端具体的微服务主机。  有点Facade设计模式的感觉   服务网关是微服务架构中一个不可或缺的部分。通过服务网关统一向外系统提供REST API的过程中，除了具备服务路由、均衡负载功能之外，它还具备了权限控">
@@ -163,7 +163,7 @@
 <li>spring-zuul-gateway ： Zuul网关</li>
 </ol>
 <blockquote>
-<p>关于前三个项目本文不再多少，前面的文章中已解释</p>
+<p>关于前三个项目本文不再多说，前面的文章中已解释</p>
 </blockquote>
 <h2 id="3-Zuul的基本使用"><a href="#3-Zuul的基本使用" class="headerlink" title="3 Zuul的基本使用"></a>3 Zuul的基本使用</h2><p>创建一个spring boot项目，pom文件中加入Zuul依赖和httpclient依赖，因为Zuul的底层是通过httpclient实现的</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&lt;dependencies&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-cloud-starter-config&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-cloud-starter-eureka&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-cloud-starter-zuul&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.apache.httpcomponents&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;httpclient&lt;/artifactId&gt;</div><div class="line">			&lt;version&gt;4.5.2&lt;/version&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">	&lt;/dependencies&gt;</div></pre></td></tr></table></figure>
