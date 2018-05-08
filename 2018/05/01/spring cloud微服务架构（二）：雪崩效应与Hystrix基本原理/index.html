@@ -18,7 +18,7 @@
 <meta property="og:image" content="http://img-blog.csdn.net/20180504093420350?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img-blog.csdn.net/20180504093804560?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
 <meta property="og:image" content="http://img-blog.csdn.net/20180504103714768?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-05-08T00:44:45.341Z">
+<meta property="og:updated_time" content="2018-05-08T00:50:40.279Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理">
 <meta name="twitter:description" content="1 雪崩效应简单是来说，在分布式系统中，假如有一个请求需要调用A服务，但A服务出现了问题，则这个请求就会阻塞，那么只要调用服务A的请求都会阻塞，当阻塞的请求越来越多，占用的计算机资源就越来越多。进一步来说，就是一个服务出现问题，可能导致所有的请求都不可用，从而导致整个分布式系统都不可用，这就是“雪崩效应”。   如果要是考虑服务与服务之间的依赖关系，则连带作用更强，系统崩坏的速度更快！  举例来说">
@@ -107,7 +107,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-雪崩效应"><span class="toc-number">1.</span> <span class="toc-text">1 雪崩效应</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Hystrix如何去解决雪崩"><span class="toc-number">2.</span> <span class="toc-text">2 Hystrix如何去解决雪崩</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-隔离技术"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 隔离技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-熔断机制"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 熔断机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-总执行流程"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 总执行流程</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-雪崩效应"><span class="toc-number">1.</span> <span class="toc-text">1 雪崩效应</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Hystrix如何去解决雪崩"><span class="toc-number">2.</span> <span class="toc-text">2 Hystrix如何去解决雪崩</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-隔离技术"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 隔离技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-熔断机制"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 熔断机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-总执行流程"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 总执行流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">2.4.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
     </div>
   </span>
 </div>
@@ -180,7 +180,10 @@
 <li>熔断器未打开，则判断线程池/信号量是否到底阈值，如果到达阈值，则执行回退方法，返回结果</li>
 <li>若未达到阈值，则执行命令，如果成功返回结果；失败返回回退方法的执行结果</li>
 </ol>
-<p>参考：<br>[1] Hystrix GitHub官网：<a href="https://github.com/Netflix/Hystrix/wiki" target="_blank" rel="external">https://github.com/Netflix/Hystrix/wiki</a><br><br>[2] 杨恩雄-2017《疯狂Spring Cloud微服务架构实战》</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a href="https://github.com/Netflix/Hystrix/wiki" target="_blank" rel="external">Hystrix GitHub官网</a></li>
+<li>杨恩雄-2017《疯狂Spring Cloud微服务架构实战》</li>
+</ol>
 
   </div>
 </article>
@@ -207,7 +210,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-雪崩效应"><span class="toc-number">1.</span> <span class="toc-text">1 雪崩效应</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Hystrix如何去解决雪崩"><span class="toc-number">2.</span> <span class="toc-text">2 Hystrix如何去解决雪崩</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-隔离技术"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 隔离技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-熔断机制"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 熔断机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-总执行流程"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 总执行流程</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-雪崩效应"><span class="toc-number">1.</span> <span class="toc-text">1 雪崩效应</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Hystrix如何去解决雪崩"><span class="toc-number">2.</span> <span class="toc-text">2 Hystrix如何去解决雪崩</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-隔离技术"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 隔离技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-熔断机制"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 熔断机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-总执行流程"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 总执行流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">2.4.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
