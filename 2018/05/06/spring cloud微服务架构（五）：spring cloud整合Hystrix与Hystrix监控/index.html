@@ -13,13 +13,13 @@
 <meta property="og:url" content="javaduqing.github.io/2018/05/06/spring cloud微服务架构（五）：spring cloud整合Hystrix与Hystrix监控/index.html">
 <meta property="og:site_name" content="Du Qingfeng">
 <meta property="og:description" content="1 spring cloud整合HystrixHystrix主要用来保护调用者这一方的服务，所以Eureka服务器和服务提供的代码和第一篇文章中相同，只需要修改服务调用者的代码即可。 创建一个spring boot项目用于服务调用，pom文件中增加Hystrix依赖如下： 1234&amp;lt;dependency    &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;">
-<meta property="og:image" content="//img-blog.csdn.net/20180506185649647?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:image" content="//img-blog.csdn.net/20180506190015048?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:updated_time" content="2018-05-06T11:08:02.582Z">
+<meta property="og:image" content="https://img-blog.csdn.net/20180506185649647?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="https://img-blog.csdn.net/20180506190015048?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2018-05-08T00:38:30.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring cloud微服务架构（五）：spring cloud整合Hystrix与Hystrix监控">
 <meta name="twitter:description" content="1 spring cloud整合HystrixHystrix主要用来保护调用者这一方的服务，所以Eureka服务器和服务提供的代码和第一篇文章中相同，只需要修改服务调用者的代码即可。 创建一个spring boot项目用于服务调用，pom文件中增加Hystrix依赖如下： 1234&amp;lt;dependency    &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;">
-<meta name="twitter:image" content="//img-blog.csdn.net/20180506185649647?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta name="twitter:image" content="https://img-blog.csdn.net/20180506185649647?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
     
     
         
@@ -80,10 +80,10 @@
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
+      <span id="i-prev" class="info" style="display:none;">Post Anterior</span>
+      <span id="i-next" class="info" style="display:none;">Post Siguiente</span>
+      <span id="i-top" class="info" style="display:none;">Arriba</span>
+      <span id="i-share" class="info" style="display:none;">Compartir Post</span>
     </span>
     <br/>
     <div id="share" style="display: none">
@@ -159,11 +159,13 @@
 <p>然后新建一个监控spring boot项目，pom文件内容如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">&lt;dependencyManagement&gt;</div><div class="line">		&lt;dependencies&gt;</div><div class="line">			&lt;dependency&gt;</div><div class="line">				&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">				&lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">				&lt;version&gt;Dalston.SR1&lt;/version&gt;</div><div class="line">				&lt;type&gt;pom&lt;/type&gt;</div><div class="line">				&lt;scope&gt;import&lt;/scope&gt;</div><div class="line">			&lt;/dependency&gt;</div><div class="line">		&lt;/dependencies&gt;</div><div class="line">	&lt;/dependencyManagement&gt;</div><div class="line"></div><div class="line">	&lt;dependencies&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-cloud-starter-hystrix-dashboard&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-cloud-starter-hystrix&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;</div><div class="line">			&lt;version&gt;1.5.3.RELEASE&lt;/version&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">	&lt;/dependencies&gt;</div></pre></td></tr></table></figure>
 <p>启动类代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@SpringBootApplication</div><div class="line">@EnableHystrixDashboard</div><div class="line">public class DashboardApp &#123;</div><div class="line"></div><div class="line">	public static void main(String[] args) &#123;</div><div class="line">		new SpringApplicationBuilder(DashboardApp.class).properties(&quot;server.port=8082&quot;).run(args);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>访问项目地址：<a href="http://localhost:8082/hystrix，显示监控页面" target="_blank" rel="external">http://localhost:8082/hystrix，显示监控页面</a><br><img src="//img-blog.csdn.net/20180506185649647?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@SpringBootApplication</div><div class="line">@EnableHystrixDashboard</div><div class="line">public class DashboardApp &#123;</div><div class="line"></div><div class="line">	public static void main(String[] args) &#123;</div><div class="line">		new SpringApplicationBuilder(DashboardApp.class).properties(&quot;server.port=8082&quot;)</div><div class="line">		.run(args);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>访问项目地址：<a href="http://localhost:8082/hystrix，显示监控页面" target="_blank" rel="external">http://localhost:8082/hystrix，显示监控页面</a><br><img src="https://img-blog.csdn.net/20180506185649647?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
 <p>输入要监控的项目地址：<a href="http://localhost:8081/hystrix.stream，能够看到该项目的命令调用情况。" target="_blank" rel="external">http://localhost:8081/hystrix.stream，能够看到该项目的命令调用情况。</a></p>
-<p><img src="//img-blog.csdn.net/20180506190015048?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<blockquote>
 <p>第一排Circuit为熔断器使用情况；第二排为线程池使用情况。</p>
+</blockquote>
+<p><img src="https://img-blog.csdn.net/20180506190015048?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
 
   </div>
 </article>
@@ -212,7 +214,7 @@
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Compartir</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
     </div>
 
