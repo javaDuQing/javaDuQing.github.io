@@ -13,14 +13,14 @@
 <meta property="og:url" content="javaduqing.github.io/2018/05/15/消息队列协议AMQP的学习/index.html">
 <meta property="og:site_name" content="Qingfeng.Du">
 <meta property="og:description" content="1 AMQP是什么AMQP （Advanced Message Queuing Protocol 高级消息队列协议）是一个消息协议，它支持符合标准的客户端请求程序与符合标准的消息中间件代理进行通信。 2 AMQP的结构  Broker: 接收和分发消息的应用，RabbitMQ Server就是Message Broker。 Virtual host: 出于多租户和安全因素设计的，把AMQP的基本组">
-<meta property="og:image" content="https://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:image" content="https://img-blog.csdn.net/20180515151132570?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:image" content="https://img-blog.csdn.net/20180515151206202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:updated_time" content="2018-05-15T07:29:36.435Z">
+<meta property="og:image" content="http://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="http://img-blog.csdn.net/20180515151132570?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="http://img-blog.csdn.net/20180515151206202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:updated_time" content="2018-05-15T07:33:14.462Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="消息队列AMQP的设计与实现">
 <meta name="twitter:description" content="1 AMQP是什么AMQP （Advanced Message Queuing Protocol 高级消息队列协议）是一个消息协议，它支持符合标准的客户端请求程序与符合标准的消息中间件代理进行通信。 2 AMQP的结构  Broker: 接收和分发消息的应用，RabbitMQ Server就是Message Broker。 Virtual host: 出于多租户和安全因素设计的，把AMQP的基本组">
-<meta name="twitter:image" content="https://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta name="twitter:image" content="http://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
     
     
         
@@ -143,7 +143,7 @@
 
   <div class="content" itemprop="articleBody">
     <h1 id="1-AMQP是什么"><a href="#1-AMQP是什么" class="headerlink" title="1 AMQP是什么"></a>1 AMQP是什么</h1><p>AMQP （Advanced Message Queuing Protocol 高级消息队列协议）是一个消息协议，它支持符合标准的客户端请求程序与符合标准的消息中间件代理进行通信。</p>
-<h1 id="2-AMQP的结构"><a href="#2-AMQP的结构" class="headerlink" title="2 AMQP的结构"></a>2 AMQP的结构</h1><p><img src="https://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h1 id="2-AMQP的结构"><a href="#2-AMQP的结构" class="headerlink" title="2 AMQP的结构"></a>2 AMQP的结构</h1><p><img src="http://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <ul>
 <li><strong>Broker</strong>: 接收和分发消息的应用，RabbitMQ Server就是Message Broker。</li>
 <li><strong>Virtual host</strong>: 出于多租户和安全因素设计的，把AMQP的基本组件划分到一个虚拟的分组中，类似于网络中的namespace概念。当多个不同的用户使用同一个中间件提供的服务时，可以划分出多个vhost，每个用户在自己的vhost创建exchange／queue等。</li>
@@ -169,10 +169,10 @@
 <li>一个routing key为K的queue与exchange进行绑定</li>
 <li>当一条新的routing key为R的消息到达direct exchange时，exchange 将它路由至该queue如果K=R</li>
 </ul>
-<p><img src="https://img-blog.csdn.net/20180515151132570?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="http://img-blog.csdn.net/20180515151132570?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <p><strong>Fanout exchange</strong></p>
 <p>fanout exchange路由消息到所有的与其绑定的queue中，忽略routing key。如果N个queue被绑定到一个fanout exchange，当一条新消息被发布到exchange时，消息会被复制并且传送到这N个queue。fanout exchange是广播路由的最佳选择。</p>
-<p><img src="https://img-blog.csdn.net/20180515151206202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="http://img-blog.csdn.net/20180515151206202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <p><strong>Topic exchange</strong><br>根据routing key，通过表达式将消息分配到匹配的队列中，Topic exchange将分发到目标queue中。如， 包含分类与标签的新闻信息推送。</p>
 <p><strong>Headers exchange</strong><br>headers exchanges忽略routing key属性，相反用于路由的属性是从headers属性中获取的。如果消息头的值等于指定的绑定值，则认为消息是匹配的。</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
