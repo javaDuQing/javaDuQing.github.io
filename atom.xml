@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="javaduqing.github.io/"/>
-  <updated>2018-05-08T09:08:33.163Z</updated>
+  <updated>2018-05-15T07:29:36.435Z</updated>
   <id>javaduqing.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>消息队列AMQP的设计与实现</title>
+    <link href="javaduqing.github.io/2018/05/15/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AEAMQP%E7%9A%84%E5%AD%A6%E4%B9%A0/"/>
+    <id>javaduqing.github.io/2018/05/15/消息队列协议AMQP的学习/</id>
+    <published>2018-05-15T07:25:02.000Z</published>
+    <updated>2018-05-15T07:29:36.435Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="1-AMQP是什么"><a href="#1-AMQP是什么" class="headerlink" title="1 AMQP是什么"></a>1 AMQP是什么</h1><p>AMQP （Advanced Message Queuing Protocol 高级消息队列协议）是一个消息协议，它支持符合标准的客户端请求程序与符合标准的消息中间件代理进行通信。</p><h1 id="2-AMQP的结构"><a href="#2-AMQP的结构" class="headerlink" title="2 AMQP的结构"></a>2 AMQP的结构</h1><p><img src="https://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p><ul><li><strong>Broker</strong>: 接收和分发消息的应用，RabbitMQ Server就是Message Broker。</li><li><strong>Virtual host</strong>: 出于多租户和安全因素设计的，把AMQP的基本组件划分到一个虚拟的分组中，类似于网络中的namespace概念。当多个不同的用户使用同一个中间件提供的服务时，可以划分出多个vhost，每个用户在自己的vhost创建exchange／queue等。</li><li><strong>Channel</strong>: 如果每一次访问都建立一个Connection，在消息量大的时候建立Connection的开销将是巨大的，效率也较低。Channel作为轻量级的Connection极大减少了操作系统建立connection的开销。线程池的思想。</li><li><strong>Exchange</strong>: message到达broker的第一站，根据分发规则，匹配查询表中的routing key，分发消息到queue中去。常用的类型有：direct (point-to-point), topic (publish-subscribe) and fanout (multicast)。</li><li><strong>Queue</strong>: 消息最终被送到这里等待consumer取走。一个message可以被同时拷贝到多个queue中。</li><li><strong>Binding</strong>: exchange和queue之间的虚拟连接，binding中可以包含routing key。Binding信息被保存到exchange中的查询表中，用于message的分发依据。其实可以理解为Exchange与Queue的关系对照表。</li></ul><p>工作流程：</p><ol><li>消息被发布到exchanges，通常可将exchanges比作邮局或者邮箱</li><li>exchanges将消息副本分发到queues，按照bindings中的规则</li><li>AMQP brokers传递消息给与queues关联的consumers，或者consumers按照需求从queues拉取信息</li></ol><blockquote><p>以一个例子来解释Exchange、Queue、Binding三者之间的关系：乘客乘坐飞机到北京。<br>乘客是消息，飞机就是Exchange，Queue就是目的地北京，飞机可以通过不同的路线到达北京，这个路线就是Binding</p></blockquote><h1 id="3-AMQP的组件"><a href="#3-AMQP的组件" class="headerlink" title="3 AMQP的组件"></a>3 AMQP的组件</h1><h2 id="exchange"><a href="#exchange" class="headerlink" title="exchange"></a>exchange</h2><p><strong>Default exchange</strong></p><p>default exchange是一个没有名称的、被broker预先申明的direct exchange。它所拥有的一个特殊属性使它对于简单的应用程序很有作用：每个创建的queue会与它自动绑定，使用queue名称作为routing key。<br>举例说，当你申明一个名称为“search-indexing-online”的queue时，AMQP broker使用“search-indexing-online”作为routing key将它绑定到default exchange。因此，一条被发布到default exchange并且routing key为”search-indexing-online”将被路由到名称为”search-indexing-online”的queue。</p><p><strong>Direct exchange</strong></p><p>direct exchange根据消息的routing key来传送消息。direct exchange是单一传播路由消息的最佳选择（尽管他们也可以用于多路传播路由），以下是它们的工作原理：</p><ul><li>一个routing key为K的queue与exchange进行绑定</li><li>当一条新的routing key为R的消息到达direct exchange时，exchange 将它路由至该queue如果K=R</li></ul><p><img src="https://img-blog.csdn.net/20180515151132570?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p><p><strong>Fanout exchange</strong></p><p>fanout exchange路由消息到所有的与其绑定的queue中，忽略routing key。如果N个queue被绑定到一个fanout exchange，当一条新消息被发布到exchange时，消息会被复制并且传送到这N个queue。fanout exchange是广播路由的最佳选择。</p><p><img src="https://img-blog.csdn.net/20180515151206202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p><p><strong>Topic exchange</strong><br>根据routing key，通过表达式将消息分配到匹配的队列中，Topic exchange将分发到目标queue中。如， 包含分类与标签的新闻信息推送。</p><p><strong>Headers exchange</strong><br>headers exchanges忽略routing key属性，相反用于路由的属性是从headers属性中获取的。如果消息头的值等于指定的绑定值，则认为消息是匹配的。</p><h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol><li><a href="http://www.amqp.org/sites/amqp.org/files/amqp.pdf" target="_blank" rel="external">官方文档</a></li><li><a href="https://www.cnblogs.com/xiaochengzi/p/6895126.html" target="_blank" rel="external">AMQP 0-9-1模型简介（官网直译）</a></li><li><a href="http://www.cnblogs.com/frankyou/p/5283539.html" target="_blank" rel="external">RabbitMQ与AMQP协议详解</a></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;1-AMQP是什么&quot;&gt;&lt;a href=&quot;#1-AMQP是什么&quot; class=&quot;headerlink&quot; title=&quot;1 AMQP是什么&quot;&gt;&lt;/a&gt;1 AMQP是什么&lt;/h1&gt;&lt;p&gt;AMQP （Advanced Message Queuing Protocol 高级
+      
+    
+    </summary>
+    
+      <category term="Spring cloud" scheme="javaduqing.github.io/categories/Spring-cloud/"/>
+    
+    
+      <category term="Spring cloud" scheme="javaduqing.github.io/tags/Spring-cloud/"/>
+    
+  </entry>
   
   <entry>
     <title>spring cloud微服务架构（六）：API 网关Zuul的基本使用</title>
