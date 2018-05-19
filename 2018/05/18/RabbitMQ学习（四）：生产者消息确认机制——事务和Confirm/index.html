@@ -9,16 +9,16 @@
     <meta name="description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 概述在RabbitMQ中，我们可以通过持久化来解决因为服务器异常而导致消息丢失的问题。 除此之外，我">
 <meta name="keywords" content="MQ">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm">
+<meta property="og:title" content="RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm">
 <meta property="og:url" content="javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/index.html">
 <meta property="og:site_name" content="Qingfeng.Du">
 <meta property="og:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 概述在RabbitMQ中，我们可以通过持久化来解决因为服务器异常而导致消息丢失的问题。 除此之外，我">
 <meta property="og:image" content="http://img-blog.csdn.net/20180518152544140?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180518152417724?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180518152623804?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:updated_time" content="2018-05-19T14:52:29.014Z">
+<meta property="og:updated_time" content="2018-05-19T15:08:57.924Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm">
+<meta name="twitter:title" content="RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm">
 <meta name="twitter:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 概述在RabbitMQ中，我们可以通过持久化来解决因为服务器异常而导致消息丢失的问题。 除此之外，我">
 <meta name="twitter:image" content="http://img-blog.csdn.net/20180518152544140?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
     
@@ -40,7 +40,7 @@
         
     
     <!-- title -->
-    <title>RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm</title>
+    <title>RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm</title>
     <!-- styles -->
     <link rel="stylesheet" href="/css/style.css">
     <!-- persian styles -->
@@ -75,30 +75,32 @@
     <span id="actions">
       <ul>
         
+        <li><a class="icon" href="/2050/04/21/read me/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
         
         <li><a class="icon" href="/2018/05/17/RabbitMQ学习（三）：Routing,topics/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
+      <span id="i-prev" class="info" style="display:none;">Post Anterior</span>
+      <span id="i-next" class="info" style="display:none;">Post Siguiente</span>
+      <span id="i-top" class="info" style="display:none;">Arriba</span>
+      <span id="i-share" class="info" style="display:none;">Compartir Post</span>
     </span>
     <br/>
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&text=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&is_video=false&description=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm&body=Check out this article: javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&name=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&text=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&is_video=false&description=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm&body=Check out this article: javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&name=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -115,7 +117,7 @@
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
-        RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm
+        RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm
     </h1>
 
 
@@ -227,15 +229,15 @@
     <div id="share-footer" style="display: none">
       <ul>
   <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&text=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&is_video=false&description=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm&body=Check out this article: javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&name=RabbitMQ学习（四）：生产者消息确认机制——事物和Confirm&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&text=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&is_video=false&description=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm&body=Check out this article: javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&title=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/&name=RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -243,7 +245,7 @@
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Compartir</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
     </div>
 
