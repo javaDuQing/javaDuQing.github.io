@@ -16,7 +16,7 @@
 <meta property="og:image" content="http://img-blog.csdn.net/20180517162719319?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180517173029710?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180517175840102?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:updated_time" content="2018-05-19T14:46:57.966Z">
+<meta property="og:updated_time" content="2018-05-19T14:52:17.986Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RabbitMQ学习（二）：hello world,work queue,PS">
 <meta name="twitter:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  本文主要内容是RabbitMQ官方教程中4种工作模式的实战，内容包括：  Hello World Wor">
@@ -75,10 +75,10 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" href="/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" href="/2018/05/17/RabbitMQ学习（三）：Routing,topics/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
-        <li><a class="icon" href="/2018/05/17/RabbitMQ学习（三）：Routing,topics/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" href="/2018/05/15/RabbitMQ学习（一）：消息队列协议AMQP的设计原理/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -144,7 +144,7 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p><a href="https://blog.csdn.net/disiwei1012/article/details/80323166" target="_blank" rel="external">RabbitMQ学习（一）：消息队列协议AMQP的设计原理</a><br><a href="https://blog.csdn.net/disiwei1012/article/details/80352516" target="_blank" rel="external">RabbitMQ学习（二）：hello world、work queue、Publish/Subscribe</a><br><a href="https://blog.csdn.net/disiwei1012/article/details/80378635" target="_blank" rel="external">RabbitMQ学习（三）：Routing、Topics</a><br><a href="https://blog.csdn.net/disiwei1012/article/details/80356929" target="_blank" rel="external">RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm</a></p>
+    <p><a href="https://javaduqing.github.io/2018/05/15/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AEAMQP%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/">RabbitMQ学习（一）：消息队列协议AMQP的设计原理</a><br><a href="https://javaduqing.github.io/2018/05/17/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9Ahello%20world,work%20queue,PublishSubscribe/">RabbitMQ学习（二）：hello world、work queue、Publish/Subscribe</a><br><a href="https://javaduqing.github.io/2018/05/17/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9ARouting,topics/">RabbitMQ学习（三）：Routing、Topics</a><br><a href="https://javaduqing.github.io/2018/05/18/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E6%9C%BA%E5%88%B6%E2%80%94%E2%80%94%E4%BA%8B%E5%8A%A1%E5%92%8CConfirm/">RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm</a></p>
 <hr>
 <p>本文主要内容是<a href="http://www.rabbitmq.com/getstarted.html" target="_blank" rel="external">RabbitMQ官方教程</a>中4种工作模式的实战，内容包括：</p>
 <ol>
