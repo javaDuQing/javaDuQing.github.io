@@ -9,16 +9,16 @@
     <meta name="description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  本文主要内容是RabbitMQ官方教程中4种工作模式的实战，内容包括：  Hello World Wor">
 <meta name="keywords" content="MQ">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RabbitMQ学习（二）：hello world,work queue,Publish&#x2F;Subscribe">
+<meta property="og:title" content="RabbitMQ学习（二）：hello world,work queue,PS">
 <meta property="og:url" content="javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/index.html">
 <meta property="og:site_name" content="Qingfeng.Du">
 <meta property="og:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  本文主要内容是RabbitMQ官方教程中4种工作模式的实战，内容包括：  Hello World Wor">
 <meta property="og:image" content="http://img-blog.csdn.net/20180517162719319?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180517173029710?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180517175840102?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:updated_time" content="2018-05-19T14:44:04.779Z">
+<meta property="og:updated_time" content="2018-05-19T14:46:57.966Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RabbitMQ学习（二）：hello world,work queue,Publish&#x2F;Subscribe">
+<meta name="twitter:title" content="RabbitMQ学习（二）：hello world,work queue,PS">
 <meta name="twitter:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  本文主要内容是RabbitMQ官方教程中4种工作模式的实战，内容包括：  Hello World Wor">
 <meta name="twitter:image" content="http://img-blog.csdn.net/20180517162719319?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
     
@@ -40,7 +40,7 @@
         
     
     <!-- title -->
-    <title>RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe</title>
+    <title>RabbitMQ学习（二）：hello world,work queue,PS</title>
     <!-- styles -->
     <link rel="stylesheet" href="/css/style.css">
     <!-- persian styles -->
@@ -92,15 +92,15 @@
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&text=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&is_video=false&description=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe&body=Check out this article: javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&name=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&text=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&is_video=false&description=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RabbitMQ学习（二）：hello world,work queue,PS&body=Check out this article: javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&name=RabbitMQ学习（二）：hello world,work queue,PS&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -117,7 +117,7 @@
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
-        RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe
+        RabbitMQ学习（二）：hello world,work queue,PS
     </h1>
 
 
@@ -227,15 +227,15 @@
     <div id="share-footer" style="display: none">
       <ul>
   <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&text=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&is_video=false&description=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe&body=Check out this article: javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&name=RabbitMQ学习（二）：hello world,work queue,Publish/Subscribe&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&text=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&is_video=false&description=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RabbitMQ学习（二）：hello world,work queue,PS&body=Check out this article: javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&title=RabbitMQ学习（二）：hello world,work queue,PS"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/&name=RabbitMQ学习（二）：hello world,work queue,PS&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
