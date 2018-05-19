@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  4 Routing 上图是Routing工作模式的示意图，在生产者把消息传递给exchange时，需要说">
+<meta name="keywords" content="MQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ学习（三）：Routing,Topics">
+<meta property="og:url" content="javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/index.html">
+<meta property="og:site_name" content="Qingfeng.Du">
+<meta property="og:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  4 Routing 上图是Routing工作模式的示意图，在生产者把消息传递给exchange时，需要说">
+<meta property="og:image" content="http://img-blog.csdn.net/20180518111427242?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="http://img-blog.csdn.net/20180518113304898?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:updated_time" content="2018-05-19T14:43:17.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RabbitMQ学习（三）：Routing,Topics">
+<meta name="twitter:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  4 Routing 上图是Routing工作模式的示意图，在生产者把消息传递给exchange时，需要说">
+<meta name="twitter:image" content="http://img-blog.csdn.net/20180518111427242?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>RabbitMQ学习（三）：Routing,Topics</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/05/17/RabbitMQ学习（二）：hello world,work queue,PublishSubscribe/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2018/05/15/RabbitMQ学习（一）：消息队列协议AMQP的设计原理/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&text=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&title=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&is_video=false&description=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RabbitMQ学习（三）：Routing,Topics&body=Check out this article: javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&title=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&title=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&title=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&title=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&name=RabbitMQ学习（三）：Routing,Topics&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#4-Routing"><span class="toc-number">1.</span> <span class="toc-text">4 Routing</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-Topics"><span class="toc-number">2.</span> <span class="toc-text">5 Topics</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-number">3.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        RabbitMQ学习（三）：Routing,Topics
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Qingfeng.Du</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-05-17T01:20:50.000Z" itemprop="datePublished">2018-05-17</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/MQ/">MQ</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p><a href="https://blog.csdn.net/disiwei1012/article/details/80323166" target="_blank" rel="external">RabbitMQ学习（一）：消息队列协议AMQP的设计原理</a><br><a href="https://blog.csdn.net/disiwei1012/article/details/80352516" target="_blank" rel="external">RabbitMQ学习（二）：hello world、work queue、Publish/Subscribe</a><br><a href="https://blog.csdn.net/disiwei1012/article/details/80378635" target="_blank" rel="external">RabbitMQ学习（三）：Routing、Topics</a><br><a href="https://blog.csdn.net/disiwei1012/article/details/80356929" target="_blank" rel="external">RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm</a></p>
+<hr>
+<h1 id="4-Routing"><a href="#4-Routing" class="headerlink" title="4 Routing"></a>4 Routing</h1><p><img src="http://img-blog.csdn.net/20180518111427242?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>上图是Routing工作模式的示意图，在生产者把消息传递给exchange时，需要说明消息的routing key，然后exchange根据消息的routing key匹配队列。在说明队列时也要说明队列的routing key。<br>生产者代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Send</span> </span>&#123;</div><div class="line">	</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXCHANGE_NAME=<span class="string">"test_exchange_direct"</span>;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException </span>&#123;</div><div class="line">		Connection connection = ConnectionUtils.getConnection();</div><div class="line">		Channel channel = connection.createChannel();</div><div class="line">		<span class="comment">//exchange</span></div><div class="line">		channel.exchangeDeclare(EXCHANGE_NAME, <span class="string">"direct"</span>);</div><div class="line">		String  msg=<span class="string">"hello direct!"</span>;</div><div class="line">		String routingKey=<span class="string">"info"</span>;</div><div class="line">		channel.basicPublish(EXCHANGE_NAME, routingKey, <span class="keyword">null</span>, msg.getBytes());</div><div class="line">		</div><div class="line">		System.out.println(<span class="string">"send "</span>+msg);</div><div class="line">		channel.close();</div><div class="line">		connection.close();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>消费者代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Recv1</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXCHANGE_NAME = <span class="string">"test_exchange_direct"</span>;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String QUEUE_NAME = <span class="string">"test_queue_direct_1"</span>;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException </span>&#123;</div><div class="line"></div><div class="line">		Connection connection = ConnectionUtils.getConnection();</div><div class="line">		<span class="keyword">final</span> Channel channel = connection.createChannel();</div><div class="line"></div><div class="line">		channel.queueDeclare(QUEUE_NAME, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</div><div class="line">		channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, <span class="string">"error"</span>);</div><div class="line">		channel.basicQos(<span class="number">1</span>);</div><div class="line">		</div><div class="line">		<span class="comment">//定义一个消费者</span></div><div class="line">		Consumer consumer=<span class="keyword">new</span> DefaultConsumer(channel)&#123;</div><div class="line">			<span class="comment">//消息到达 触发这个方法</span></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></div><div class="line">					BasicProperties properties, <span class="keyword">byte</span>[] body) <span class="keyword">throws</span> IOException &#123;</div><div class="line">			 </div><div class="line">				String msg=<span class="keyword">new</span> String(body,<span class="string">"utf-8"</span>);</div><div class="line">				System.out.println(<span class="string">"[1] Recv msg:"</span>+msg);</div><div class="line">				</div><div class="line">				<span class="keyword">try</span> &#123;</div><div class="line">					Thread.sleep(<span class="number">2000</span>);</div><div class="line">				&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">					e.printStackTrace();</div><div class="line">				&#125;<span class="keyword">finally</span>&#123;</div><div class="line">					System.out.println(<span class="string">"[1] done "</span>);</div><div class="line">					channel.basicAck(envelope.getDeliveryTag(), <span class="keyword">false</span>);</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;;</div><div class="line">		</div><div class="line">		<span class="keyword">boolean</span> autoAck=<span class="keyword">false</span>;<span class="comment">//自动应答 false</span></div><div class="line">		channel.basicConsume(QUEUE_NAME,autoAck , consumer);</div><div class="line">	&#125;	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Recv2</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXCHANGE_NAME = <span class="string">"test_exchange_direct"</span>;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String QUEUE_NAME = <span class="string">"test_queue_direct_2"</span>;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException </span>&#123;</div><div class="line"></div><div class="line">		Connection connection = ConnectionUtils.getConnection();</div><div class="line">		<span class="keyword">final</span> Channel channel = connection.createChannel();</div><div class="line"></div><div class="line">		channel.queueDeclare(QUEUE_NAME, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</div><div class="line">		</div><div class="line">	</div><div class="line">		channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, <span class="string">"error"</span>);</div><div class="line">		channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, <span class="string">"info"</span>);</div><div class="line">		channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, <span class="string">"warning"</span>);</div><div class="line">		</div><div class="line">		channel.basicQos(<span class="number">1</span>);</div><div class="line">		</div><div class="line">		<span class="comment">//定义一个消费者</span></div><div class="line">		Consumer consumer=<span class="keyword">new</span> DefaultConsumer(channel)&#123;</div><div class="line">			<span class="comment">//消息到达 触发这个方法</span></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></div><div class="line">					BasicProperties properties, <span class="keyword">byte</span>[] body) <span class="keyword">throws</span> IOException &#123;</div><div class="line">			 </div><div class="line">				String msg=<span class="keyword">new</span> String(body,<span class="string">"utf-8"</span>);</div><div class="line">				System.out.println(<span class="string">"[2] Recv msg:"</span>+msg);</div><div class="line">				</div><div class="line">				<span class="keyword">try</span> &#123;</div><div class="line">					Thread.sleep(<span class="number">2000</span>);</div><div class="line">				&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">					e.printStackTrace();</div><div class="line">				&#125;<span class="keyword">finally</span>&#123;</div><div class="line">					System.out.println(<span class="string">"[2] done "</span>);</div><div class="line">					channel.basicAck(envelope.getDeliveryTag(), <span class="keyword">false</span>);</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;;</div><div class="line">		</div><div class="line">		<span class="keyword">boolean</span> autoAck=<span class="keyword">false</span>;<span class="comment">//自动应答 false</span></div><div class="line">		channel.basicConsume(QUEUE_NAME,autoAck , consumer);</div><div class="line">	&#125;</div><div class="line">		</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Recv2 能够收到消息，Recv1 无法收到。</p>
+<h1 id="5-Topics"><a href="#5-Topics" class="headerlink" title="5 Topics"></a>5 Topics</h1><p><img src="http://img-blog.csdn.net/20180518113304898?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>Topics模式和Routing相类似，都是通过Routing Key来做消息如队列的匹配，RabbitMQ提供两种匹配符：</p>
+<ol>
+<li>*（星号）匹配一个</li>
+<li>＃（散列）匹配0个或多个</li>
+</ol>
+<p>生产者代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Send</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXCHANGE_NAME = <span class="string">"test_exchange_topic"</span>;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException </span>&#123;</div><div class="line">		</div><div class="line">		</div><div class="line">		Connection connection = ConnectionUtils.getConnection();</div><div class="line">		</div><div class="line">		Channel channel = connection.createChannel();</div><div class="line">		</div><div class="line">		<span class="comment">//exchange</span></div><div class="line">		channel.exchangeDeclare(EXCHANGE_NAME, <span class="string">"topic"</span>);</div><div class="line">		</div><div class="line">		String msgString=<span class="string">"商品...."</span>;</div><div class="line">		channel.basicPublish(EXCHANGE_NAME, <span class="string">"goods.delete"</span>, <span class="keyword">null</span>, msgString.getBytes());</div><div class="line">		System.out.println(<span class="string">"---send "</span>+msgString);</div><div class="line"></div><div class="line">		channel.close();</div><div class="line">		connection.close();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>消费者代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Recv1</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXCHANGE_NAME = <span class="string">"test_exchange_topic"</span>;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String QUEUE_NAME = <span class="string">"test_queue_topic_1"</span>;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException </span>&#123;</div><div class="line"></div><div class="line">		Connection connection = ConnectionUtils.getConnection();</div><div class="line">		<span class="keyword">final</span> Channel channel = connection.createChannel();</div><div class="line"></div><div class="line">		channel.queueDeclare(QUEUE_NAME, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</div><div class="line">		channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, <span class="string">"goods.add"</span>);</div><div class="line">		channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, <span class="string">"goods.update"</span>);</div><div class="line">		</div><div class="line">		channel.basicQos(<span class="number">1</span>);</div><div class="line">		</div><div class="line">		<span class="comment">//定义一个消费者</span></div><div class="line">		Consumer consumer=<span class="keyword">new</span> DefaultConsumer(channel)&#123;</div><div class="line">			<span class="comment">//消息到达 触发这个方法</span></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></div><div class="line">					BasicProperties properties, <span class="keyword">byte</span>[] body) <span class="keyword">throws</span> IOException &#123;</div><div class="line">			 </div><div class="line">				String msg=<span class="keyword">new</span> String(body,<span class="string">"utf-8"</span>);</div><div class="line">				System.out.println(<span class="string">"[1] Recv msg:"</span>+msg);</div><div class="line">				</div><div class="line">				<span class="keyword">try</span> &#123;</div><div class="line">					Thread.sleep(<span class="number">2000</span>);</div><div class="line">				&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">					e.printStackTrace();</div><div class="line">				&#125;<span class="keyword">finally</span>&#123;</div><div class="line">					System.out.println(<span class="string">"[1] done "</span>);</div><div class="line">					channel.basicAck(envelope.getDeliveryTag(), <span class="keyword">false</span>);</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;;</div><div class="line">		</div><div class="line">		<span class="keyword">boolean</span> autoAck=<span class="keyword">false</span>;<span class="comment">//自动应答 false</span></div><div class="line">		channel.basicConsume(QUEUE_NAME,autoAck , consumer);</div><div class="line">	&#125;</div><div class="line">		</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Recv2</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXCHANGE_NAME = <span class="string">"test_exchange_topic"</span>;</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String QUEUE_NAME = <span class="string">"test_queue_topic_2"</span>;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException </span>&#123;</div><div class="line"></div><div class="line">		Connection connection = ConnectionUtils.getConnection();</div><div class="line">		<span class="keyword">final</span> Channel channel = connection.createChannel();</div><div class="line"></div><div class="line">		channel.queueDeclare(QUEUE_NAME, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</div><div class="line">		channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, <span class="string">"goods.#"</span>);</div><div class="line">		</div><div class="line">		channel.basicQos(<span class="number">1</span>);</div><div class="line">		</div><div class="line">		<span class="comment">//定义一个消费者</span></div><div class="line">		Consumer consumer=<span class="keyword">new</span> DefaultConsumer(channel)&#123;</div><div class="line">			<span class="comment">//消息到达 触发这个方法</span></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></div><div class="line">					BasicProperties properties, <span class="keyword">byte</span>[] body) <span class="keyword">throws</span> IOException &#123;</div><div class="line">			 </div><div class="line">				String msg=<span class="keyword">new</span> String(body,<span class="string">"utf-8"</span>);</div><div class="line">				System.out.println(<span class="string">"[2] Recv msg:"</span>+msg);</div><div class="line">				</div><div class="line">				<span class="keyword">try</span> &#123;</div><div class="line">					Thread.sleep(<span class="number">2000</span>);</div><div class="line">				&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">					e.printStackTrace();</div><div class="line">				&#125;<span class="keyword">finally</span>&#123;</div><div class="line">					System.out.println(<span class="string">"[2] done "</span>);</div><div class="line">					channel.basicAck(envelope.getDeliveryTag(), <span class="keyword">false</span>);</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;;</div><div class="line">		</div><div class="line">		<span class="keyword">boolean</span> autoAck=<span class="keyword">false</span>;<span class="comment">//自动应答 false</span></div><div class="line">		channel.basicConsume(QUEUE_NAME,autoAck , consumer);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Recv1 能够收到消息，Recv2 无法收到。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
+<li><a href="http://www.rabbitmq.com/getstarted.html" target="_blank" rel="external">官网教程</a></li>
+<li><a href="https://blog.csdn.net/column/details/slimina-rabbitmq.html" target="_blank" rel="external">RabbitMQ学习教程</a></li>
+<li><a href="https://blog.csdn.net/mx472756841/article/details/50815895" target="_blank" rel="external">AMQP协议简介</a></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#4-Routing"><span class="toc-number">1.</span> <span class="toc-text">4 Routing</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-Topics"><span class="toc-number">2.</span> <span class="toc-text">5 Topics</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-number">3.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&text=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&title=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&is_video=false&description=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RabbitMQ学习（三）：Routing,Topics&body=Check out this article: javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&title=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&title=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&title=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&title=RabbitMQ学习（三）：Routing,Topics"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/17/RabbitMQ学习（三）：Routing,topics/&name=RabbitMQ学习（三）：Routing,Topics&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Du Qingfeng
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
+         
+          <li><a href="https://blog.csdn.net/disiwei1012">CSDN</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

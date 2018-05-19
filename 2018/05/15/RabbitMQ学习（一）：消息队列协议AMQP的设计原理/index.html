@@ -6,23 +6,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="1 是什么AMQP （Advanced Message Queuing Protocol 高级消息队列协议）是一个消息协议，它支持符合标准的客户端请求程序与符合标准的消息中间件代理进行通信。 2 协议结构  Broker: 接收和分发消息的应用，RabbitMQ Server就是Message Broker。 Virtual host: 出于多租户和安全因素设计的，把AMQP的基本组件划分到一个虚">
+    <meta name="description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 是什么AMQP （Advanced Message Queuing Protocol 高级消息队列协">
 <meta name="keywords" content="MQ">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理">
 <meta property="og:url" content="javaduqing.github.io/2018/05/15/RabbitMQ学习（一）：消息队列协议AMQP的设计原理/index.html">
 <meta property="og:site_name" content="Qingfeng.Du">
-<meta property="og:description" content="1 是什么AMQP （Advanced Message Queuing Protocol 高级消息队列协议）是一个消息协议，它支持符合标准的客户端请求程序与符合标准的消息中间件代理进行通信。 2 协议结构  Broker: 接收和分发消息的应用，RabbitMQ Server就是Message Broker。 Virtual host: 出于多租户和安全因素设计的，把AMQP的基本组件划分到一个虚">
+<meta property="og:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 是什么AMQP （Advanced Message Queuing Protocol 高级消息队列协">
 <meta property="og:image" content="http://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180515151132570?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180515151206202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180517110523138?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/201805171105528?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180517113435272?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:updated_time" content="2018-05-18T14:26:55.481Z">
+<meta property="og:updated_time" content="2018-05-19T14:38:56.164Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理">
-<meta name="twitter:description" content="1 是什么AMQP （Advanced Message Queuing Protocol 高级消息队列协议）是一个消息协议，它支持符合标准的客户端请求程序与符合标准的消息中间件代理进行通信。 2 协议结构  Broker: 接收和分发消息的应用，RabbitMQ Server就是Message Broker。 Virtual host: 出于多租户和安全因素设计的，把AMQP的基本组件划分到一个虚">
+<meta name="twitter:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 是什么AMQP （Advanced Message Queuing Protocol 高级消息队列协">
 <meta name="twitter:image" content="http://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
     
     
@@ -78,7 +78,7 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" href="/2018/05/17/RabbitMQ学习（二）：四种工作模式实战/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" href="/2018/05/17/RabbitMQ学习（三）：Routing,topics/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" href="/2018/05/08/spring cloud微服务架构（六）：API 网关Zuul的基本使用/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
@@ -147,7 +147,9 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h1 id="1-是什么"><a href="#1-是什么" class="headerlink" title="1 是什么"></a>1 是什么</h1><p>AMQP （Advanced Message Queuing Protocol 高级消息队列协议）是一个消息协议，它支持符合标准的客户端请求程序与符合标准的消息中间件代理进行通信。</p>
+    <p><a href="https://blog.csdn.net/disiwei1012/article/details/80323166" target="_blank" rel="external">RabbitMQ学习（一）：消息队列协议AMQP的设计原理</a><br><a href="https://blog.csdn.net/disiwei1012/article/details/80352516" target="_blank" rel="external">RabbitMQ学习（二）：hello world、work queue、Publish/Subscribe</a><br><a href="https://blog.csdn.net/disiwei1012/article/details/80378635" target="_blank" rel="external">RabbitMQ学习（三）：Routing、Topics</a><br><a href="https://blog.csdn.net/disiwei1012/article/details/80356929" target="_blank" rel="external">RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm</a></p>
+<hr>
+<h1 id="1-是什么"><a href="#1-是什么" class="headerlink" title="1 是什么"></a>1 是什么</h1><p>AMQP （Advanced Message Queuing Protocol 高级消息队列协议）是一个消息协议，它支持符合标准的客户端请求程序与符合标准的消息中间件代理进行通信。</p>
 <h1 id="2-协议结构"><a href="#2-协议结构" class="headerlink" title="2 协议结构"></a>2 协议结构</h1><p><img src="http://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <ul>
 <li><strong>Broker</strong>: 接收和分发消息的应用，RabbitMQ Server就是Message Broker。</li>
