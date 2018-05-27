@@ -10,7 +10,7 @@
 <meta name="keywords" content="Spring cloud">
 <meta property="og:type" content="article">
 <meta property="og:title" content="spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式">
-<meta property="og:url" content="javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/index.html">
+<meta property="og:url" content="javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/index.html">
 <meta property="og:site_name" content="Qingfeng.Du">
 <meta property="og:description" content="1 原理 随着服务越来越多，相应的配置文件也会越来越多。我们需要将配置文件拿出来单独管理， Spring Cloud Config对这种需求提供了支持。Spring Cloud Config分成两个部分  Config Server Config client  Config Server用来关联外部配置， 并将获取到的配置信息提供给客户端使用。 Config client就是我们的各个微服务应用">
 <meta property="og:image" content="http://img-blog.csdn.net/20180522234503517?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
@@ -66,7 +66,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://javaduqing.github.io/2018/05/27/%E6%96%87%E7%AB%A0%E5%88%86%E7%B1%BB/">Category</a></li>
+          <li><a href="/about/">Category</a></li>
          
           <li><a href="/archives/">Archives</a></li>
          
@@ -80,7 +80,7 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" href="/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" href="/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" href="/2018/05/18/RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
@@ -96,16 +96,16 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&text=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&is_video=false&description=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式&body=Check out this article: javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&name=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&text=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&is_video=false&description=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式&body=Check out this article: javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&name=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -224,7 +224,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://javaduqing.github.io/2018/05/27/%E6%96%87%E7%AB%A0%E5%88%86%E7%B1%BB/">Category</a></li>
+          <li><a href="/about/">Category</a></li>
          
           <li><a href="/archives/">Archives</a></li>
          
@@ -241,16 +241,16 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&text=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&is_video=false&description=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式&body=Check out this article: javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/&name=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&text=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&is_video=false&description=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式&body=Check out this article: javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&title=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/&name=spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -276,7 +276,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://javaduqing.github.io/2018/05/27/%E6%96%87%E7%AB%A0%E5%88%86%E7%B1%BB/">Category</a></li>
+          <li><a href="/about/">Category</a></li>
          
           <li><a href="/archives/">Archives</a></li>
          

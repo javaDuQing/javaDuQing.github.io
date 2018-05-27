@@ -10,7 +10,7 @@
 <meta name="keywords" content="Spring cloud">
 <meta property="og:type" content="article">
 <meta property="og:title" content="spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密">
-<meta property="og:url" content="javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/index.html">
+<meta property="og:url" content="javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/index.html">
 <meta property="og:site_name" content="Qingfeng.Du">
 <meta property="og:description" content="1 配置刷新 远程Git上面的配置修改后，客户端可以通过一些方式来更新配置。访问客户端的/refresh端点进行配置刷新，访问端点要使用HTTP，POST方法。具体操作如下： 在上篇文章中Config-client项目pom增加如下配置文件（config-server不做修改）： pom.xml12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.spring">
 <meta property="og:image" content="http://img-blog.csdn.net/20180524222752827?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
@@ -65,7 +65,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://javaduqing.github.io/2018/05/27/%E6%96%87%E7%AB%A0%E5%88%86%E7%B1%BB/">Category</a></li>
+          <li><a href="/about/">Category</a></li>
          
           <li><a href="/archives/">Archives</a></li>
          
@@ -79,10 +79,8 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" href="/2018/05/27/文章分类/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
-        
-        <li><a class="icon" href="/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Spring Cloud Config——Git方式/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" href="/2018/05/22/spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -95,16 +93,16 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&text=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&is_video=false&description=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密&body=Check out this article: javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&name=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&text=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&is_video=false&description=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密&body=Check out this article: javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&name=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -207,7 +205,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://javaduqing.github.io/2018/05/27/%E6%96%87%E7%AB%A0%E5%88%86%E7%B1%BB/">Category</a></li>
+          <li><a href="/about/">Category</a></li>
          
           <li><a href="/archives/">Archives</a></li>
          
@@ -224,16 +222,16 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&text=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&is_video=false&description=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密&body=Check out this article: javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新和加解密/&name=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&text=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&is_video=false&description=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密&body=Check out this article: javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&title=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/&name=spring cloud微服务架构（八）：分布式配置中心Spring Cloud Config——配置刷新与加解密&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -259,7 +257,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://javaduqing.github.io/2018/05/27/%E6%96%87%E7%AB%A0%E5%88%86%E7%B1%BB/">Category</a></li>
+          <li><a href="/about/">Category</a></li>
          
           <li><a href="/archives/">Archives</a></li>
          
