@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 是什么AMQP （Advanced Message Queuing Protocol 高级消息队列协">
+    <meta name="description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理 RabbitMQ学习（二）：hello world、work queue、Publish/Subscribe RabbitMQ学习（三）：Routing、Topics RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 是什么 AMQP （Advanced Message Queuing Protocol 高级消">
 <meta name="keywords" content="MQ">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理">
 <meta property="og:url" content="javaduqing.github.io/2018/05/15/RabbitMQ学习（一）：消息队列协议AMQP的设计原理/index.html">
 <meta property="og:site_name" content="Qingfeng.Du">
-<meta property="og:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 是什么AMQP （Advanced Message Queuing Protocol 高级消息队列协">
+<meta property="og:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理 RabbitMQ学习（二）：hello world、work queue、Publish/Subscribe RabbitMQ学习（三）：Routing、Topics RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 是什么 AMQP （Advanced Message Queuing Protocol 高级消">
 <meta property="og:image" content="http://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180515151132570?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180515151206202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
@@ -22,7 +22,7 @@
 <meta property="og:updated_time" content="2018-05-19T14:51:32.876Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理">
-<meta name="twitter:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理RabbitMQ学习（二）：hello world、work queue、Publish/SubscribeRabbitMQ学习（三）：Routing、TopicsRabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 是什么AMQP （Advanced Message Queuing Protocol 高级消息队列协">
+<meta name="twitter:description" content="RabbitMQ学习（一）：消息队列协议AMQP的设计原理 RabbitMQ学习（二）：hello world、work queue、Publish/Subscribe RabbitMQ学习（三）：Routing、Topics RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm  1 是什么 AMQP （Advanced Message Queuing Protocol 高级消">
 <meta name="twitter:image" content="http://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
     
     
@@ -66,6 +66,8 @@
          
           <li><a href="/">Home</a></li>
          
+          <li><a href="https://javaduqing.github.io/2018/05/27/%E6%96%87%E7%AB%A0%E5%88%86%E7%B1%BB/">Category</a></li>
+         
           <li><a href="/archives/">Archives</a></li>
          
           <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
@@ -108,7 +110,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-是什么"><span class="toc-number">1.</span> <span class="toc-text">1 是什么</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-协议结构"><span class="toc-number">2.</span> <span class="toc-text">2 协议结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-其他"><span class="toc-number">3.</span> <span class="toc-text">3 其他</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-exchange"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 exchange</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-发送者确认和消费者应答"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 发送者确认和消费者应答</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#undefined"><span class="toc-number">1.</span> <span class="toc-text">1 是什么</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#undefined"><span class="toc-number">2.</span> <span class="toc-text">2 协议结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#undefined"><span class="toc-number">3.</span> <span class="toc-text">3 其他</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 exchange</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 发送者确认和消费者应答</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#undefined"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -147,10 +149,15 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p><a href="https://javaduqing.github.io/2018/05/15/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AEAMQP%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/">RabbitMQ学习（一）：消息队列协议AMQP的设计原理</a><br><a href="https://javaduqing.github.io/2018/05/17/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9Ahello%20world,work%20queue,PublishSubscribe/">RabbitMQ学习（二）：hello world、work queue、Publish/Subscribe</a><br><a href="https://javaduqing.github.io/2018/05/17/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9ARouting,topics/">RabbitMQ学习（三）：Routing、Topics</a><br><a href="https://javaduqing.github.io/2018/05/18/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E6%9C%BA%E5%88%B6%E2%80%94%E2%80%94%E4%BA%8B%E5%8A%A1%E5%92%8CConfirm/">RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm</a></p>
+    <p><a href="https://javaduqing.github.io/2018/05/15/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AEAMQP%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/">RabbitMQ学习（一）：消息队列协议AMQP的设计原理</a>
+<a href="https://javaduqing.github.io/2018/05/17/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9Ahello%20world,work%20queue,PublishSubscribe/">RabbitMQ学习（二）：hello world、work queue、Publish/Subscribe</a>
+<a href="https://javaduqing.github.io/2018/05/17/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9ARouting,topics/">RabbitMQ学习（三）：Routing、Topics</a>
+<a href="https://javaduqing.github.io/2018/05/18/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E6%9C%BA%E5%88%B6%E2%80%94%E2%80%94%E4%BA%8B%E5%8A%A1%E5%92%8CConfirm/">RabbitMQ学习（四）：生产者消息确认机制——事务和Confirm</a></p>
 <hr>
-<h1 id="1-是什么"><a href="#1-是什么" class="headerlink" title="1 是什么"></a>1 是什么</h1><p>AMQP （Advanced Message Queuing Protocol 高级消息队列协议）是一个消息协议，它支持符合标准的客户端请求程序与符合标准的消息中间件代理进行通信。</p>
-<h1 id="2-协议结构"><a href="#2-协议结构" class="headerlink" title="2 协议结构"></a>2 协议结构</h1><p><img src="http://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h1>1 是什么</h1>
+<p>AMQP （Advanced Message Queuing Protocol 高级消息队列协议）是一个消息协议，它支持符合标准的客户端请求程序与符合标准的消息中间件代理进行通信。</p>
+<h1>2 协议结构</h1>
+<p><img src="http://img-blog.csdn.net/20180515150316721?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <ul>
 <li><strong>Broker</strong>: 接收和分发消息的应用，RabbitMQ Server就是Message Broker。</li>
 <li><strong>Virtual host</strong>: 出于多租户和安全因素设计的，把AMQP的基本组件划分到一个虚拟的分组中，类似于网络中的namespace概念。当多个不同的用户使用同一个中间件提供的服务时，可以划分出多个vhost，每个用户在自己的vhost创建exchange／queue等。</li>
@@ -166,10 +173,14 @@
 <li>AMQP brokers传递消息给与queues关联的consumers，或者consumers按照需求从queues拉取信息</li>
 </ol>
 <blockquote>
-<p>以一个例子来解释Exchange、Queue、Binding三者之间的关系：乘客乘坐飞机到北京。<br>乘客是消息，飞机就是Exchange，Queue就是目的地北京，飞机可以通过不同的路线到达北京，这个路线就是Binding</p>
+<p>以一个例子来解释Exchange、Queue、Binding三者之间的关系：乘客乘坐飞机到北京。
+乘客是消息，飞机就是Exchange，Queue就是目的地北京，飞机可以通过不同的路线到达北京，这个路线就是Binding</p>
 </blockquote>
-<h1 id="3-其他"><a href="#3-其他" class="headerlink" title="3 其他"></a>3 其他</h1><h2 id="3-1-exchange"><a href="#3-1-exchange" class="headerlink" title="3.1 exchange"></a>3.1 exchange</h2><p><strong>Default exchange</strong></p>
-<p>default exchange是一个没有名称的、被broker预先申明的direct exchange。它所拥有的一个特殊属性使它对于简单的应用程序很有作用：每个创建的queue会与它自动绑定，使用queue名称作为routing key。<br>举例说，当你申明一个名称为“search-indexing-online”的queue时，AMQP broker使用“search-indexing-online”作为routing key将它绑定到default exchange。因此，一条被发布到default exchange并且routing key为”search-indexing-online”将被路由到名称为”search-indexing-online”的queue。</p>
+<h1>3 其他</h1>
+<h2>3.1 exchange</h2>
+<p><strong>Default exchange</strong></p>
+<p>default exchange是一个没有名称的、被broker预先申明的direct exchange。它所拥有的一个特殊属性使它对于简单的应用程序很有作用：每个创建的queue会与它自动绑定，使用queue名称作为routing key。
+举例说，当你申明一个名称为“search-indexing-online”的queue时，AMQP broker使用“search-indexing-online”作为routing key将它绑定到default exchange。因此，一条被发布到default exchange并且routing key为&quot;search-indexing-online&quot;将被路由到名称为&quot;search-indexing-online&quot;的queue。</p>
 <p><strong>Direct exchange</strong></p>
 <p>direct exchange根据消息的routing key来传送消息。direct exchange是单一传播路由消息的最佳选择（尽管他们也可以用于多路传播路由），以下是它们的工作原理：</p>
 <ul>
@@ -180,24 +191,30 @@
 <p><strong>Fanout exchange</strong></p>
 <p>fanout exchange路由消息到所有的与其绑定的queue中，忽略routing key。如果N个queue被绑定到一个fanout exchange，当一条新消息被发布到exchange时，消息会被复制并且传送到这N个queue。fanout exchange是广播路由的最佳选择。</p>
 <p><img src="http://img-blog.csdn.net/20180515151206202?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<p><strong>Topic exchange</strong><br>根据routing key，通过表达式将消息分配到匹配的队列中，Topic exchange将分发到目标queue中。如， 包含分类与标签的新闻信息推送。</p>
-<p><strong>Headers exchange</strong><br>headers exchanges忽略routing key属性，相反用于路由的属性是从headers属性中获取的。如果消息头的值等于指定的绑定值，则认为消息是匹配的。</p>
-<h2 id="3-2-发送者确认和消费者应答"><a href="#3-2-发送者确认和消费者应答" class="headerlink" title="3.2 发送者确认和消费者应答"></a>3.2 发送者确认和消费者应答</h2><p><strong>发送者确认</strong><br>在消息生产者与broker传递消息的过程中，由于出现种种原因，消息无法传递到broker。此时，确认消息是否正确传递就变得至关重要，AMQP支持生产者对消息的确认，可以通过两种方式：</p>
+<p><strong>Topic exchange</strong>
+根据routing key，通过表达式将消息分配到匹配的队列中，Topic exchange将分发到目标queue中。如， 包含分类与标签的新闻信息推送。</p>
+<p><strong>Headers exchange</strong>
+headers exchanges忽略routing key属性，相反用于路由的属性是从headers属性中获取的。如果消息头的值等于指定的绑定值，则认为消息是匹配的。</p>
+<h2>3.2 发送者确认和消费者应答</h2>
+<p><strong>发送者确认</strong>
+在消息生产者与broker传递消息的过程中，由于出现种种原因，消息无法传递到broker。此时，确认消息是否正确传递就变得至关重要，AMQP支持生产者对消息的确认，可以通过两种方式：</p>
 <ol>
 <li>事物方式</li>
-<li><p>confirm模式</p>
-<p><img src="http://img-blog.csdn.net/20180517110523138?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-</li>
+<li>confirm模式</li>
 </ol>
-<p><strong>消费者应答</strong><br>同样在broker与消费者传递消息的过程中，也有可能由于某种原因导致消息无法传递到消费者。这就会出现一个问题，什么时候讲队列中的消息删除？可以通过两种方式：</p>
+<p><img src="http://img-blog.csdn.net/20180517110523138?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><strong>消费者应答</strong>
+同样在broker与消费者传递消息的过程中，也有可能由于某种原因导致消息无法传递到消费者。这就会出现一个问题，什么时候讲队列中的消息删除？可以通过两种方式：</p>
 <ol>
 <li>投递的标识：Delivery Tags</li>
 <li>应答模式</li>
 </ol>
 <p><img src="http://img-blog.csdn.net/201805171105528?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <hr>
-<p>我自己又重画了一个图：<br><img src="http://img-blog.csdn.net/20180517113435272?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
+<p>我自己又重画了一个图：
+<img src="http://img-blog.csdn.net/20180517113435272?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h1>参考</h1>
+<ol>
 <li><a href="http://www.amqp.org/sites/amqp.org/files/amqp.pdf" target="_blank" rel="external">官方文档</a></li>
 <li><a href="https://www.cnblogs.com/xiaochengzi/p/6895126.html" target="_blank" rel="external">AMQP 0-9-1模型简介（官网直译）</a></li>
 <li><a href="http://www.cnblogs.com/frankyou/p/5283539.html" target="_blank" rel="external">RabbitMQ与AMQP协议详解</a></li>
@@ -218,6 +235,8 @@
          
           <li><a href="/">Home</a></li>
          
+          <li><a href="https://javaduqing.github.io/2018/05/27/%E6%96%87%E7%AB%A0%E5%88%86%E7%B1%BB/">Category</a></li>
+         
           <li><a href="/archives/">Archives</a></li>
          
           <li><a href="http://resume.qmail.com/751328118/Maio0Z2Y438">Resume</a></li>
@@ -228,7 +247,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-是什么"><span class="toc-number">1.</span> <span class="toc-text">1 是什么</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-协议结构"><span class="toc-number">2.</span> <span class="toc-text">2 协议结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-其他"><span class="toc-number">3.</span> <span class="toc-text">3 其他</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-exchange"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 exchange</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-发送者确认和消费者应答"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 发送者确认和消费者应答</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#undefined"><span class="toc-number">1.</span> <span class="toc-text">1 是什么</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#undefined"><span class="toc-number">2.</span> <span class="toc-text">2 协议结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#undefined"><span class="toc-number">3.</span> <span class="toc-text">3 其他</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 exchange</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 发送者确认和消费者应答</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#undefined"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
@@ -267,6 +286,8 @@
       <ul>
          
           <li><a href="/">Home</a></li>
+         
+          <li><a href="https://javaduqing.github.io/2018/05/27/%E6%96%87%E7%AB%A0%E5%88%86%E7%B1%BB/">Category</a></li>
          
           <li><a href="/archives/">Archives</a></li>
          
