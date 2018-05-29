@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="1 配置刷新 远程Git上面的配置修改后，客户端可以通过一些方式来更新配置。访问客户端的/refresh端点进行配置刷新，访问端点要使用HTTP，POST方法。具体操作如下： 在上篇文章中Config-client项目pom增加如下配置文件（config-server不做修改）： pom.xml12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.spring">
+    <meta name="description" content="1 配置刷新远程Git上面的配置修改后，客户端可以通过一些方式来更新配置。访问客户端的/refresh端点进行配置刷新，访问端点要使用HTTP，POST方法。具体操作如下： 在上篇文章中Config-client项目pom增加如下配置文件（config-server不做修改）： pom.xml12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.springf">
 <meta name="keywords" content="Spring cloud">
 <meta property="og:type" content="article">
 <meta property="og:title" content="spring cloud微服务架构（八）：分布式配置中心Cloud Config——配置刷新与加解密">
 <meta property="og:url" content="javaduqing.github.io/2018/05/26/spring cloud微服务架构（八）：分布式配置中心Cloud Config——刷新和加解密/index.html">
 <meta property="og:site_name" content="Qingfeng.Du">
-<meta property="og:description" content="1 配置刷新 远程Git上面的配置修改后，客户端可以通过一些方式来更新配置。访问客户端的/refresh端点进行配置刷新，访问端点要使用HTTP，POST方法。具体操作如下： 在上篇文章中Config-client项目pom增加如下配置文件（config-server不做修改）： pom.xml12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.spring">
+<meta property="og:description" content="1 配置刷新远程Git上面的配置修改后，客户端可以通过一些方式来更新配置。访问客户端的/refresh端点进行配置刷新，访问端点要使用HTTP，POST方法。具体操作如下： 在上篇文章中Config-client项目pom增加如下配置文件（config-server不做修改）： pom.xml12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.springf">
 <meta property="og:image" content="http://img-blog.csdn.net/20180524222752827?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180524223216336?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
 <meta property="og:image" content="http://img-blog.csdn.net/20180525174534171?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
@@ -21,7 +21,7 @@
 <meta property="og:updated_time" content="2018-05-27T03:41:50.724Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring cloud微服务架构（八）：分布式配置中心Cloud Config——配置刷新与加解密">
-<meta name="twitter:description" content="1 配置刷新 远程Git上面的配置修改后，客户端可以通过一些方式来更新配置。访问客户端的/refresh端点进行配置刷新，访问端点要使用HTTP，POST方法。具体操作如下： 在上篇文章中Config-client项目pom增加如下配置文件（config-server不做修改）： pom.xml12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.spring">
+<meta name="twitter:description" content="1 配置刷新远程Git上面的配置修改后，客户端可以通过一些方式来更新配置。访问客户端的/refresh端点进行配置刷新，访问端点要使用HTTP，POST方法。具体操作如下： 在上篇文章中Config-client项目pom增加如下配置文件（config-server不做修改）： pom.xml12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;org.springf">
 <meta name="twitter:image" content="http://img-blog.csdn.net/20180524222752827?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
     
     
@@ -85,10 +85,10 @@
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
-      <span id="i-prev" class="info" style="display:none;">Post Anterior</span>
-      <span id="i-next" class="info" style="display:none;">Post Siguiente</span>
-      <span id="i-top" class="info" style="display:none;">Arriba</span>
-      <span id="i-share" class="info" style="display:none;">Compartir Post</span>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
     <br/>
     <div id="share" style="display: none">
@@ -107,7 +107,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">1.</span> <span class="toc-text">1 配置刷新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">2.</span> <span class="toc-text">2 准备工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">3.</span> <span class="toc-text">3 配置对称加解密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">4.</span> <span class="toc-text">4 配置非对称加解密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">5.</span> <span class="toc-text">5 其他配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">6.</span> <span class="toc-text">参考</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-配置刷新"><span class="toc-number">1.</span> <span class="toc-text">1 配置刷新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-准备工作"><span class="toc-number">2.</span> <span class="toc-text">2 准备工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-配置对称加解密"><span class="toc-number">3.</span> <span class="toc-text">3 配置对称加解密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-配置非对称加解密"><span class="toc-number">4.</span> <span class="toc-text">4 配置非对称加解密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-其他配置"><span class="toc-number">5.</span> <span class="toc-text">5 其他配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">6.</span> <span class="toc-text">参考</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -146,47 +146,34 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h2>1 配置刷新</h2>
-<p>远程Git上面的配置修改后，客户端可以通过一些方式来更新配置。访问客户端的/refresh端点进行配置刷新，访问端点要使用HTTP，POST方法。具体操作如下：</p>
+    <h2 id="1-配置刷新"><a href="#1-配置刷新" class="headerlink" title="1 配置刷新"></a>1 配置刷新</h2><p>远程Git上面的配置修改后，客户端可以通过一些方式来更新配置。访问客户端的/refresh端点进行配置刷新，访问端点要使用HTTP，POST方法。具体操作如下：</p>
 <p>在上篇文章中Config-client项目pom增加如下配置文件（config-server不做修改）：</p>
-<p><figure class="highlight html"><figcaption><span>pom.xml</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5.4.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight html"><figcaption><span>pom.xml</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5.4.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure>
 <p>在client需要更新变量的对应的controller加入注解@RefreshScope：</p>
-<p><figure class="highlight java"><figcaption><span>TestController.java</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@RestController</span></div><div class="line"><span class="meta">@RefreshScope</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="meta">@Autowired</span></div><div class="line">    Environment env;</div><div class="line"></div><div class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/feng"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">sang</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> env.getProperty(<span class="string">"feng"</span>, <span class="string">"未定义"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>我们将Git上的配置改为dev config 2，然后使用postman  POST方式访问http://localhost:2008/refresh/，配置会自动更新。
-<img src="http://img-blog.csdn.net/20180524222752827?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<figure class="highlight java"><figcaption><span>TestController.java</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@RestController</span></div><div class="line"><span class="meta">@RefreshScope</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="meta">@Autowired</span></div><div class="line">    Environment env;</div><div class="line"></div><div class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/feng"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">sang</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> env.getProperty(<span class="string">"feng"</span>, <span class="string">"未定义"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们将Git上的配置改为dev config 2，然后使用postman  POST方式访问<a href="http://localhost:2008/refresh/，配置会自动更新。" target="_blank" rel="external">http://localhost:2008/refresh/，配置会自动更新。</a><br><img src="http://img-blog.csdn.net/20180524222752827?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <p>另外client配置文件中要关闭安全管理：</p>
-<p><figure class="highlight yml"><figcaption><span>bootstrap.yml</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="attr">management:</span></div><div class="line"><span class="attr">  security:</span></div><div class="line"><span class="attr">    enabled:</span> <span class="literal">false</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight yml"><figcaption><span>bootstrap.yml</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="attr">management:</span></div><div class="line"><span class="attr">  security:</span></div><div class="line"><span class="attr">    enabled:</span> <span class="literal">false</span></div></pre></td></tr></table></figure>
 <p><img src="http://img-blog.csdn.net/20180524223216336?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<h2>2 准备工作</h2>
-<p>同样，Git配置文件使用明文存储是不安全的，spring cloud config 提供了配置文件的加解密。</p>
-<p>默认情况下我们的JRE中自带了JCE(Java Cryptography Extension)，但是默认是一个有限长度的版本，我们这里需要一个不限长度的JCE，这个JCE我们可以直接百度然后在Oracle官网下载，下载之后解压，我们可以看到如下三个文件：
-<img src="http://img-blog.csdn.net/20180525174534171?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述">
-将这里的两个jar包拷贝到我们的jdk安装目录下，我的是%JAVA_HOME%\jre\lib\security，覆盖该目录下原有的文件。</p>
-<h2>3 配置对称加解密</h2>
-<p>spring cloud config 提供配置加密和解密的功能。对称加密是指发送和接收数据的双方必使用相同的密钥对明文进行加密和解密运算，所以需要在config-server项目配置文件application中增加配置秘钥：</p>
-<p><strong>3.1 加密</strong>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">encrypt：</span></div><div class="line"><span class="attr">  key:</span> <span class="string">myKey</span></div></pre></td></tr></table></figure></p>
-<p>配置完之后，首先来测试加密的功能，可以通过访问/encrypt来进行加密，下面使用postman进行测试。
-<img src="http://img-blog.csdn.net/20180526160127448?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<p><strong>3.2 解密</strong>
-通过访问/decrypt端点进行解密，下面使用postman进行测试。
-<img src="http://img-blog.csdn.net/20180526160707423?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h2 id="2-准备工作"><a href="#2-准备工作" class="headerlink" title="2 准备工作"></a>2 准备工作</h2><p>同样，Git配置文件使用明文存储是不安全的，spring cloud config 提供了配置文件的加解密。</p>
+<p>默认情况下我们的JRE中自带了JCE(Java Cryptography Extension)，但是默认是一个有限长度的版本，我们这里需要一个不限长度的JCE，这个JCE我们可以直接百度然后在Oracle官网下载，下载之后解压，我们可以看到如下三个文件：<br><img src="http://img-blog.csdn.net/20180525174534171?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>将这里的两个jar包拷贝到我们的jdk安装目录下，我的是%JAVA_HOME%\jre\lib\security，覆盖该目录下原有的文件。</p>
+<h2 id="3-配置对称加解密"><a href="#3-配置对称加解密" class="headerlink" title="3 配置对称加解密"></a>3 配置对称加解密</h2><p>spring cloud config 提供配置加密和解密的功能。对称加密是指发送和接收数据的双方必使用相同的密钥对明文进行加密和解密运算，所以需要在config-server项目配置文件application中增加配置秘钥：</p>
+<p><strong>3.1 加密</strong><br><figure class="highlight yml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">encrypt：</span></div><div class="line"><span class="attr">  key:</span> <span class="string">myKey</span></div></pre></td></tr></table></figure></p>
+<p>配置完之后，首先来测试加密的功能，可以通过访问/encrypt来进行加密，下面使用postman进行测试。<br><img src="http://img-blog.csdn.net/20180526160127448?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><strong>3.2 解密</strong><br>通过访问/decrypt端点进行解密，下面使用postman进行测试。<br><img src="http://img-blog.csdn.net/20180526160707423?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <blockquote>
 <p>将Git配置文件改为加密方式，如果config client想要获取到解密后的字符串，只需要将配置文件前增加{cipher}即可</p>
 </blockquote>
-<h2>4 配置非对称加解密</h2>
-<p>对称加密算法在加密和解密时都使用同一个密钥，但非对称加密则使用一对密钥。使用公钥加密，解密使用私钥解密。spring cloud config 同样支持非对称加密。</p>
+<h2 id="4-配置非对称加解密"><a href="#4-配置非对称加解密" class="headerlink" title="4 配置非对称加解密"></a>4 配置非对称加解密</h2><p>对称加密算法在加密和解密时都使用同一个密钥，但非对称加密则使用一对密钥。使用公钥加密，解密使用私钥解密。spring cloud config 同样支持非对称加密。</p>
 <p>可以使用JDK提供的工具keytool生成密钥对，执行成功之后，会在命令执行目录下生成一个名为.keystore的文件，将生成的文件复制到config server项目的classpath下，修改application.yml文件，加入如下配置：</p>
-<p><figure class="highlight yml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="attr">encrypt:</span></div><div class="line"><span class="attr">  keyStore:</span></div><div class="line"><span class="attr">    location:</span> <span class="attr">classpath:/myTest.keyStore</span></div><div class="line"><span class="attr">    password:</span> <span class="string">***</span></div><div class="line"><span class="attr">    alias:</span> <span class="string">***</span></div><div class="line"><span class="attr">    secret:</span> <span class="string">***</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="attr">encrypt:</span></div><div class="line"><span class="attr">  keyStore:</span></div><div class="line"><span class="attr">    location:</span> <span class="attr">classpath:/myTest.keyStore</span></div><div class="line"><span class="attr">    password:</span> <span class="string">***</span></div><div class="line"><span class="attr">    alias:</span> <span class="string">***</span></div><div class="line"><span class="attr">    secret:</span> <span class="string">***</span></div></pre></td></tr></table></figure>
 <p>设置好后，同样可以使用/encrypt来进行加密，使用/decrypt来进行解密。在Git的配置文件中使用{cipher}密文的格式，config client访问时会自动解密。</p>
-<h2>5 其他配置</h2>
-<ol>
+<h2 id="5-其他配置"><a href="#5-其他配置" class="headerlink" title="5 其他配置"></a>5 其他配置</h2><ol>
 <li>服务器健康指示器：在config server访问Git配置文件仓库时，如果连不上，那么config server的健康状态将会设置为DOWN，除了会检测Git仓储是否可以访问外，还可以进行额外配置，检测Git的某个目录或文件是否可以访问。‘</li>
 <li>客户端的错误提取与重试机制：默认情况下，config client在启动时，如果config server连接不上时仍然可以启动。也可以通过配置在config client启动时，无法连接config server，则终止client的启动。</li>
 <li>安全配置：可以给config server配置密码，在client连接时需要密码。</li>
 </ol>
-<h2>参考</h2>
-<ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
 <li>杨恩雄 《疯狂spring cloud微服务架构实战》</li>
 </ol>
 
@@ -217,7 +204,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">1.</span> <span class="toc-text">1 配置刷新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">2.</span> <span class="toc-text">2 准备工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">3.</span> <span class="toc-text">3 配置对称加解密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">4.</span> <span class="toc-text">4 配置非对称加解密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">5.</span> <span class="toc-text">5 其他配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">6.</span> <span class="toc-text">参考</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-配置刷新"><span class="toc-number">1.</span> <span class="toc-text">1 配置刷新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-准备工作"><span class="toc-number">2.</span> <span class="toc-text">2 准备工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-配置对称加解密"><span class="toc-number">3.</span> <span class="toc-text">3 配置对称加解密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-配置非对称加解密"><span class="toc-number">4.</span> <span class="toc-text">4 配置非对称加解密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-其他配置"><span class="toc-number">5.</span> <span class="toc-text">5 其他配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">6.</span> <span class="toc-text">参考</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
@@ -239,7 +226,7 @@
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Compartir</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
     </div>
 
