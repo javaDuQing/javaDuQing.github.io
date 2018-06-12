@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="javaduqing.github.io/"/>
-  <updated>2018-06-12T03:16:10.000Z</updated>
+  <updated>2018-06-12T07:22:06.000Z</updated>
   <id>javaduqing.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis 过期数据处理策略和内存淘汰策略</title>
+    <link href="javaduqing.github.io/2018/06/12/Redis%20%E8%BF%87%E6%9C%9F%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5%E5%92%8C%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/"/>
+    <id>javaduqing.github.io/2018/06/12/Redis 过期数据处理策略和内存淘汰策略/</id>
+    <published>2018-06-12T04:59:02.000Z</published>
+    <updated>2018-06-12T07:22:06.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Redis的过期策略就是指当Redis中缓存的key过期了，Redis如何处理。<br>Redis的内存淘汰策略是指在Redis的用于缓存的内存不足时，怎么处理需要新写入且需要申请额外空间的数据。</p><a id="more"></a><hr><h1 id="1-过期数据处理策略"><a href="#1-过期数据处理策略" class="headerlink" title="1 过期数据处理策略"></a>1 过期数据处理策略</h1><p>定时删除</p><ul><li>含义：在设置key的过期时间的同时，为该key创建一个定时器，让定时器在key的过期时间来临时，对key进行删除</li><li>优点：保证内存被尽快释放</li><li>缺点：<br>1）若过期key很多，删除这些key会占用很多的CPU时间，在CPU时间紧张的情况下，CPU不能把所有的时间用来做要紧的事儿，还需要去花时间删除这些key<br>2）定时器的创建耗时，若为每一个设置了过期时间的key创建一个定时器（将会有大量的定时器产生），性能影响严重<br>3）没人用</li></ul><p>惰性删除</p><ul><li>含义：key过期的时候不删除，每次从数据库获取key的时候去检查是否过期，若过期，则删除，返回null。</li><li>优点：删除操作只发生在从数据库取出key的时候发生，而且只删除当前key，所以对CPU时间的占用是比较少的，而且此时的删除是已经到了非做不可的地步（如果此时还不删除的话，我们就会获取到了已经过期的key了）</li><li>缺点：若大量的key在超出超时时间后，很久一段时间内，都没有被获取过，那么可能发生内存泄露（无用的垃圾占用了大量的内存）</li></ul><p>定期删除</p><ul><li>含义：每隔一段时间执行一次删除过期key操作</li><li>优点：<br>1）通过限制删除操作的时长和频率，来减少删除操作对CPU时间的占用–处理”定时删除”的缺点<br>2）定期删除过期key–处理”惰性删除”的缺点</li><li>缺点<br>1）在内存友好方面，不如”定时删除”<br>2）在CPU时间友好方面，不如”惰性删除”</li><li>难点：合理设置删除操作的执行时长（每次删除执行多长时间）和执行频率（每隔多长时间做一次删除）（这个要根据服务器运行情况来定了）</li></ul><hr><p>Redis采用的过期策略</p><p>惰性删除+定期删除</p><p>惰性删除流程：</p><ul><li>在进行get或setnx等操作时，先检查key是否过期，</li><li>若过期，删除key，然后执行相应操作；</li><li>若没过期，直接执行相应操作</li></ul><p>定期删除流程</p><ul><li>遍历每个数据库（就是redis.conf中配置的”database”数量，默认为16）</li><li>检查当前库中的指定个数个key（默认是每个库检查20个key）</li><li>如果当前库中没有一个key设置了过期时间，直接执行下一个库的遍历</li><li>随机获取一个设置了过期时间的key，检查该key是否过期，如果过期，删除key</li><li>判断定期删除操作是否已经达到指定时长，若已经达到，直接退出定期删除。</li></ul><h1 id="2-内存淘汰策略"><a href="#2-内存淘汰策略" class="headerlink" title="2 内存淘汰策略"></a>2 内存淘汰策略</h1><p>Redis的内存淘汰策略</p><ul><li>noeviction：当内存不足以容纳新写入数据时，新写入操作会报错。</li><li>allkeys-lru：当内存不足以容纳新写入数据时，在键空间中，移除最近最少使用的key。（LRU算法）</li><li>allkeys-random：当内存不足以容纳新写入数据时，在键空间中，随机移除某个key。</li><li>volatile-lru：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，移除最近最少使用的key。（LRU算法）</li><li>volatile-random：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，随机移除某个key。</li><li>volatile-ttl：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，有更早过期时间的key优先移除。</li></ul><p><em>最好为Redis指定一种有效的数据淘汰策略以配合maxmemory设置，避免在内存使用满后发生写入失败的情况。</em><br><em>一般来说，推荐使用的策略是volatile-lru，Redis默认的是noeviction。</em></p><hr><p>参考</p><ul><li>《Redis设计与实现》</li><li>《Redis开发与运维》</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Redis的过期策略就是指当Redis中缓存的key过期了，Redis如何处理。&lt;br&gt;Redis的内存淘汰策略是指在Redis的用于缓存的内存不足时，怎么处理需要新写入且需要申请额外空间的数据。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Redis" scheme="javaduqing.github.io/categories/Redis/"/>
+    
+    
+      <category term="Redis" scheme="javaduqing.github.io/tags/Redis/"/>
+    
+  </entry>
   
   <entry>
     <title>哈希分区技术之间的对比（一致性哈希、Redis cluster虚拟槽）</title>
@@ -29,28 +51,6 @@
     
       &lt;p&gt;&lt;em&gt;note：&lt;/em&gt;&lt;br&gt;&lt;em&gt;在看Redis cluster集群时，学习了一致性哈希和虚拟槽等数据分区方式（分片），对我来说是个新知识，好记性不然烂笔头！&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;先说说主从和集群的区别？&lt;/em&gt;&lt;br&gt;&lt;em&gt;答：1主1从或1主2从，组成的整体一般视为一个节点，大于等于2个节点开始，视为一个集群。主从主要是保障单点的系统数据可靠性和提升写io性能，集群是为了应对单点无法存储的大数据量，和单点无法及时处理的高并发。所以从架构和集群的上层角度看，主备可以认为是同一个实例同一个库，集群一般就结合分库分表&lt;/em&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Redis" scheme="javaduqing.github.io/categories/Redis/"/>
-    
-    
-      <category term="Redis" scheme="javaduqing.github.io/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis 过期数据处理策略和内存淘汰策略</title>
-    <link href="javaduqing.github.io/2018/06/12/Redis%20%E8%BF%87%E6%9C%9F%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5%E5%92%8C%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/"/>
-    <id>javaduqing.github.io/2018/06/12/Redis 过期数据处理策略和内存淘汰策略/</id>
-    <published>2018-06-12T04:55:02.000Z</published>
-    <updated>2018-06-12T07:17:48.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Redis的过期策略就是指当Redis中缓存的key过期了，Redis如何处理。<br>Redis的内存淘汰策略是指在Redis的用于缓存的内存不足时，怎么处理需要新写入且需要申请额外空间的数据。</p><a id="more"></a><hr><p>定时删除</p><ul><li>含义：在设置key的过期时间的同时，为该key创建一个定时器，让定时器在key的过期时间来临时，对key进行删除</li><li>优点：保证内存被尽快释放</li><li>缺点：<br>1）若过期key很多，删除这些key会占用很多的CPU时间，在CPU时间紧张的情况下，CPU不能把所有的时间用来做要紧的事儿，还需要去花时间删除这些key<br>2）定时器的创建耗时，若为每一个设置了过期时间的key创建一个定时器（将会有大量的定时器产生），性能影响严重<br>3）没人用</li></ul><p>惰性删除</p><ul><li>含义：key过期的时候不删除，每次从数据库获取key的时候去检查是否过期，若过期，则删除，返回null。</li><li>优点：删除操作只发生在从数据库取出key的时候发生，而且只删除当前key，所以对CPU时间的占用是比较少的，而且此时的删除是已经到了非做不可的地步（如果此时还不删除的话，我们就会获取到了已经过期的key了）</li><li>缺点：若大量的key在超出超时时间后，很久一段时间内，都没有被获取过，那么可能发生内存泄露（无用的垃圾占用了大量的内存）</li></ul><p>定期删除</p><ul><li>含义：每隔一段时间执行一次删除过期key操作</li><li>优点：<br>1）通过限制删除操作的时长和频率，来减少删除操作对CPU时间的占用–处理”定时删除”的缺点<br>2）定期删除过期key–处理”惰性删除”的缺点</li><li>缺点<br>1）在内存友好方面，不如”定时删除”<br>2）在CPU时间友好方面，不如”惰性删除”</li><li>难点：合理设置删除操作的执行时长（每次删除执行多长时间）和执行频率（每隔多长时间做一次删除）（这个要根据服务器运行情况来定了）</li></ul><hr><p>Redis采用的过期策略</p><p>惰性删除+定期删除</p><p>惰性删除流程：</p><ul><li>在进行get或setnx等操作时，先检查key是否过期，</li><li>若过期，删除key，然后执行相应操作；</li><li>若没过期，直接执行相应操作</li></ul><p>定期删除流程</p><ul><li>遍历每个数据库（就是redis.conf中配置的”database”数量，默认为16）</li><li>检查当前库中的指定个数个key（默认是每个库检查20个key）</li><li>如果当前库中没有一个key设置了过期时间，直接执行下一个库的遍历</li><li>随机获取一个设置了过期时间的key，检查该key是否过期，如果过期，删除key</li><li>判断定期删除操作是否已经达到指定时长，若已经达到，直接退出定期删除。</li></ul><hr><p>Redis的内存淘汰策略</p><ul><li>noeviction：当内存不足以容纳新写入数据时，新写入操作会报错。</li><li>allkeys-lru：当内存不足以容纳新写入数据时，在键空间中，移除最近最少使用的key。（LRU算法）</li><li>allkeys-random：当内存不足以容纳新写入数据时，在键空间中，随机移除某个key。</li><li>volatile-lru：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，移除最近最少使用的key。（LRU算法）</li><li>volatile-random：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，随机移除某个key。</li><li>volatile-ttl：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，有更早过期时间的key优先移除。</li></ul><p><em>最好为Redis指定一种有效的数据淘汰策略以配合maxmemory设置，避免在内存使用满后发生写入失败的情况。</em><br><em>一般来说，推荐使用的策略是volatile-lru，Redis默认的是noeviction。</em></p><hr><p>参考</p><ul><li>《Redis设计与实现》</li><li>《Redis开发与运维》</li></ul>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Redis的过期策略就是指当Redis中缓存的key过期了，Redis如何处理。&lt;br&gt;Redis的内存淘汰策略是指在Redis的用于缓存的内存不足时，怎么处理需要新写入且需要申请额外空间的数据。&lt;/p&gt;
     
     </summary>
     
