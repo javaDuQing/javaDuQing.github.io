@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="javaduqing.github.io/"/>
-  <updated>2018-06-15T02:56:51.000Z</updated>
+  <updated>2018-06-19T03:22:26.313Z</updated>
   <id>javaduqing.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Nginx 的反向代理与负载均衡策略</title>
+    <link href="javaduqing.github.io/2018/06/19/Nginx%20%E7%9A%84%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/"/>
+    <id>javaduqing.github.io/2018/06/19/Nginx 的反向代理和负载均衡策略/</id>
+    <published>2018-06-19T04:55:02.000Z</published>
+    <updated>2018-06-19T03:22:26.313Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h2><p><em>正向代理隐藏真实客户端，反向代理隐藏真实服务端</em></p><p>A向C借钱，但是C不借；但是C和B的关系不错，所以A找到B，问题能不能帮他向C借点钱。最后A通过B，向C借到了钱。C不知道真实借钱的是A。B是正向代理。</p><p>A又想借钱，便向借贷公司借钱，借贷公司从很多借主中寻找了一个合适的借主，把钱借给了A。A不知道到底是借的谁的钱。借贷公司是反向代理。</p><p>下面来看Nginx反向代理简单配置：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">server&#123;</div><div class="line">listen 80;</div><div class="line">autoindex on;</div><div class="line">server_name baidu.com www.baidu.com;</div><div class="line">access_log /user/local/nginx/logs/access.log combined;</div><div class="line">location / &#123;</div><div class="line">proxy_pass https://127.0.0.1:8080/;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure><p>当请求访问baidu.com 或者 www.baidu.com时，nginx会将请求转到 <a href="http://127.0.0.1:8080" target="_blank" rel="external">http://127.0.0.1:8080</a> 。</p><a id="more"></a><h2 id="负载均衡策略"><a href="#负载均衡策略" class="headerlink" title="负载均衡策略"></a>负载均衡策略</h2><ul><li><p>轮询（默认）</p><p>  优点：实现简单<br>  缺点：不考虑每台服务器的处理能力</p></li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">upstream www.baidu.com&#123;</div><div class="line">     server www.baidu.com:8080;</div><div class="line">     server www.baidu.com:9080;</div><div class="line">&#125;</div></pre></td></tr></table></figure><ul><li><p>权重</p><p> 优点：考虑了每台服务器处理能力的不同（Weight默认是1）</p></li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">upstream www.baidu.com&#123;</div><div class="line">     server www.baidu.com:8080 weight=15;</div><div class="line">     server www.baidu.com:9080 weight=10;</div><div class="line">&#125;</div></pre></td></tr></table></figure><ul><li><p>IP hash</p><p>  优点：能实现同一个用户访问同一个服务器（解决集群session问题）<br>  缺点：根据IP hash不一定均衡</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">upstream www.baidu.com&#123;</div><div class="line"> ip_hash;</div><div class="line">     server www.baidu.com:8080;</div><div class="line">     server www.baidu.com:9080;</div><div class="line">&#125;</div></pre></td></tr></table></figure></li><li><p>uri hash（第三方，需要安装nginx插件）</p><p>  优点：能实现同一个服务访问同一个服务器<br>  缺点：根据URL hash 分配请求会不平均，请求频繁的URL会请求到同一个服务器上</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">upstream www.baidu.com&#123;</div><div class="line">     server www.baidu.com:8080;</div><div class="line">     server www.baidu.com:9080;</div><div class="line">     hash $request_uri;</div><div class="line">&#125;</div></pre></td></tr></table></figure></li><li><p>fair（公平算法，第三方，需要安装nginx插件）</p><p> 特点：按后端服务器的响应时间来分配请求，响应时间短的优先分配</p></li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">upstream www.baidu.com&#123;</div><div class="line">     server www.baidu.com:8080;</div><div class="line">     server www.baidu.com:9080;</div><div class="line">     fair;</div><div class="line">&#125;</div></pre></td></tr></table></figure><p><strong>其他知识点：</strong></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">upstream bachserver&#123;</div><div class="line">ip_hash;</div><div class="line">server 127.0.0.1:9090 down;（down表示当前的server暂时不参与负载）</div><div class="line">server 127.0.0.1:8080 weight=2;</div><div class="line">server 127.0.0.1:6060;</div><div class="line">server 127.0.0.1:7070 backup;（其他所有非backup机器down或者忙的时候，请求backup机器）</div><div class="line">&#125;</div></pre></td></tr></table></figure><p><strong>例子：</strong></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">upstream www.baidu.com&#123;</div><div class="line">server 127.0.0.1:8080 weight=1;</div><div class="line">server 127.0.0.1:9090 weight=1;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server&#123;</div><div class="line">listen 80;</div><div class="line">autoindex on;</div><div class="line">server_name www.baidu.com;</div><div class="line">access_log c:/access.log combined;</div><div class="line">index index.html index.htm index.jsp index.php;</div><div class="line">location /&#123;</div><div class="line">proxy_pass http://www.baidu.com;</div><div class="line">add_header Access-Control-Allow-Origin *;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;反向代理&quot;&gt;&lt;a href=&quot;#反向代理&quot; class=&quot;headerlink&quot; title=&quot;反向代理&quot;&gt;&lt;/a&gt;反向代理&lt;/h2&gt;&lt;p&gt;&lt;em&gt;正向代理隐藏真实客户端，反向代理隐藏真实服务端&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;A向C借钱，但是C不借；但是C和B的关系不错，所以A找到B，问题能不能帮他向C借点钱。最后A通过B，向C借到了钱。C不知道真实借钱的是A。B是正向代理。&lt;/p&gt;
+&lt;p&gt;A又想借钱，便向借贷公司借钱，借贷公司从很多借主中寻找了一个合适的借主，把钱借给了A。A不知道到底是借的谁的钱。借贷公司是反向代理。&lt;/p&gt;
+&lt;p&gt;下面来看Nginx反向代理简单配置：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;server&amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;listen 80;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;autoindex on;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;server_name baidu.com www.baidu.com;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;access_log /user/local/nginx/logs/access.log combined;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;location / &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;		proxy_pass https://127.0.0.1:8080/;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;	&amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;当请求访问baidu.com 或者 www.baidu.com时，nginx会将请求转到 &lt;a href=&quot;http://127.0.0.1:8080&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://127.0.0.1:8080&lt;/a&gt; 。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Nginx" scheme="javaduqing.github.io/categories/Nginx/"/>
+    
+    
+      <category term="Nginx" scheme="javaduqing.github.io/tags/Nginx/"/>
+    
+  </entry>
   
   <entry>
     <title>说说Redis的非阻塞IO多路复用技术</title>
@@ -461,28 +488,6 @@
 &lt;li&gt;回退方法的使用&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&quot;&quot;&gt;&lt;a href=&quot;#&quot; class=&quot;headerlink&quot; title=&quot;&quot;&gt;&lt;/a&gt;
-    
-    </summary>
-    
-      <category term="Spring cloud" scheme="javaduqing.github.io/categories/Spring-cloud/"/>
-    
-    
-      <category term="Spring cloud" scheme="javaduqing.github.io/tags/Spring-cloud/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理</title>
-    <link href="javaduqing.github.io/2018/05/01/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E9%9B%AA%E5%B4%A9%E6%95%88%E5%BA%94%E4%B8%8EHystrix%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/"/>
-    <id>javaduqing.github.io/2018/05/01/spring cloud微服务架构（二）：雪崩效应与Hystrix基本原理/</id>
-    <published>2018-05-01T02:49:02.000Z</published>
-    <updated>2018-06-06T14:27:30.083Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="1-雪崩效应"><a href="#1-雪崩效应" class="headerlink" title="1 雪崩效应"></a>1 雪崩效应</h1><p>简单是来说，在分布式系统中，假如有一个请求需要调用A服务，但A服务出现了问题，则这个请求就会阻塞，那么只要调用服务A的请求都会阻塞，当阻塞的请求越来越多，占用的计算机资源就越来越多。进一步来说，就是一个服务出现问题，可能导致所有的请求都不可用，从而导致整个分布式系统都不可用，这就是“雪崩效应”。</p><a id="more"></a><p><img src="http://img-blog.csdn.net/20180503221524991?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p><blockquote><p>如果要是考虑服务与服务之间的依赖关系，则连带作用更强，系统崩坏的速度更快！</p></blockquote><p>举例来说：火车购票系统提供两种服务，查票服务和订票服务</p><ol><li>如果不考虑两个服务之间的依赖关系：查票服务出现问题，则查票的请求全部阻塞，占用大量的系统资源，久而久之，导致整个系统无法响应请求</li><li>如果考虑依赖关系：订票服务依赖查票服务，查票服务出现问题，不仅仅查票的请求会全部阻塞，订票的服务也会阻塞，整个系统迅速崩坏！</li></ol><h1 id="2-Hystrix如何去解决雪崩"><a href="#2-Hystrix如何去解决雪崩" class="headerlink" title="2 Hystrix如何去解决雪崩"></a>2 Hystrix如何去解决雪崩</h1><h2 id="2-1-隔离技术"><a href="#2-1-隔离技术" class="headerlink" title="2.1 隔离技术"></a>2.1 隔离技术</h2><p>例如，货船为了进行防止漏水和火灾的扩散,会将货仓分隔为多个，如下图所示：</p><p><img src="http://img-blog.csdn.net/20180504091840800?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p><ul><li>线程池隔离</li></ul><p>例如，淘宝的一个商品页面至少包含三方面信息，商品基本信息、商品价格、买家评论。一个商品页面的请求依赖于三个服务，基本信息服务A、价格服务B、评论服务C。因为是一个请求（线程）调用三个服务，调用顺序为：A-&gt;B-&gt;C，如果其中A服务出现问题，则另外两个服务都无法调用；如果B服务出现问题，则C服务无法调用。【横向调用】</p><p><img src="http://img-blog.csdn.net/20180504093420350?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p><p>线程隔离主要解决的问题就是，A、B、C服务之间无调用顺序的限制，不论哪个服务出现问题，都不会影响其他服务的调用。但是前提是A、B、C服务之间相互独立。<strong>基本原理是，为每个服务维护一个线程池，用户的请求将不再直接访问服务，而是通过线程池中的空闲线程来访问服务。</strong>【纵向调用】</p><p><img src="http://img-blog.csdn.net/20180504093804560?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p><ul><li>信号量隔离</li></ul><p>该隔离技术，是限制某个服务的并发数量，对服务的并发数量设置一个阈值，超过该阈值则服务暂停接受新的请求。</p><h2 id="2-2-熔断机制"><a href="#2-2-熔断机制" class="headerlink" title="2.2 熔断机制"></a>2.2 熔断机制</h2><p>如果某个目标服务调用慢或者有大量超时，如5秒内20次调用失败，此时，熔断该服务的调用，对于后续调用请求，不在继续调用目标服务，直接返回，快速释放资源。如果目标服务情况好转则恢复调用。熔断机制在Hystrix中，位于隔离技术之前。</p><blockquote><p>1、判断是否进行熔断的依据是：计算错误率，当错误率超过预设的值（默认是50%）且10秒内超过20个请求，则开启熔断。<br>2、 对于被熔断的请求，并不是永久被切断，而是被暂停一段时间之后，允许部分请求通过，若请求都是健康的，则对请求健康恢复（取消熔断），如果不是健康的，则继续熔断。</p></blockquote><h2 id="2-3-总执行流程"><a href="#2-3-总执行流程" class="headerlink" title="2.3 总执行流程"></a>2.3 总执行流程</h2><p><img src="http://img-blog.csdn.net/20180504103714768?watermark/2/text/Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p><ol><li>首先判断是否有缓存，如果有则直接返回结果</li><li>无缓存，则判断断路器是否打开，如果打开则执行回退方法，返回结果</li><li>熔断器未打开，则判断线程池/信号量是否到底阈值，如果到达阈值，则执行回退方法，返回结果</li><li>若未达到阈值，则执行命令，如果成功返回结果；失败返回回退方法的执行结果</li></ol><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol><li><a href="https://github.com/Netflix/Hystrix/wiki" target="_blank" rel="external">Hystrix GitHub官网</a></li><li>杨恩雄-2017《疯狂Spring Cloud微服务架构实战》</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;1-雪崩效应&quot;&gt;&lt;a href=&quot;#1-雪崩效应&quot; class=&quot;headerlink&quot; title=&quot;1 雪崩效应&quot;&gt;&lt;/a&gt;1 雪崩效应&lt;/h1&gt;&lt;p&gt;简单是来说，在分布式系统中，假如有一个请求需要调用A服务，但A服务出现了问题，则这个请求就会阻塞，那么只要调用服务A的请求都会阻塞，当阻塞的请求越来越多，占用的计算机资源就越来越多。进一步来说，就是一个服务出现问题，可能导致所有的请求都不可用，从而导致整个分布式系统都不可用，这就是“雪崩效应”。&lt;/p&gt;
     
     </summary>
     
