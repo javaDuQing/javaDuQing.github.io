@@ -17,7 +17,7 @@
 </blockquote>
 <h2 id="2-该怎么办"><a href="#2-该怎么办" class="headerlink" title="2 该怎么办"></a>2 该怎么办</h2><p>思考在Java中如何保证资源的独占性的，最简单的方式就是加锁。在单应用的情况下，控制修改“报价供应商的数量”的方法的独占性就可以解决这个问题。</p>
 <p>但是如果多应用的情况下，就像我们公司tomcat集群的，使用Java中锁就无法解决。下面介绍使用MySQL分布式锁方式的解决方案。</p>
-<h2 id="3-MySQL-分布式锁"><a href="#3-MySQL-分布式锁" class="headerlink" title="3 MySQL 分布式锁"></a>3 MySQL 分布式锁</h2><p>我们现在关心的重点是：“报价供应商的数量”这一资源的独占性。当我们查询出“报价供应商数量”后就把它锁定，知道我们修改完毕再解锁。在锁定的过程中，其他事务不能修改。</p>
+<h2 id="3-MySQL-分布式锁（InnoDB）"><a href="#3-MySQL-分布式锁（InnoDB）" class="headerlink" title="3 MySQL 分布式锁（InnoDB）"></a>3 MySQL 分布式锁（InnoDB）</h2><p>我们现在关心的重点是：“报价供应商的数量”这一资源的独占性。当我们查询出“报价供应商数量”后就把它锁定，知道我们修改完毕再解锁。在锁定的过程中，其他事务不能修改。</p>
 <p>使用MySQL提供的<code>select...for update</code>语法，这样就能锁定<code>id = 1</code>的这行数据，其他事务必须等本次食物提交之后才能执行，但其他事务还可以读取。</p>
 <blockquote>
 <p>注意：使用select…for update最好把事务自动提交关闭</p>
@@ -29,6 +29,9 @@
 <p><strong>其他注意点</strong></p>
 <p>上面提到，使用<code>select...for update</code>会把数据锁住，对于这个“锁住”需要注意：MySQL InnoDB默认Row-Level Lock，所以只有「明确」地指定主键，MySQL 才会执行Row lock (只锁住被选取的数据) ，否则MySQL 将会执行Table Lock (将整个数据表单给锁住)，例如下面这样就会把整个表锁住：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">select time into _times from offer_price_time </div><div class="line">	limit 1 for update;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>另外一种说法：InnoDB行锁是通过给索引上的索引项加锁来实现的，因此InnoDB这种行锁实现特点意味着：只有通过索引条件检索数据，InnoDB才使用行级锁，否则，InnoDB将使用表锁！（没去验证）</p>
+</blockquote>
 <h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4 总结"></a>4 总结</h2><p><code>select...for update</code> 这是一种基于数据库实现分布式锁的一种方式，其他方式还有：</p>
 <ol>
 <li>基于缓存的分布式锁</li>
