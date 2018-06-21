@@ -3,6 +3,27 @@
   
     
     <entry>
+      <title>基于数据库的（MySQL）分布式锁实现</title>
+      <link href="/2018/06/21/%E5%9F%BA%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%EF%BC%88MySQL%EF%BC%89%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%AE%9E%E7%8E%B0/"/>
+      <url>/2018/06/21/%E5%9F%BA%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%EF%BC%88MySQL%EF%BC%89%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%AE%9E%E7%8E%B0/</url>
+      <content type="html"><![CDATA[<h2 id="1-为什么有分布式锁"><a href="#1-为什么有分布式锁" class="headerlink" title="1 为什么有分布式锁"></a>1 为什么有分布式锁</h2><p>像我公司的招投标系统中有这么个业务场景，当采购商发布一个招标项目，只有前5家报价的供应商有效。所以当第5家供应商报过价后，系统就应该提醒，不再接受其他供应商报价。</p><p>来细看这个业务，数据库中有一个表中记录着报价的供应商数量，假如已经有4个供应商报价了，然后同时有两个供应商（供应商1和供应商2）来报价，下面来看供应商1的报价的存储过程：</p><a id="more"></a><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">begin</div><div class="line">declare _times int;</div><div class="line">select time into _times from offer_price_time </div><div class="line">where id = 1;</div><div class="line"> </div><div class="line"> if _times &lt; 5 then</div><div class="line"> # 保持报价信息</div><div class="line">insert into offer_price_info... </div><div class="line"># 更改报价次数</div><div class="line">update offer_price_time </div><div class="line">set _times = _times + 1 </div><div class="line">where id =1;</div><div class="line"># 提交事务</div><div class="line">commit;</div><div class="line">else</div><div class="line">...</div><div class="line">end if;</div><div class="line">end;</div></pre></td></tr></table></figure><p>当供应商1在获取“报价供应商数量”后，还没提交事务；供应商2修改了数量并提交了事务。此时，供应商1再提交事务就会导致报价数据多出来一份！</p><font color="red">我们知道MySQL默认的事务隔离级别是<code>REPEATABLE_READ</code>，为什么不能通过事务来解决这种问题呢？</font><p>关于MySQL事务可参考我的另一篇文章：<a href="https://javaduqing.github.io/2018/06/11/MySQL%E4%BA%8B%E5%8A%A1%E4%B8%8ERedis%E4%BA%8B%E5%8A%A1/">MySQL事务与Redis事务</a></p><ol><li>脏读：一个事务可以读取另一个尚未提交事务的修改数据。</li><li>不可重复读：在同一个事务中，同一个查询在T1时间读取某一行，在T2时间重新读取这一行时候，这一行的数据已经发生修改，可能被更新了，也可能被删除了。</li><li>幻像读：在同一事务中，同一查询多次进行时候，由于其他插入操作的事务提交，导致每次返回不同的结果集。<br><img src="http://img-blog.csdn.net/20180621213953670?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></li></ol><p><code>REPEATABLE_READ</code>只能保证在同一个事务中，两次获取是数据是一致的，并不能保证在事务中的数据不被其他事务更改（并不能保证数据的独占性）。</p><blockquote><p>serializable策略应该可以，但是太耗费资源，不建议使用</p></blockquote><h2 id="2-该怎么办"><a href="#2-该怎么办" class="headerlink" title="2 该怎么办"></a>2 该怎么办</h2><p>思考在Java中如何保证资源的独占性的，最简单的方式就是加锁。在单应用的情况下，控制修改“报价供应商的数量”的方法的独占性就可以解决这个问题。</p><p>但是如果多应用的情况下，就像我们公司tomcat集群的，使用Java中锁就无法解决。下面介绍使用MySQL分布式锁方式的解决方案。</p><h2 id="3-MySQL-分布式锁"><a href="#3-MySQL-分布式锁" class="headerlink" title="3 MySQL 分布式锁"></a>3 MySQL 分布式锁</h2><p>我们现在关心的重点是：“报价供应商的数量”这一资源的独占性。当我们查询出“报价供应商数量”后就把它锁定，知道我们修改完毕再解锁。在锁定的过程中，其他事务不能修改。</p><p>使用MySQL提供的<code>select...for update</code>语法，这样就能锁定<code>id = 1</code>的这行数据，其他事务必须等本次食物提交之后才能执行，但其他事务还可以读取。</p><blockquote><p>注意：使用select…for update最好把事务自动提交关闭</p></blockquote><p>把上面的SQL：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">select time into _times from offer_price_time </div><div class="line">where id = 1;</div></pre></td></tr></table></figure><p>改成如下即可：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">select time into _times from offer_price_time </div><div class="line">where id = 1 for update;</div></pre></td></tr></table></figure><p><strong>其他注意点</strong></p><p>上面提到，使用<code>select...for update</code>会把数据锁住，对于这个“锁住”需要注意：MySQL InnoDB默认Row-Level Lock，所以只有「明确」地指定主键，MySQL 才会执行Row lock (只锁住被选取的数据) ，否则MySQL 将会执行Table Lock (将整个数据表单给锁住)，例如下面这样就会把整个表锁住：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">select time into _times from offer_price_time </div><div class="line">limit 1 for update;</div></pre></td></tr></table></figure><h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4 总结"></a>4 总结</h2><p><code>select...for update</code> 这是一种基于数据库实现分布式锁的一种方式，其他方式还有：</p><ol><li>基于缓存的分布式锁</li><li>基于zookeeper的分布式锁</li></ol>]]></content>
+      
+      <categories>
+          
+          <category> MySQL </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> MySQL </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
       <title>Tomcat 集群下，使用 Redis 解决单点登录问题</title>
       <link href="/2018/06/20/Tomcat%20%E9%9B%86%E7%BE%A4%E4%B8%8B%EF%BC%8C%E4%BD%BF%E7%94%A8%20Redis%20%E8%A7%A3%E5%86%B3%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95%E9%97%AE%E9%A2%98/"/>
       <url>/2018/06/20/Tomcat%20%E9%9B%86%E7%BE%A4%E4%B8%8B%EF%BC%8C%E4%BD%BF%E7%94%A8%20Redis%20%E8%A7%A3%E5%86%B3%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95%E9%97%AE%E9%A2%98/</url>
