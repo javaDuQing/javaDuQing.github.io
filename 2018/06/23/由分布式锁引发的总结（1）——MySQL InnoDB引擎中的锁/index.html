@@ -1,81 +1,59 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> 由分布式锁引发的总结（1）——MySQL InnoDB引擎中的锁 · Qingfeng.Du</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="由分布式锁引发的总结（1）——MySQL InnoDB引擎中的锁 - Du Qingfeng"><meta name="keywords"><meta name="author" content="Du Qingfeng"><link rel="short icon" href="/images/favicon.ico"><link rel="stylesheet" href="/css/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="javaduqing.github.io/atom.xml" title="Qingfeng.Du"></head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="/images/logo.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="https://blog.csdn.net/disiwei1012" target="_blank" data-hover="CSDN" class="nav-list-link">CSDN</a></li><li class="nav-list-item"><a href="/" target="_self" data-hover="简历" class="nav-list-link">简历</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">由分布式锁引发的总结（1）——MySQL InnoDB引擎中的锁</h1><div class="post-info">2018-06-23<p class="visit"><i data-hk-page="current"></i></p></div><div class="post-content"><p><em>写这篇文章前：</em>
-<em>写完这篇文章后（<a href="https://javaduqing.github.io/2018/06/21/%E5%9F%BA%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%EF%BC%88MySQL%EF%BC%89%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%AE%9E%E7%8E%B0/">基于数据库的（MySQL）分布式锁实现</a>），看了很多关于MySQL事务、锁的知识，发现越看疑问越多！不行了，我得恶补一下MySQL事务方面的知识，然后再重新写总结！</em></p>
-<p><em>写这篇文章后：</em>
-<em>1）让我更加深入的了解MySQL事务的来龙去脉，已经事务与锁之间紧密的关系，只谈事务不谈锁，就是耍流氓！！！</em>
-<em>2）本文中有关锁设计到了很多索引知识，是时候总结一下索引了。</em></p>
-<p>&lt;!--more--&gt;</p>
-<h2>1 标准锁与意向锁</h2>
-<p>innoDB存储引擎实现了如下两种标准的行级锁：</p>
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> 由分布式锁引发的总结（1）——MySQL InnoDB引擎中的锁 · Qingfeng.Du</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="由分布式锁引发的总结（1）——MySQL InnoDB引擎中的锁 - Du Qingfeng"><meta name="keywords"><meta name="author" content="Du Qingfeng"><link rel="short icon" href="/images/favicon.ico"><link rel="stylesheet" href="/css/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="javaduqing.github.io/atom.xml" title="Qingfeng.Du"></head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="/images/logo.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="https://blog.csdn.net/disiwei1012" target="_blank" data-hover="CSDN" class="nav-list-link">CSDN</a></li><li class="nav-list-item"><a href="/" target="_self" data-hover="简历" class="nav-list-link">简历</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">由分布式锁引发的总结（1）——MySQL InnoDB引擎中的锁</h1><div class="post-info">2018-06-23<p class="visit"><i data-hk-page="current"></i></p></div><div class="post-content"><p><em>写这篇文章前：</em><br><em>写完这篇文章后（<a href="https://javaduqing.github.io/2018/06/21/%E5%9F%BA%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%EF%BC%88MySQL%EF%BC%89%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%AE%9E%E7%8E%B0/">基于数据库的（MySQL）分布式锁实现</a>），看了很多关于MySQL事务、锁的知识，发现越看疑问越多！不行了，我得恶补一下MySQL事务方面的知识，然后再重新写总结！</em></p>
+<p><em>写这篇文章后：</em><br><em>1）让我更加深入的了解MySQL事务的来龙去脉，已经事务与锁之间紧密的关系，只谈事务不谈锁，就是耍流氓！！！</em><br><em>2）本文中有关锁设计到了很多索引知识，是时候总结一下索引了。</em></p>
+<a id="more"></a>
+<h2 id="1-标准锁与意向锁"><a href="#1-标准锁与意向锁" class="headerlink" title="1 标准锁与意向锁"></a>1 标准锁与意向锁</h2><p>innoDB存储引擎实现了如下两种标准的行级锁：</p>
 <ol>
 <li>共享锁（S Lock）：允许事务读一行数据</li>
-<li>排他锁（X Lock）：允许事务删除或更新一行数据</li>
-</ol>
+<li><p>排他锁（X Lock）：允许事务删除或更新一行数据</p>
 <p>SS相互兼容：T1事务获取了r行的共享锁，那么T2事务也可以获取行r的共享锁</p>
+</li>
+</ol>
 <p>XX、XS、SX不兼容：</p>
 <ul>
 <li>T1事务获取了r行的共享锁，T2事务不能获取排他锁</li>
 <li>T1事务获取了r行的排他锁，T2事务不能获取共享锁或者排他锁</li>
 </ul>
 <blockquote>
-<p>select语句默认不会加任何锁类型，如果想加排他锁可以使用select for update；想加共享锁使用select lock in share mode
-update、delete、insert都会自动给涉及到的数据加上排他锁</p>
+<p>select语句默认不会加任何锁类型，如果想加排他锁可以使用select for update；想加共享锁使用select lock in share mode<br>update、delete、insert都会自动给涉及到的数据加上排他锁</p>
 </blockquote>
-<p>&lt;font color='red'&gt;需要注意的是，当给某一行增加共享锁、排他锁时，数据库会自动给这一行所处的表添加意向共享锁（IS Lock）、意向排他锁（IX Lock）&lt;/font&gt;</p>
-<p>&lt;font color='red'&gt;也就是说：如果想给r行增加锁，需要给r行所在的表先增加意向排他锁。&lt;/font&gt;</p>
-<p>下面来看一下意向锁的作用：
-事务A锁住了表中的一行，让这一行只能读（数据库自动给该表增加意向共享锁），不能写。之后，事务B申请整个表的写锁。</p>
-<p>step1：判断表是否已被其他事务用表锁锁表
-step2：发现表上有意向共享锁，说明表中有些行被共享行锁锁住了，因此，事务B申请表的写锁会被阻塞。</p>
-<p>如果没有意向锁则是这样的：
-step1：判断表是否已被其他事务用表锁锁表
-step2：判断表中的每一行是否已被行锁锁住。</p>
-<p>如果没有意向锁的话，则需要遍历所有整个表判断是否有行锁的存在，以免发生冲突
-如果有了意向锁，只需要判断该意向锁与即将添加的表级锁是否兼容即可。因为意向锁的存在代表了，有行级锁的存在或者即将有行级锁的存在。因而无需遍历整个表，即可获取结果</p>
-<h2>2 一致性锁定读/非锁定读</h2>
-<p><strong>MVCC</strong></p>
+<font color="red">需要注意的是，当给某一行增加共享锁、排他锁时，数据库会自动给这一行所处的表添加意向共享锁（IS Lock）、意向排他锁（IX Lock）</font>
+
+<font color="red">也就是说：如果想给r行增加锁，需要给r行所在的表先增加意向排他锁。</font>
+
+<p>下面来看一下意向锁的作用：<br>事务A锁住了表中的一行，让这一行只能读（数据库自动给该表增加意向共享锁），不能写。之后，事务B申请整个表的写锁。</p>
+<p>step1：判断表是否已被其他事务用表锁锁表<br>step2：发现表上有意向共享锁，说明表中有些行被共享行锁锁住了，因此，事务B申请表的写锁会被阻塞。</p>
+<p>如果没有意向锁则是这样的：<br>step1：判断表是否已被其他事务用表锁锁表<br>step2：判断表中的每一行是否已被行锁锁住。</p>
+<p>如果没有意向锁的话，则需要遍历所有整个表判断是否有行锁的存在，以免发生冲突<br>如果有了意向锁，只需要判断该意向锁与即将添加的表级锁是否兼容即可。因为意向锁的存在代表了，有行级锁的存在或者即将有行级锁的存在。因而无需遍历整个表，即可获取结果</p>
+<h2 id="2-一致性锁定读-非锁定读"><a href="#2-一致性锁定读-非锁定读" class="headerlink" title="2 一致性锁定读/非锁定读"></a>2 一致性锁定读/非锁定读</h2><p><strong>MVCC</strong></p>
 <p>InnoDB存储引擎通过多版本并发控制（Multi Version Concurrency Control，MVCC），如果读取的行正在执行delete或者update操作，这时读操作不会因此去等待行上锁的释放，相反地，会去读取行的一个快照版本。</p>
 <p>对于delete、update或者insert操作，数据库会自动增加排他锁。当执行select读操作，即使被读的数据上面有锁也可以读，这称为一致性非锁定读。</p>
-<p>但是对于不同的事务隔离级别Read COMMITTED（RC）和REPEATABLE READ（RR）下，对于快照的定义却不一样。在RC下，总是读取被锁定行的最新一份快照数据；在RR下，总是读取事务开始时的快照版本（&lt;font color='red'&gt;所以能够解决重复性读的问题&lt;/font&gt;）。下面来看例子：
-<img src="http://img-blog.csdn.net/20180623192008171?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述">
-不管是在RC还是RR，在时间2、5得到的结果都是1，&lt;font color='red'&gt;（因为RC和RR都能解决脏读的问题）&lt;/font&gt;</p>
-<p>不同是时间7，在RC模式下，无法读取到值；在RR模式下，读取到的和事务开启是时候是一样的，是1。（&lt;font color='blue'&gt;所以会出现上篇文章中的供应商报价问题&lt;/font&gt;）</p>
+<p>但是对于不同的事务隔离级别Read COMMITTED（RC）和REPEATABLE READ（RR）下，对于快照的定义却不一样。在RC下，总是读取被锁定行的最新一份快照数据；在RR下，总是读取事务开始时的快照版本（<font color="red">所以能够解决重复性读的问题</font>）。下面来看例子：<br><img src="http://img-blog.csdn.net/20180623192008171?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>不管是在RC还是RR，在时间2、5得到的结果都是1，<font color="red">（因为RC和RR都能解决脏读的问题）</font></p>
+<p>不同是时间7，在RC模式下，无法读取到值；在RR模式下，读取到的和事务开启是时候是一样的，是1。（<font color="blue">所以会出现上篇文章中的供应商报价问题</font>）</p>
 <p><strong>锁定读</strong></p>
 <p>前面说过，select操作数据库不会自动添加锁，但是我们可以手动添加锁，这称为一致性锁定读。例如，添加对select的数据添加排他锁：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select ... for update;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select ... for update;</div></pre></td></tr></table></figure>
 <p>对select的数据添加共享锁：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select ... lock in share mode;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select ... lock in share mode;</div></pre></td></tr></table></figure>
 <p>当事务提交后，锁也就释放了。</p>
 <blockquote>
-<p>外键和锁：
-对于外键列的插入或更新，首先需要查询父表中的记录，即select父表。但是对与父表的select操作，不是使用一致性非锁定读的方式，而是使用select ... lock in share mode方式，即主动对父表加一个共享锁。</p>
+<p>外键和锁：<br>对于外键列的插入或更新，首先需要查询父表中的记录，即select父表。但是对与父表的select操作，不是使用一致性非锁定读的方式，而是使用select … lock in share mode方式，即主动对父表加一个共享锁。</p>
 </blockquote>
-<h2>3 锁的算法（幻读的解决方案）</h2>
-<p>InnoDB有三种行锁的算法，分别是：</p>
+<h2 id="3-锁的算法（幻读的解决方案）"><a href="#3-锁的算法（幻读的解决方案）" class="headerlink" title="3 锁的算法（幻读的解决方案）"></a>3 锁的算法（幻读的解决方案）</h2><p>InnoDB有三种行锁的算法，分别是：</p>
 <ol>
 <li>Record Lock：单个行记录上的锁</li>
 <li>Gap Lock：间隙锁，锁定一个范围，但不包括记录本身</li>
 <li>Next-Key Lock：Gap Lock + Record Lock，锁定一个范围，并且锁定记录本身</li>
 </ol>
-<p>&lt;font color='red'&gt;对于行锁，默认是使用Next-Key Lock的&lt;/font&gt;。但是，当查询的索引含有唯一值时（例如主键），InnoDB会将Next-Key Lock降级为Record Lock，即仅锁定索引本身，而不是范围。下面看例子：
-<img src="http://img-blog.csdn.net/20180623192029311?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述">
-创建表z，有a和b两列，a是唯一主键，b列添加单列索引。然后添加记录行。</p>
-<p>如果会话A中执行下面的SQL语句：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select * from z where b = 3 for update</div></pre></td></tr></table></figure></p>
-<p>因为使用的Next-Key Lock技术加锁。并且由于有两个索引&lt;font color='red'&gt;（b = 3这一列有两个索引，一个是a=5的主键索引，另外一个是b=3的辅助索引）&lt;/font&gt;，其中主键索引，加上Record Lock，也就是会对a=5这一行增加一个排他锁；对于辅助索引，其加上的是Next-Key Lock，锁定的范围是（1，3]；需要特别注意的是，InnoDB还会对辅助索引下一个键值加Gap Lock，锁住的范围是（3，6）。</p>
-<p>因此，若在新会话B中运行下面的SQL，都会被阻塞：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">insert into z select 4,3;</div><div class="line">insert into z select 6,5;</div></pre></td></tr></table></figure></p>
-<p>&lt;font color='red'&gt;从这个例子中可以看出，Gap Lock的作用是为了阻止多个事务将记录插入同一个范围内，这样就可以解决幻读问题。若没有Gap Lock锁定（3，6），那么用户可以插入b列为3的记录，这会导致会话A中的用户再次执行同意的查询时会返回不同的记录。&lt;/font&gt;</p>
+<font color="red">对于行锁，默认是使用Next-Key Lock的</font>。但是，当查询的索引含有唯一值时（例如主键），InnoDB会将Next-Key Lock降级为Record Lock，即仅锁定索引本身，而不是范围。下面看例子：<br><img src="http://img-blog.csdn.net/20180623192029311?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>创建表z，有a和b两列，a是唯一主键，b列添加单列索引。然后添加记录行。<br><br>如果会话A中执行下面的SQL语句：<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select * from z where b = 3 for update</div></pre></td></tr></table></figure><br><br>因为使用的Next-Key Lock技术加锁。并且由于有两个索引<font color="red">（b = 3这一列有两个索引，一个是a=5的主键索引，另外一个是b=3的辅助索引）</font>，其中主键索引，加上Record Lock，也就是会对a=5这一行增加一个排他锁；对于辅助索引，其加上的是Next-Key Lock，锁定的范围是（1，3]；需要特别注意的是，InnoDB还会对辅助索引下一个键值加Gap Lock，锁住的范围是（3，6）。<br><br>因此，若在新会话B中运行下面的SQL，都会被阻塞：<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">insert into z select 4,3;</div><div class="line">insert into z select 6,5;</div></pre></td></tr></table></figure><br><br><font color="red">从这个例子中可以看出，Gap Lock的作用是为了阻止多个事务将记录插入同一个范围内，这样就可以解决幻读问题。若没有Gap Lock锁定（3，6），那么用户可以插入b列为3的记录，这会导致会话A中的用户再次执行同意的查询时会返回不同的记录。</font>
+
 <blockquote>
 <p>在这里就可以充分体会重复性读和幻读的区别，重复性读是同一行的数据发生了变化；幻读是多出了一行，或者少了一行！</p>
 </blockquote>
 <p><strong>解决幻读问题</strong></p>
-<p>在RR下，InnoDB采用Next-Key Lock来避免幻读问题，但是在RC下，其仅仅采用Record Lock，无法解决幻读问题。下面来看RR下解决幻读问题的一个例子：
-<img src="http://img-blog.csdn.net/20180623192104622?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述">
-执行SQL语句：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select * from t where a &gt; 2 for update</div></pre></td></tr></table></figure></p>
+<p>在RR下，InnoDB采用Next-Key Lock来避免幻读问题，但是在RC下，其仅仅采用Record Lock，无法解决幻读问题。下面来看RR下解决幻读问题的一个例子：<br><img src="http://img-blog.csdn.net/20180623192104622?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>执行SQL语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select * from t where a &gt; 2 for update</div></pre></td></tr></table></figure>
 <p>其锁住的不是5这单个值，而是对（2，正无穷）这个范围加了排他锁。因此任何对于这个范围的插入都是不被允许的，这样就解决了幻读问题！</p>
-<h2>4 丢失更新问题</h2>
-<p>丢失更新是锁导致的一个问题，简单来说就是一个事务的更新会被另外一个事务的更新操作所覆盖，从而导致数据的不一致</p>
+<h2 id="4-丢失更新问题"><a href="#4-丢失更新问题" class="headerlink" title="4 丢失更新问题"></a>4 丢失更新问题</h2><p>丢失更新是锁导致的一个问题，简单来说就是一个事务的更新会被另外一个事务的更新操作所覆盖，从而导致数据的不一致</p>
 <p><strong>第一种丢失更新问题：</strong></p>
 <ol>
 <li>事务T1将行记录r更新为v1，事务未提交</li>
@@ -84,7 +62,7 @@ step2：判断表中的每一行是否已被行锁锁住。</p>
 <li>事务T2提交</li>
 </ol>
 <blockquote>
-<p>这其实都不是问题，因为事务T1进行修改的时候，就已经对r行加了排他锁，事务T2不能对r行修改；</p>
+<p> 这其实都不是问题，因为事务T1进行修改的时候，就已经对r行加了排他锁，事务T2不能对r行修改；</p>
 </blockquote>
 <p><strong>第二种丢失更新问题：</strong></p>
 <ol>
@@ -104,10 +82,11 @@ step2：判断表中的每一行是否已被行锁锁住。</p>
 <li>会话B存1，提交记录</li>
 <li>最后银行帐号A余额是901</li>
 </ol>
-<p>&lt;font color='red'&gt;这种现象的后果验证，通过数据库的事务隔离机制是不能解决的。这个也就是上篇文章中说的供应商报价问题！！！解决方案就是会话A给账户增加排他锁！！！&lt;/font&gt;</p>
-<h2>参考</h2>
-<ol>
+<font color="red">这种现象的后果验证，通过数据库的事务隔离机制是不能解决的。这个也就是上篇文章中说的供应商报价问题！！！解决方案就是会话A给账户增加排他锁！！！</font>
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
 <li><a href="https://www.zhihu.com/question/51513268" target="_blank" rel="external"> InnoDB 的意向锁有什么作用？</a></li>
 <li>《MySQL技术内幕——InnoDB存储引擎》</li>
 </ol>
-</div></article></div><div class="right-container"><div class="widget"><div class="category"><h4>分类归档</h4><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mask-RCNN/">Mask-RCNN</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-cloud/">Spring cloud</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/architect/">architect</a><span class="category-list-count">1</span></li></ul></div></div><div class="widget"><div class="tagcloud"><h4>标签云</h4><a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/Mask-RCNN/" style="font-size: 12.5px;">Mask-RCNN</a> <a href="/tags/MySQL/" style="font-size: 12.5px;">MySQL</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Redis/" style="font-size: 20px;">Redis</a> <a href="/tags/Spring-cloud/" style="font-size: 17.5px;">Spring cloud</a> <a href="/tags/architect/" style="font-size: 10px;">architect</a></div></div><div class="widget"><div class="recent"><h4>最近文章</h4><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/06/27/由分布式锁引发的总结（2）——MySQL InnoDB引擎中的索引/">由分布式锁引发的总结（2）——MySQL InnoDB引擎中的索引</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/23/由分布式锁引发的总结（1）——MySQL InnoDB引擎中的锁/">由分布式锁引发的总结（1）——MySQL InnoDB引擎中的锁</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/21/基于数据库的（MySQL）分布式锁实现/">基于数据库的（MySQL）分布式锁实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/20/Tomcat 集群下，使用 Redis 解决单点登录问题/">Tomcat 集群下，使用 Redis 解决单点登录问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/19/Nginx 的反向代理和负载均衡策略/">Nginx 的反向代理与负载均衡策略</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/15/Redis到底是不是单线程？/">说说Redis的非阻塞IO多路复用技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/13/原生方式搭建Redis cluster集群/">原生方式搭建 Redis cluster 集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/12/Redis 过期数据处理策略和内存淘汰策略/">Redis 过期数据处理策略和内存淘汰策略</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/12/哈希分区技术之间的对比（一致性哈希、Redis cluster虚拟槽）/">哈希分区技术之间的对比（一致性哈希、Redis cluster虚拟槽）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/11/MySQL事务与Redis事务/">MySQL事务与Redis事务</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/08/Redis持久化方式——AOF与RDB使用总结/">Redis持久化方式——AOF与RDB使用总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/08/Redis主从复制——全量复制与增量复制总结/">Redis主从复制——全量复制与增量复制总结</a></li></ul></div></div><div class="widget"><div id="arAnchorBar"></div></div></div></section></div><div class="right-menu"></div><div class="modal search-modal"><div class="input-field"><input type="text" id="search_input"><label for="search-input">搜索</label></div><div id="search_result" class="search-result"></div></div><div class="blog-overlay"></div><footer class="row"><div class="footer-con"><div class="paginator"><a href="/2018/06/27/由分布式锁引发的总结（2）——MySQL InnoDB引擎中的索引/" class="prev">PREV</a><a href="/2018/06/21/基于数据库的（MySQL）分布式锁实现/" class="next">NEXT</a></div><div class="copyright"><p>© 2016 - 2018 <a target="_blank">Du Qingfeng</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <br> and <a href="https://github.com/Bulandent/hexo-theme-bubuzou" target="_blank">hexo-theme-bubuzou</a></p></div><div class="totop"><i></i></div></div></footer><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="http://apps.bdimg.com/libs/jquery/1.8.2/jquery.min.js"></script><script src="https://cdn1.lncld.net/static/js/av-mini-0.6.10.js"></script><script src="/scripts/hit-kounter-lc-0.2.0.js"></script><script src="/scripts/arAnchor.js"></script><script src="/scripts/main.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
+</div></article></div><div class="right-container"><div class="widget"><div class="category"><h4>分类归档</h4><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mask-RCNN/">Mask-RCNN</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-cloud/">Spring cloud</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/architect/">architect</a><span class="category-list-count">1</span></li></ul></div></div><div class="widget"><div class="tagcloud"><h4>标签云</h4><a href="/tags/MQ/" style="font-size: 15px;">MQ</a> <a href="/tags/Mask-RCNN/" style="font-size: 12.5px;">Mask-RCNN</a> <a href="/tags/MySQL/" style="font-size: 12.5px;">MySQL</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Redis/" style="font-size: 20px;">Redis</a> <a href="/tags/Spring-cloud/" style="font-size: 17.5px;">Spring cloud</a> <a href="/tags/architect/" style="font-size: 10px;">architect</a></div></div><div class="widget"><div class="recent"><h4>最近文章</h4><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/06/27/由分布式锁引发的总结（2）——MySQL InnoDB引擎中的索引/">由分布式锁引发的总结（2）——MySQL InnoDB引擎中的索引</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/23/由分布式锁引发的总结（1）——MySQL InnoDB引擎中的锁/">由分布式锁引发的总结（1）——MySQL InnoDB引擎中的锁</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/21/基于数据库的（MySQL）分布式锁实现/">基于数据库的（MySQL）分布式锁实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/20/Tomcat 集群下，使用 Redis 解决单点登录问题/">Tomcat 集群下，使用 Redis 解决单点登录问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/19/Nginx 的反向代理和负载均衡策略/">Nginx 的反向代理与负载均衡策略</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/15/Redis到底是不是单线程？/">说说Redis的非阻塞IO多路复用技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/13/原生方式搭建Redis cluster集群/">原生方式搭建 Redis cluster 集群</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/12/Redis 过期数据处理策略和内存淘汰策略/">Redis 过期数据处理策略和内存淘汰策略</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/12/哈希分区技术之间的对比（一致性哈希、Redis cluster虚拟槽）/">哈希分区技术之间的对比（一致性哈希、Redis cluster虚拟槽）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/11/MySQL事务与Redis事务/">MySQL事务与Redis事务</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/08/Redis持久化方式——AOF与RDB使用总结/">Redis持久化方式——AOF与RDB使用总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/08/Redis主从复制——全量复制与增量复制总结/">Redis主从复制——全量复制与增量复制总结</a></li></ul></div></div><div class="widget"><div id="arAnchorBar"></div></div></div></section></div><div class="right-menu"></div><div class="modal search-modal"><div class="input-field"><input type="text" id="search_input"><label for="search-input">搜索</label></div><div id="search_result" class="search-result"></div></div><div class="blog-overlay"></div><footer class="row"><div class="footer-con"><div class="paginator"><a href="/2018/06/27/由分布式锁引发的总结（2）——MySQL InnoDB引擎中的索引/" class="prev">上一篇</a><a href="/2018/06/21/基于数据库的（MySQL）分布式锁实现/" class="next">下一篇</a></div><div class="copyright"><p>© 2016 - 2018 <a target="_blank">Du Qingfeng</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <br> and <a href="https://github.com/Bulandent/hexo-theme-bubuzou" target="_blank">hexo-theme-bubuzou</a></p></div><div class="totop"><i></i></div></div></footer><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="http://apps.bdimg.com/libs/jquery/1.8.2/jquery.min.js"></script><script src="https://cdn1.lncld.net/static/js/av-mini-0.6.10.js"></script><script src="/scripts/hit-kounter-lc-0.2.0.js"></script><script src="/scripts/arAnchor.js"></script><script src="/scripts/main.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
