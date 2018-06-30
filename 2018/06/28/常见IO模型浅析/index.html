@@ -7,18 +7,18 @@
 <li>IO多路复用（IO Multiplexing）：即经典的Reactor设计模式，有时也称为异步阻塞IO</li>
 <li>异步IO（Asynchronous IO）：即经典的Proactor设计模式，也称为异步非阻塞IO</li>
 </ol>
-<h2 id="1-同步阻塞IO"><a href="#1-同步阻塞IO" class="headerlink" title="1 同步阻塞IO"></a>1 同步阻塞IO</h2><p>简单，就不多说了。<br><img src="http://img-blog.csdn.net/20180628112056460?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="同步阻塞IO"></p>
+<h2 id="1-同步阻塞IO"><a href="#1-同步阻塞IO" class="headerlink" title="1 同步阻塞IO"></a>1 同步阻塞IO</h2><p>简单，就不多说了。<br><img src="http://p7n2owwza.bkt.clouddn.com/IO%E5%B8%B8%E8%A7%81%E7%B1%BB%E5%9E%8B%E6%B5%85%E6%9E%90-1.png" alt="同步阻塞IO"></p>
 <h2 id="2-同步非阻塞IO"><a href="#2-同步非阻塞IO" class="headerlink" title="2 同步非阻塞IO"></a>2 同步非阻塞IO</h2><p>不难，也不多说。</p>
-<p><img src="http://img-blog.csdn.net/20180628112151508?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<h2 id="3-IO多路复用"><a href="#3-IO多路复用" class="headerlink" title="3 IO多路复用"></a>3 IO多路复用</h2><p><img src="http://img-blog.csdn.net/20180628112406207?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="http://p7n2owwza.bkt.clouddn.com/IO%E5%B8%B8%E8%A7%81%E7%B1%BB%E5%9E%8B%E6%B5%85%E6%9E%90-2.png" alt="这里写图片描述"></p>
+<h2 id="3-IO多路复用"><a href="#3-IO多路复用" class="headerlink" title="3 IO多路复用"></a>3 IO多路复用</h2><p><img src="http://p7n2owwza.bkt.clouddn.com/IO%E5%88%9B%E5%BB%BA%E7%B1%BB%E5%9E%8B.png" alt="这里写图片描述"></p>
 <p>用户首先将需要进行IO操作的socket添加到select中，然后阻塞等待select系统调用返回。当数据到达时，socket被激活，select函数返回。用户线程正式发起read请求，读取数据并继续执行。</p>
 <font color="red">从流程上来看，使用select函数进行IO请求和同步阻塞模型没有太大的区别，甚至还多了添加监视socket，以及调用select函数的额外操作，效率更差。但是，使用select以后最大的优势是用户可以在一个线程内同时处理多个socket的IO请求。用户可以注册多个socket，然后不断地调用select读取被激活的socket，即可达到在同一个线程内同时处理多个IO请求的目的。而在同步阻塞模型中，必须通过多线程的方式才能达到这个目的。</font>
 
-<p>虽然上述方式允许单线程内处理多个IO请求，但是每个用户请求的过程还是阻塞的（在select函数上阻塞），平均时间甚至比同步阻塞IO模型还要长。如果用户线程只注册自己感兴趣的socket或者IO请求，然后去做自己的事情，等到数据到来时再进行处理，则可以提高CPU的利用率。可以使用了Reactor设计模式实现。<br><img src="http://img-blog.csdn.net/20180628113730120?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>虽然上述方式允许单线程内处理多个IO请求，但是每个用户请求的过程还是阻塞的（在select函数上阻塞），平均时间甚至比同步阻塞IO模型还要长。如果用户线程只注册自己感兴趣的socket或者IO请求，然后去做自己的事情，等到数据到来时再进行处理，则可以提高CPU的利用率。可以使用了Reactor设计模式实现。<br><img src="http://p7n2owwza.bkt.clouddn.com/IO%E5%B8%B8%E8%A7%81%E7%B1%BB%E5%9E%8B%E6%B5%85%E6%9E%90-3.png" alt="这里写图片描述"></p>
 <p>Reactor：当用户将自己感兴趣的IO注册到Reactor，并提供相应的事件处理器。Reactor线程负责调用内核的select函数检查socket状态。当有socket被激活时，则通知相应的用户线程执行相应的事件处理器进行数据读取、处理的工作。</p>
 <p>下面是一张以服务员和顾客为例子的图：</p>
-<p><img src="http://img-blog.csdn.net/20180628173242342?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<h2 id="4-异步IO"><a href="#4-异步IO" class="headerlink" title="4 异步IO"></a>4 异步IO</h2><p><img src="http://img-blog.csdn.net/20180628173301669?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rpc2l3ZWkxMDEy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="http://p7n2owwza.bkt.clouddn.com/IO%E5%B8%B8%E8%A7%81%E7%B1%BB%E5%9E%8B%E6%B5%85%E6%9E%90-4.png" alt="这里写图片描述"></p>
+<h2 id="4-异步IO"><a href="#4-异步IO" class="headerlink" title="4 异步IO"></a>4 异步IO</h2><p><img src="http://p7n2owwza.bkt.clouddn.com/IO%E5%B8%B8%E8%A7%81%E7%B1%BB%E5%9E%8B%E6%B5%85%E6%9E%90-5.png" alt="这里写图片描述"></p>
 <p>流程：</p>
 <ol>
 <li>用户线程，注册IO和相应的事件处理器，此时事件处理器不关注具体的IO操作，而是关注IO操作是否完成，这是区别于Reactor的关键。</li>
