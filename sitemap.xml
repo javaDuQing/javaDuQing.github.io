@@ -2,6 +2,41 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>javaduqing.github.io/2018/04/16/Mask%20RCNN%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
+    
+    <lastmod>2018-07-04T07:17:19.116Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/03/07/%E3%80%90%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E3%80%91Faster%20RCNN%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/</loc>
+    
+    <lastmod>2018-07-04T07:17:04.953Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/04/13/%E3%80%90%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E3%80%91Mask%20RCNN%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/</loc>
+    
+    <lastmod>2018-07-04T07:16:49.487Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/01/25/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%EF%BC%9A%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E5%92%8C%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD%E7%AE%97%E6%B3%95%E6%8E%A8%E5%AF%BC/</loc>
+    
+    <lastmod>2018-07-04T03:55:01.598Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/07/04/%E5%B0%8F%E7%B1%B3AI%E6%A1%86%E6%9E%B6MACE%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/</loc>
+    
+    <lastmod>2018-07-04T03:44:23.567Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>javaduqing.github.io/about/index.html</loc>
     
     <lastmod>2018-07-03T12:41:22.435Z</lastmod>
@@ -117,27 +152,6 @@
     <loc>javaduqing.github.io/2018/06/19/Nginx%20%E7%9A%84%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/</loc>
     
     <lastmod>2018-06-19T03:22:26.313Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/04/13/%E3%80%90%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E3%80%91Mask%20RCNN%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/</loc>
-    
-    <lastmod>2018-06-06T14:28:42.354Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/03/07/%E3%80%90%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E3%80%91Faster%20RCNN%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/</loc>
-    
-    <lastmod>2018-06-06T14:28:16.350Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/04/16/Mask%20RCNN%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
-    
-    <lastmod>2018-06-06T14:28:02.846Z</lastmod>
     
   </url>
   
