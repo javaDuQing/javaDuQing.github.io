@@ -4,14 +4,266 @@
   <url>
     <loc>javaduqing.github.io/2018/07/21/%E4%BD%BF%E7%94%A8TensorFlow%20slim%20%E8%AE%AD%E7%BB%83%20mobilenet-v1%20%E7%BD%91%E7%BB%9C/</loc>
     
-    <lastmod>2018-07-21T08:06:43.790Z</lastmod>
+    <lastmod>2018-07-21T08:32:34.393Z</lastmod>
     
   </url>
   
   <url>
     <loc>javaduqing.github.io/2018/07/21/%E5%B0%8F%E7%B1%B3Mace%20Android%20demo%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%B7%B1%E8%AE%AD%E7%BB%83%E7%9A%84%20mobilenet-v1%20%E6%A8%A1%E5%9E%8B/</loc>
     
-    <lastmod>2018-07-21T07:56:54.827Z</lastmod>
+    <lastmod>2018-07-21T08:32:19.962Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/07/16/Java%E5%B9%B6%E5%8F%91%E2%80%94%E2%80%94%E4%B8%AD%E6%96%AD_ThreadLocal_Thread.join/</loc>
+    
+    <lastmod>2018-07-21T08:32:03.128Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/07/11/Synchronized%E5%BA%95%E5%B1%82%E9%94%81%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E5%81%8F%E5%90%91%E9%94%81%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81/</loc>
+    
+    <lastmod>2018-07-21T08:31:44.519Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/07/08/Java%20NIO%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9F%BA%E7%A1%80%EF%BC%89/</loc>
+    
+    <lastmod>2018-07-21T08:31:24.470Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/07/04/%E5%B0%8F%E7%B1%B3AI%E6%A1%86%E6%9E%B6MACE%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/</loc>
+    
+    <lastmod>2018-07-21T08:31:03.685Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/07/02/%E7%94%B1%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%BB%E7%BB%93%EF%BC%883%EF%BC%89%E2%80%94%E2%80%94MySQL%20InnoDB%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95-%E5%86%85%E5%AE%B9%E8%A1%A5%E5%85%85/</loc>
+    
+    <lastmod>2018-07-21T08:30:39.427Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/28/%E5%B8%B8%E8%A7%81IO%E6%A8%A1%E5%9E%8B%E6%B5%85%E6%9E%90/</loc>
+    
+    <lastmod>2018-07-21T08:30:13.296Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/27/%E7%94%B1%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%BB%E7%BB%93%EF%BC%882%EF%BC%89%E2%80%94%E2%80%94MySQL%20InnoDB%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95/</loc>
+    
+    <lastmod>2018-07-21T08:29:52.405Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/23/%E7%94%B1%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%BB%E7%BB%93%EF%BC%881%EF%BC%89%E2%80%94%E2%80%94MySQL%20InnoDB%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84%E9%94%81/</loc>
+    
+    <lastmod>2018-07-21T08:29:28.397Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/21/%E5%9F%BA%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%EF%BC%88MySQL%EF%BC%89%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%AE%9E%E7%8E%B0/</loc>
+    
+    <lastmod>2018-07-21T08:29:03.480Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/20/Tomcat%20%E9%9B%86%E7%BE%A4%E4%B8%8B%EF%BC%8C%E4%BD%BF%E7%94%A8%20Redis%20%E8%A7%A3%E5%86%B3%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95%E9%97%AE%E9%A2%98/</loc>
+    
+    <lastmod>2018-07-21T08:28:30.145Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/19/Nginx%20%E7%9A%84%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/</loc>
+    
+    <lastmod>2018-07-21T08:28:02.695Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/15/Redis%E5%88%B0%E5%BA%95%E6%98%AF%E4%B8%8D%E6%98%AF%E5%8D%95%E7%BA%BF%E7%A8%8B%EF%BC%9F/</loc>
+    
+    <lastmod>2018-07-21T08:27:37.048Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/13/%E5%8E%9F%E7%94%9F%E6%96%B9%E5%BC%8F%E6%90%AD%E5%BB%BARedis%20cluster%E9%9B%86%E7%BE%A4/</loc>
+    
+    <lastmod>2018-07-21T08:26:58.804Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/12/Redis%20%E8%BF%87%E6%9C%9F%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5%E5%92%8C%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/</loc>
+    
+    <lastmod>2018-07-21T08:26:31.125Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/12/%E5%93%88%E5%B8%8C%E5%88%86%E5%8C%BA%E6%8A%80%E6%9C%AF%E4%B9%8B%E9%97%B4%E7%9A%84%E5%AF%B9%E6%AF%94%EF%BC%88%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E3%80%81Redis%20cluster%E8%99%9A%E6%8B%9F%E6%A7%BD%EF%BC%89/</loc>
+    
+    <lastmod>2018-07-21T08:25:55.793Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/11/MySQL%E4%BA%8B%E5%8A%A1%E4%B8%8ERedis%E4%BA%8B%E5%8A%A1/</loc>
+    
+    <lastmod>2018-07-21T08:25:34.196Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/08/Redis%E6%8C%81%E4%B9%85%E5%8C%96%E6%96%B9%E5%BC%8F%E2%80%94%E2%80%94AOF%E4%B8%8ERDB%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/</loc>
+    
+    <lastmod>2018-07-21T08:25:05.655Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/08/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E2%80%94%E2%80%94%E5%85%A8%E9%87%8F%E5%A4%8D%E5%88%B6%E4%B8%8E%E5%A2%9E%E9%87%8F%E5%A4%8D%E5%88%B6%E6%80%BB%E7%BB%93/</loc>
+    
+    <lastmod>2018-07-21T08:24:47.643Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/07/%E7%94%A8Redis%20Sentinel%EF%BC%88%E5%93%A8%E5%85%B5%EF%BC%89%E8%A7%A3%E5%86%B3%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB%E9%97%AE%E9%A2%98/</loc>
+    
+    <lastmod>2018-07-21T08:24:22.174Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/06/06/Web%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8F%98%E8%BF%87%E7%A8%8B%E6%80%BB%E7%BB%93/</loc>
+    
+    <lastmod>2018-07-21T08:23:59.936Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/05/26/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E5%85%AB%EF%BC%89%EF%BC%9A%E5%88%86%E5%B8%83%E5%BC%8F%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83Cloud%20Config%E2%80%94%E2%80%94%E5%88%B7%E6%96%B0%E5%92%8C%E5%8A%A0%E8%A7%A3%E5%AF%86/</loc>
+    
+    <lastmod>2018-07-21T08:23:27.892Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/05/22/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%88%86%E5%B8%83%E5%BC%8F%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83Cloud%20Config%E2%80%94%E2%80%94Git%E6%96%B9%E5%BC%8F/</loc>
+    
+    <lastmod>2018-07-21T08:22:55.567Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/05/18/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E6%9C%BA%E5%88%B6%E2%80%94%E2%80%94%E4%BA%8B%E5%8A%A1%E5%92%8CConfirm/</loc>
+    
+    <lastmod>2018-07-21T08:22:28.159Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/05/17/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9ARouting,topics/</loc>
+    
+    <lastmod>2018-07-21T08:22:12.854Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/05/17/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9Ahello%20world,work%20queue,PublishSubscribe/</loc>
+    
+    <lastmod>2018-07-21T08:21:55.223Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/05/15/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AEAMQP%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/</loc>
+    
+    <lastmod>2018-07-21T08:21:35.633Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/05/08/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9AAPI%20%E7%BD%91%E5%85%B3Zuul%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</loc>
+    
+    <lastmod>2018-07-21T08:20:11.508Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/05/06/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9Aspring%20cloud%E6%95%B4%E5%90%88Hystrix%E4%B8%8EHystrix%E7%9B%91%E6%8E%A7/</loc>
+    
+    <lastmod>2018-07-21T08:19:48.994Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/05/05/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9AHystrix%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B9%8B%E7%86%94%E6%96%AD%E4%B8%8E%E9%9A%94%E7%A6%BB%E6%9C%BA%E5%88%B6/</loc>
+    
+    <lastmod>2018-07-21T08:19:29.520Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/05/05/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9AHystrix%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B9%8B%E5%B0%8F%E8%AF%95%E7%89%9B%E5%88%80/</loc>
+    
+    <lastmod>2018-07-21T08:19:13.943Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/05/01/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E9%9B%AA%E5%B4%A9%E6%95%88%E5%BA%94%E4%B8%8EHystrix%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/</loc>
+    
+    <lastmod>2018-07-21T08:18:53.792Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/04/20/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E7%9B%B8%E4%BA%92%E8%B0%83%E7%94%A8/</loc>
+    
+    <lastmod>2018-07-21T08:18:35.371Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/04/16/Mask%20RCNN%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
+    
+    <lastmod>2018-07-21T08:17:54.976Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/04/13/%E3%80%90%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E3%80%91Mask%20RCNN%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/</loc>
+    
+    <lastmod>2018-07-21T08:17:34.731Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/03/07/%E3%80%90%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E3%80%91Faster%20RCNN%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/</loc>
+    
+    <lastmod>2018-07-21T08:17:11.990Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>javaduqing.github.io/2018/01/25/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%EF%BC%9A%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E5%92%8C%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD%E7%AE%97%E6%B3%95%E6%8E%A8%E5%AF%BC/</loc>
+    
+    <lastmod>2018-07-21T08:16:34.729Z</lastmod>
     
   </url>
   
@@ -19,258 +271,6 @@
     <loc>javaduqing.github.io/about/index.html</loc>
     
     <lastmod>2018-07-21T07:52:54.626Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/07/16/Java%E5%B9%B6%E5%8F%91%E2%80%94%E2%80%94%E4%B8%AD%E6%96%AD_ThreadLocal_Thread.join/</loc>
-    
-    <lastmod>2018-07-16T13:35:58.079Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/07/11/Synchronized%E5%BA%95%E5%B1%82%E9%94%81%E4%BC%98%E5%8C%96%E2%80%94%E2%80%94%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E5%81%8F%E5%90%91%E9%94%81%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81/</loc>
-    
-    <lastmod>2018-07-11T15:20:47.192Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/07/08/Java%20NIO%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9F%BA%E7%A1%80%EF%BC%89/</loc>
-    
-    <lastmod>2018-07-08T02:31:15.554Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/01/25/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%EF%BC%9A%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E5%92%8C%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD%E7%AE%97%E6%B3%95%E6%8E%A8%E5%AF%BC/</loc>
-    
-    <lastmod>2018-07-04T07:41:45.355Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/07/04/%E5%B0%8F%E7%B1%B3AI%E6%A1%86%E6%9E%B6MACE%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/</loc>
-    
-    <lastmod>2018-07-04T07:25:00.411Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/04/16/Mask%20RCNN%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
-    
-    <lastmod>2018-07-04T07:17:19.116Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/03/07/%E3%80%90%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E3%80%91Faster%20RCNN%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/</loc>
-    
-    <lastmod>2018-07-04T07:17:04.953Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/04/13/%E3%80%90%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E3%80%91Mask%20RCNN%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/</loc>
-    
-    <lastmod>2018-07-04T07:16:49.487Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/07/02/%E7%94%B1%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%BB%E7%BB%93%EF%BC%883%EF%BC%89%E2%80%94%E2%80%94MySQL%20InnoDB%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95-%E5%86%85%E5%AE%B9%E8%A1%A5%E5%85%85/</loc>
-    
-    <lastmod>2018-07-02T14:14:29.026Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/06/Web%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8F%98%E8%BF%87%E7%A8%8B%E6%80%BB%E7%BB%93/</loc>
-    
-    <lastmod>2018-07-02T13:53:18.826Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/07/%E7%94%A8Redis%20Sentinel%EF%BC%88%E5%93%A8%E5%85%B5%EF%BC%89%E8%A7%A3%E5%86%B3%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB%E9%97%AE%E9%A2%98/</loc>
-    
-    <lastmod>2018-06-30T15:11:53.684Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/08/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E2%80%94%E2%80%94%E5%85%A8%E9%87%8F%E5%A4%8D%E5%88%B6%E4%B8%8E%E5%A2%9E%E9%87%8F%E5%A4%8D%E5%88%B6%E6%80%BB%E7%BB%93/</loc>
-    
-    <lastmod>2018-06-30T15:08:38.792Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/08/Redis%E6%8C%81%E4%B9%85%E5%8C%96%E6%96%B9%E5%BC%8F%E2%80%94%E2%80%94AOF%E4%B8%8ERDB%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/</loc>
-    
-    <lastmod>2018-06-30T15:04:37.568Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/12/%E5%93%88%E5%B8%8C%E5%88%86%E5%8C%BA%E6%8A%80%E6%9C%AF%E4%B9%8B%E9%97%B4%E7%9A%84%E5%AF%B9%E6%AF%94%EF%BC%88%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E3%80%81Redis%20cluster%E8%99%9A%E6%8B%9F%E6%A7%BD%EF%BC%89/</loc>
-    
-    <lastmod>2018-06-30T14:59:34.387Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/13/%E5%8E%9F%E7%94%9F%E6%96%B9%E5%BC%8F%E6%90%AD%E5%BB%BARedis%20cluster%E9%9B%86%E7%BE%A4/</loc>
-    
-    <lastmod>2018-06-30T14:52:46.261Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/15/Redis%E5%88%B0%E5%BA%95%E6%98%AF%E4%B8%8D%E6%98%AF%E5%8D%95%E7%BA%BF%E7%A8%8B%EF%BC%9F/</loc>
-    
-    <lastmod>2018-06-30T14:48:38.709Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/20/Tomcat%20%E9%9B%86%E7%BE%A4%E4%B8%8B%EF%BC%8C%E4%BD%BF%E7%94%A8%20Redis%20%E8%A7%A3%E5%86%B3%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95%E9%97%AE%E9%A2%98/</loc>
-    
-    <lastmod>2018-06-30T14:46:30.737Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/11/MySQL%E4%BA%8B%E5%8A%A1%E4%B8%8ERedis%E4%BA%8B%E5%8A%A1/</loc>
-    
-    <lastmod>2018-06-30T14:44:27.028Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/21/%E5%9F%BA%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%EF%BC%88MySQL%EF%BC%89%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%AE%9E%E7%8E%B0/</loc>
-    
-    <lastmod>2018-06-30T14:42:58.677Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/23/%E7%94%B1%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%BB%E7%BB%93%EF%BC%881%EF%BC%89%E2%80%94%E2%80%94MySQL%20InnoDB%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84%E9%94%81/</loc>
-    
-    <lastmod>2018-06-30T14:41:04.927Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/27/%E7%94%B1%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%BB%E7%BB%93%EF%BC%882%EF%BC%89%E2%80%94%E2%80%94MySQL%20InnoDB%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95/</loc>
-    
-    <lastmod>2018-06-30T14:39:23.751Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/28/%E5%B8%B8%E8%A7%81IO%E6%A8%A1%E5%9E%8B%E6%B5%85%E6%9E%90/</loc>
-    
-    <lastmod>2018-06-30T07:30:33.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/12/Redis%20%E8%BF%87%E6%9C%9F%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5%E5%92%8C%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/</loc>
-    
-    <lastmod>2018-06-28T12:59:29.488Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/06/19/Nginx%20%E7%9A%84%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/</loc>
-    
-    <lastmod>2018-06-19T03:22:26.313Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/05/01/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E9%9B%AA%E5%B4%A9%E6%95%88%E5%BA%94%E4%B8%8EHystrix%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/</loc>
-    
-    <lastmod>2018-06-06T14:27:30.083Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/05/08/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9AAPI%20%E7%BD%91%E5%85%B3Zuul%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</loc>
-    
-    <lastmod>2018-06-06T14:27:03.182Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/05/06/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9Aspring%20cloud%E6%95%B4%E5%90%88Hystrix%E4%B8%8EHystrix%E7%9B%91%E6%8E%A7/</loc>
-    
-    <lastmod>2018-06-06T14:26:45.193Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/05/05/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9AHystrix%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B9%8B%E7%86%94%E6%96%AD%E4%B8%8E%E9%9A%94%E7%A6%BB%E6%9C%BA%E5%88%B6/</loc>
-    
-    <lastmod>2018-06-06T14:26:30.557Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/05/05/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9AHystrix%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B9%8B%E5%B0%8F%E8%AF%95%E7%89%9B%E5%88%80/</loc>
-    
-    <lastmod>2018-06-06T14:26:01.858Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/05/15/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%8D%8F%E8%AE%AEAMQP%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/</loc>
-    
-    <lastmod>2018-06-06T14:25:46.591Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/05/17/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9Ahello%20world,work%20queue,PublishSubscribe/</loc>
-    
-    <lastmod>2018-06-06T14:25:26.052Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/05/17/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9ARouting,topics/</loc>
-    
-    <lastmod>2018-06-06T14:24:57.832Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/05/18/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4%E6%9C%BA%E5%88%B6%E2%80%94%E2%80%94%E4%BA%8B%E5%8A%A1%E5%92%8CConfirm/</loc>
-    
-    <lastmod>2018-06-06T14:21:55.114Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/05/22/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%88%86%E5%B8%83%E5%BC%8F%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83Cloud%20Config%E2%80%94%E2%80%94Git%E6%96%B9%E5%BC%8F/</loc>
-    
-    <lastmod>2018-06-06T14:21:20.174Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/04/20/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E7%9B%B8%E4%BA%92%E8%B0%83%E7%94%A8/</loc>
-    
-    <lastmod>2018-06-06T14:20:55.123Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>javaduqing.github.io/2018/05/26/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E5%85%AB%EF%BC%89%EF%BC%9A%E5%88%86%E5%B8%83%E5%BC%8F%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83Cloud%20Config%E2%80%94%E2%80%94%E5%88%B7%E6%96%B0%E5%92%8C%E5%8A%A0%E8%A7%A3%E5%AF%86/</loc>
-    
-    <lastmod>2018-06-06T14:20:32.116Z</lastmod>
     
   </url>
   
