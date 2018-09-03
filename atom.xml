@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="javaduqing.github.io/"/>
-  <updated>2018-08-22T06:47:03.425Z</updated>
+  <updated>2018-09-03T14:14:47.094Z</updated>
   <id>javaduqing.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>博客首页</title>
+    <link href="javaduqing.github.io/2018/09/03/%E5%8D%9A%E5%AE%A2%E9%A6%96%E9%A1%B5/"/>
+    <id>javaduqing.github.io/2018/09/03/博客首页/</id>
+    <published>2018-09-03T06:41:02.000Z</published>
+    <updated>2018-09-03T14:14:47.094Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="写点什么"><a href="#写点什么" class="headerlink" title="写点什么"></a>写点什么</h2><p>但是这样转化有一个很大的问题，就是每次只能转化一个.json文件，我修改了…labelme\Scripts\文件夹下的labelme_json_to_dataset文件，可以一下把整个文件夹下的.json文件全部转化，如下：</p><h2 id="Java提高系列"><a href="#Java提高系列" class="headerlink" title="Java提高系列"></a>Java提高系列</h2><ul><li><a href="https://javaduqing.github.io/2018/08/22/Java7%20ConcurrentHashMap%20%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Java7 ConcurrentHashMap 源码分析</a></li><li><a href="https://javaduqing.github.io/2018/08/09/Java%20%E8%AF%BB%E5%86%99%E9%94%81%20ReentrantReadWriteLock%20%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%881%EF%BC%89/">Java7 读写锁 ReentrantReadWriteLock 源码分析</a></li><li><a href="https://javaduqing.github.io/2018/07/16/Java%E5%B9%B6%E5%8F%91%E2%80%94%E2%80%94%E4%B8%AD%E6%96%AD_ThreadLocal_Thread.join/">Java并发——中断/ThreadLocal/Thread.join</a></li><li><a href="https://javaduqing.github.io/2018/07/16/Java%E5%B9%B6%E5%8F%91%E2%80%94%E2%80%94%E4%B8%AD%E6%96%AD_ThreadLocal_Thread.join/">Synchronized底层锁优化——轻量级锁偏向锁重量级锁</a></li><li><a href="https://javaduqing.github.io/2018/07/08/Java%20NIO%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9F%BA%E7%A1%80%EF%BC%89/">Java NIO 学习笔记（基础）</a></li><li><a href="https://javaduqing.github.io/2018/06/28/%E5%B8%B8%E8%A7%81IO%E6%A8%A1%E5%9E%8B%E6%B5%85%E6%9E%90/">常见IO模型浅析</a></li><li><a href="Web%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84%E6%BC%94%E5%8F%98%E8%BF%87%E7%A8%8B%E6%80%BB%E7%BB%93">Web项目架构演变过程总结</a></li></ul><h2 id="Spring-Could系列"><a href="#Spring-Could系列" class="headerlink" title="Spring Could系列"></a>Spring Could系列</h2><ul><li><a href="https://javaduqing.github.io/2018/05/26/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E5%85%AB%EF%BC%89%EF%BC%9A%E5%88%86%E5%B8%83%E5%BC%8F%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83Cloud%20Config%E2%80%94%E2%80%94%E5%88%B7%E6%96%B0%E5%92%8C%E5%8A%A0%E8%A7%A3%E5%AF%86/">spring cloud微服务架构（八）：分布式配置中心Cloud Config——配置刷新与加解密</a></li><li><a href="https://javaduqing.github.io/2018/05/22/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E5%88%86%E5%B8%83%E5%BC%8F%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83Cloud%20Config%E2%80%94%E2%80%94Git%E6%96%B9%E5%BC%8F/">spring cloud微服务架构（七）：分布式配置中心Cloud Config——Git方式</a></li><li><a href="https://javaduqing.github.io/2018/05/08/spring%20cloud%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9AAPI%20%E7%BD%91%E5%85%B3Zuul%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/">spring cloud微服务架构（六）：API 网关Zuul的基本使用</a></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;写点什么&quot;&gt;&lt;a href=&quot;#写点什么&quot; class=&quot;headerlink&quot; title=&quot;写点什么&quot;&gt;&lt;/a&gt;写点什么&lt;/h2&gt;&lt;p&gt;但是这样转化有一个很大的问题，就是每次只能转化一个.json文件，我修改了…labelme\Scripts\文件夹下的lab
+      
+    
+    </summary>
+    
+      <category term="Java提高" scheme="javaduqing.github.io/categories/Java%E6%8F%90%E9%AB%98/"/>
+    
+    
+      <category term="Java提高" scheme="javaduqing.github.io/tags/Java%E6%8F%90%E9%AB%98/"/>
+    
+  </entry>
   
   <entry>
     <title>【40】Java7 ConcurrentHashMap 源码分析</title>
@@ -452,28 +477,6 @@
     
       &lt;p&gt;&lt;em&gt;note：&lt;/em&gt;&lt;br&gt;&lt;em&gt;这几天在看《Redis开发与运维》，有看到Redis关于事务的一些内容。脑海中关于MySQL的事务有点模糊，不如借此机会总结一下，说不定两者还能对比一下。本文内容如下：&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://p7n2owwza.bkt.clouddn.com/MySQLRedis%E4%BA%8B%E7%89%A9-1.png&quot; alt=&quot;这里写图片描述&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="MySQL-Redis" scheme="javaduqing.github.io/categories/MySQL-Redis/"/>
-    
-    
-      <category term="MySQL-Redis" scheme="javaduqing.github.io/tags/MySQL-Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【20】Redis持久化方式——AOF与RDB使用总结</title>
-    <link href="javaduqing.github.io/2018/06/08/Redis%E6%8C%81%E4%B9%85%E5%8C%96%E6%96%B9%E5%BC%8F%E2%80%94%E2%80%94AOF%E4%B8%8ERDB%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/"/>
-    <id>javaduqing.github.io/2018/06/08/Redis持久化方式——AOF与RDB使用总结/</id>
-    <published>2018-06-08T02:37:02.000Z</published>
-    <updated>2018-07-21T08:25:05.655Z</updated>
-    
-    <content type="html"><![CDATA[<p>Redis所有数据保持在内存中，对内存中的数据异步保持到磁盘上的过程叫做持久化。常见的持久化方式包括两种：<br><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E6%8C%81%E4%B9%85%E5%8C%96-1.png" alt="这里写图片描述"><br>快照就是把某个时间节点的数据进行备份；写日志就把每次对数据库的操作都进行备份。RDB和AOF是Redis持久化的两种方式。</p><a id="more"></a><h1 id="1-RDB工作原理"><a href="#1-RDB工作原理" class="headerlink" title="1 RDB工作原理"></a>1 RDB工作原理</h1><p>触发Redis进行RDB备份的方式有三种，分别是：</p><ol><li>save命令（同步）</li><li>bgsave（异步）</li><li>自动</li></ol><h2 id="1-1-save命令方式过程"><a href="#1-1-save命令方式过程" class="headerlink" title="1.1 save命令方式过程"></a>1.1 save命令方式过程</h2><p><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E6%8C%81%E4%B9%85%E5%8C%96-2.png" alt="这里写图片描述"></p><blockquote><p>save是同步命令，其他客户端必须等待save命令执行完。如果已经存在老的RDB文件，则替换成新生成的。</p></blockquote><h2 id="1-2-bgsave命令（异步）过程"><a href="#1-2-bgsave命令（异步）过程" class="headerlink" title="1.2 bgsave命令（异步）过程"></a>1.2 bgsave命令（异步）过程</h2><p>bgsave是异步命令，fork（Linux）命令会开启一个守护进程（其实fork是一个阻塞命令，当然fork很快），在执行bgsave时，Redis服务器依然可以响应客户端。<br><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E6%8C%81%E4%B9%85%E5%8C%96-3.png" alt="这里写图片描述"></p><h2 id="1-3-save与bgsave的比较"><a href="#1-3-save与bgsave的比较" class="headerlink" title="1.3 save与bgsave的比较"></a>1.3 save与bgsave的比较</h2><p><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E6%8C%81%E4%B9%85%E5%8C%96-4.png" alt="这里写图片描述"></p><h2 id="1-4-自动生成RDB过程"><a href="#1-4-自动生成RDB过程" class="headerlink" title="1.4 自动生成RDB过程"></a>1.4 自动生成RDB过程</h2><p>自动生成RDB是通过配置完成的。Redis配置文件中关于RDB自动生成的配置如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 900秒 内至少1个key值改变</div><div class="line">save 900 1</div><div class="line"># 300秒 内至少10个key值改变</div><div class="line">save 300 10 </div><div class="line">#60秒 内至少1000个key值改变</div><div class="line">save 60 10000</div></pre></td></tr></table></figure><blockquote><p>另外，进行全量复制时，也会自动生成RDB文件，用于slave节点的数据同步<br>一般这三个配置都不使用</p></blockquote><h2 id="1-5-配置文件中的其他配置"><a href="#1-5-配置文件中的其他配置" class="headerlink" title="1.5 配置文件中的其他配置"></a>1.5 配置文件中的其他配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># RDB文件名称</div><div class="line">dbfilename dump-$&#123;port&#125;.rdb</div><div class="line"># 存储路径</div><div class="line">dir path</div><div class="line"># bgsave发生错误时，是否停止写，一般是yes</div><div class="line">stop-write-on-bgsave-error yes</div><div class="line"># rdb使用压缩格式（占用空间小）</div><div class="line">rdbcompression yes</div><div class="line"># 是否对rdb文件格式进行检验</div><div class="line">rdbchecksum yes</div></pre></td></tr></table></figure><h1 id="2-AOF工作原理"><a href="#2-AOF工作原理" class="headerlink" title="2 AOF工作原理"></a>2 AOF工作原理</h1><p>AOF属于写快照的方式，将每次对Redis的写操作都记录在日志文件中，当需要恢复数据再根据AOF文件进行恢复。大致过程如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E6%8C%81%E4%B9%85%E5%8C%96-5.png" alt="这里写图片描述"></p><h2 id="2-1-AOF的三种策略"><a href="#2-1-AOF的三种策略" class="headerlink" title="2.1 AOF的三种策略"></a>2.1 AOF的三种策略</h2><ol><li>always  # 只要进行了写操作，立马写入AOF文件</li><li>everysec # 每秒将缓冲区的写操作写入AOF文件</li><li>no # 由操作系统决定什么时候将缓冲区的数据写入AOP文件</li></ol><p><strong>三种方式的比较：</strong><br><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E6%8C%81%E4%B9%85%E5%8C%96-6.png" alt="这里写图片描述"></p><blockquote><p>推荐使用第二种方式</p></blockquote><h2 id="2-2-AOF重写"><a href="#2-2-AOF重写" class="headerlink" title="2.2 AOF重写"></a>2.2 AOF重写</h2><p>举个简单例子来说明为什么要进行AOF重写。加入先向AOF文件中写入了这个命令：<code>set hello word</code>，然后又写入了<code>del hello world</code>，当在使用AOF进行恢复数据时，这两条命令可以抵消掉，可以从AOF文件中删除。而AOF重写就是用来解决这个问题！<br>再例如下图：</p><p><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E6%8C%81%E4%B9%85%E5%8C%96-7.png" alt="这里写图片描述"></p><p>AOF重写的一方面是为了减少硬盘的占用了；另一方面是为了加快恢复的速度。AOF重写的方式包括两种：</p><ol><li>bgrewriteof命令</li><li>配置文件 </li></ol><p>AOF重写的主要配置包括：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># AOF重写需要的文件大小</div><div class="line">auto-aof-rewrite-min-size</div><div class="line"># AOF文件增长率</div><div class="line">auto-aof-rewrite-percentage</div></pre></td></tr></table></figure><p>当同时满足下面两个条件时，系统自动进行AOF文件的重写：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-&gt; AOF当前文件大小 【大于】 auto-aof-rewrite-min-size</div><div class="line">-&gt; AOF当前文件大小和最后一次重写后的大小之间的比率 </div><div class="line">【大于】 auto-aof-rewrite-percentage</div></pre></td></tr></table></figure><blockquote><p>在AOF重写的过程中，新产生的命令也会写入AOF文件中</p></blockquote><h1 id="3-AOF与RDB的比较"><a href="#3-AOF与RDB的比较" class="headerlink" title="3 AOF与RDB的比较"></a>3 AOF与RDB的比较</h1><p><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E6%8C%81%E4%B9%85%E5%8C%96-8.png" alt="这里写图片描述"></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Redis所有数据保持在内存中，对内存中的数据异步保持到磁盘上的过程叫做持久化。常见的持久化方式包括两种：&lt;br&gt;&lt;img src=&quot;http://p7n2owwza.bkt.clouddn.com/Redis%E6%8C%81%E4%B9%85%E5%8C%96-1.png&quot; alt=&quot;这里写图片描述&quot;&gt;&lt;br&gt;快照就是把某个时间节点的数据进行备份；写日志就把每次对数据库的操作都进行备份。RDB和AOF是Redis持久化的两种方式。&lt;/p&gt;
     
     </summary>
     
