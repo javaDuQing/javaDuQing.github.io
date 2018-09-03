@@ -1,32 +1,48 @@
 <!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> 【19】Redis主从复制——全量复制与增量复制总结 · Qingfeng.Du</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="【19】Redis主从复制——全量复制与增量复制总结 - Du Qingfeng"><meta name="keywords"><meta name="author" content="Du Qingfeng"><link rel="short icon" href="/images/favicon.ico"><link rel="stylesheet" href="/css/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="javaduqing.github.io/atom.xml" title="Qingfeng.Du"></head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="/images/logo.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="https://blog.csdn.net/disiwei1012" target="_blank" data-hover="CSDN" class="nav-list-link">CSDN</a></li><li class="nav-list-item"><a href="/" target="_self" data-hover="简历" class="nav-list-link">简历</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">【19】Redis主从复制——全量复制与增量复制总结</h1><div class="post-info">2018-06-08<p class="visit"><i data-hk-page="current"></i></p></div><div class="post-content"><p>主从复制作用：</p>
 <ol>
 <li>数据副本</li>
-<li>扩展读性能<br><br><blockquote>
-<p>1.一个master可以有多个slave<br>2.一个slave只能有一个master<br>3.数据流动是单向的，从master到slave</p>
-</blockquote>
-</li>
+<li>扩展读性能
+&lt;br&gt;</li>
 </ol>
-<a id="more"></a>
-<h1 id="1-主从复制的两种方式"><a href="#1-主从复制的两种方式" class="headerlink" title="1 主从复制的两种方式"></a>1 主从复制的两种方式</h1><p>主从复制的实现包括两种方式：</p>
+<blockquote>
+<p>1.一个master可以有多个slave
+2.一个slave只能有一个master
+3.数据流动是单向的，从master到slave</p>
+</blockquote>
+<p>&lt;!--more--&gt;</p>
+<h1>1 主从复制的两种方式</h1>
+<p>主从复制的实现包括两种方式：</p>
 <ol>
 <li>slaveof命令方式</li>
 <li>配置文件方式</li>
 </ol>
-<h2 id="1-1-slaveof命令方式"><a href="#1-1-slaveof命令方式" class="headerlink" title="1.1 slaveof命令方式"></a>1.1 slaveof命令方式</h2><p><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-1.png" alt="这里写图片描述"></p>
+<h2>1.1 slaveof命令方式</h2>
+<p><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-1.png" alt="这里写图片描述"></p>
 <p>执行命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">redis-6380&gt;slaveof 127.0.0.1 6379</div><div class="line">OK</div></pre></td></tr></table></figure>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">redis-6380&gt;slaveof 127.0.0.1 6379</div><div class="line">OK</div></pre></td></tr></table></figure></p>
 <p>取消复制可使用如下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">redis-6380&gt;slaveof no one</div><div class="line">OK</div></pre></td></tr></table></figure>
-<h2 id="1-2-配置方式"><a href="#1-2-配置方式" class="headerlink" title="1.2 配置方式"></a>1.2 配置方式</h2><p>主要配置包括：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">slaveof masterIp masterPort</div><div class="line">slave-read-only yes</div></pre></td></tr></table></figure>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">redis-6380&gt;slaveof no one</div><div class="line">OK</div></pre></td></tr></table></figure></p>
+<h2>1.2 配置方式</h2>
+<p>主要配置包括：</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">slaveof masterIp masterPort</div><div class="line">slave-read-only yes</div></pre></td></tr></table></figure></p>
 <p>第一个配置用来说明master的IP地址及端口；第二行把slave节点设置只读。slave节点只能做读操作，如果想要进行写操作，需要去master节点做。如果master节点设置了密码，则要配置master节点的密码。</p>
-<p>可以连接master节点，执行info replication命令，查看自己的角色以及连接的slave节点。<br><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-2.png" alt="这里写图片描述"></p>
-<p>如果在slave节点执行set操作，则会报错：<br><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-3.png" alt="这里写图片描述"></p>
-<h2 id="1-3-两种方式的比较"><a href="#1-3-两种方式的比较" class="headerlink" title="1.3 两种方式的比较"></a>1.3 两种方式的比较</h2><p><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-4.png" alt="这里写图片描述"></p>
-<h1 id="2-全量复制与部分复制"><a href="#2-全量复制与部分复制" class="headerlink" title="2 全量复制与部分复制"></a>2 全量复制与部分复制</h1><h2 id="2-1-全量复制"><a href="#2-1-全量复制" class="headerlink" title="2.1 全量复制"></a>2.1 全量复制</h2><p>1）主服务器的复制偏移量和从服务器的复制偏移量<br>  主服务器每次向从服务器传播N个字节的数据时，就将自己的复制偏移量的值加N；<br>     从服务器每次收到主服务器传播来的N个字节的数据时，就将自己的复制偏移量的值加上N。</p>
-<p>2）服务器的运行ID<br>每个Redis服务器在启动时随机生成运行ID（runid），主服务器和从服务器都会生成runid。</p>
-<p>3） <font color="red">主服务器的复制积压缓冲区（repl_back_buffer）</font><br>由主服务器维护的一个固定长度队列，默认为1M，当主服务器进行命令传播时，它不仅会将写命令发送给所有从服务器，还会将写命令入队到复制积压缓冲区里面。</p>
-<p>全量复制过程如下图：<br><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-5.png" alt="这里写图片描述"></p>
+<p>可以连接master节点，执行info replication命令，查看自己的角色以及连接的slave节点。
+<img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-2.png" alt="这里写图片描述"></p>
+<p>如果在slave节点执行set操作，则会报错：
+<img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-3.png" alt="这里写图片描述"></p>
+<h2>1.3 两种方式的比较</h2>
+<p><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-4.png" alt="这里写图片描述"></p>
+<h1>2 全量复制与部分复制</h1>
+<h2>2.1 全量复制</h2>
+<p>1）主服务器的复制偏移量和从服务器的复制偏移量
+主服务器每次向从服务器传播N个字节的数据时，就将自己的复制偏移量的值加N；
+	从服务器每次收到主服务器传播来的N个字节的数据时，就将自己的复制偏移量的值加上N。</p>
+<p>2）服务器的运行ID
+每个Redis服务器在启动时随机生成运行ID（runid），主服务器和从服务器都会生成runid。</p>
+<p>3） &lt;font color='red'&gt;主服务器的复制积压缓冲区（repl_back_buffer）&lt;/font&gt;
+由主服务器维护的一个固定长度队列，默认为1M，当主服务器进行命令传播时，它不仅会将写命令发送给所有从服务器，还会将写命令入队到复制积压缓冲区里面。</p>
+<p>全量复制过程如下图：
+<img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-5.png" alt="这里写图片描述"></p>
 <p><strong>全量复制的过程：</strong></p>
 <ol>
 <li>从服务器向主服务器发送PSYNC命令，携带主服务器的runid和复制偏移量；第一次的话，slave不知道master 的 runid，所以是？,偏移量是-1</li>
@@ -45,7 +61,9 @@
 <li>从节点清空数据时间</li>
 <li>从节点加载RDB数据时间</li>
 </ol>
-<h2 id="2-2-部分复制（增量复制）"><a href="#2-2-部分复制（增量复制）" class="headerlink" title="2.2 部分复制（增量复制）"></a>2.2 部分复制（增量复制）</h2><p>部分复制过程如下图：<br><img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-6.png" alt="这里写图片描述"></p>
+<h2>2.2 部分复制（增量复制）</h2>
+<p>部分复制过程如下图：
+<img src="http://p7n2owwza.bkt.clouddn.com/Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-6.png" alt="这里写图片描述"></p>
 <p><strong>部分复制的过程：</strong></p>
 <ol>
 <li>当网络发生抖动，slave向master发送连接</li>
