@@ -1,16 +1,11 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> 【23】Redis 过期数据处理策略和内存淘汰策略 · Qingfeng.Du</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="【23】Redis 过期数据处理策略和内存淘汰策略 - Du Qingfeng"><meta name="keywords"><meta name="author" content="Du Qingfeng"><link rel="short icon" href="/images/favicon.ico"><link rel="stylesheet" href="/css/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="javaduqing.github.io/atom.xml" title="Qingfeng.Du"></head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="/images/logo.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="https://blog.csdn.net/disiwei1012" target="_blank" data-hover="CSDN" class="nav-list-link">CSDN</a></li><li class="nav-list-item"><a href="/" target="_self" data-hover="简历" class="nav-list-link">简历</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">【23】Redis 过期数据处理策略和内存淘汰策略</h1><div class="post-info">2018-06-12<p class="visit"><i data-hk-page="current"></i></p></div><div class="post-content"><p><em>Redis的过期策略就是指当Redis中缓存的key过期了，Redis如何处理。</em>
-<em>Redis的内存淘汰策略是指在Redis的用于缓存的内存不足时，怎么处理需要新写入且需要申请额外空间的数据。</em></p>
-<p>&lt;!--more--&gt;</p>
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> 【23】Redis 过期数据处理策略和内存淘汰策略 · Qingfeng.Du</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="【23】Redis 过期数据处理策略和内存淘汰策略 - Du Qingfeng"><meta name="keywords"><meta name="author" content="Du Qingfeng"><link rel="short icon" href="/images/favicon.ico"><link rel="stylesheet" href="/css/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="javaduqing.github.io/atom.xml" title="Qingfeng.Du"></head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="/images/logo.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="https://blog.csdn.net/disiwei1012" target="_blank" data-hover="CSDN" class="nav-list-link">CSDN</a></li><li class="nav-list-item"><a href="/" target="_self" data-hover="简历" class="nav-list-link">简历</a></li><li class="nav-list-item"><a href="/about/" target="_self" data-hover="关于" class="nav-list-link">关于</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">【23】Redis 过期数据处理策略和内存淘汰策略</h1><div class="post-info">2018-06-12<p class="visit"><i data-hk-page="current"></i></p></div><div class="post-content"><p><em>Redis的过期策略就是指当Redis中缓存的key过期了，Redis如何处理。</em><br><em>Redis的内存淘汰策略是指在Redis的用于缓存的内存不足时，怎么处理需要新写入且需要申请额外空间的数据。</em></p>
+<a id="more"></a>
 <hr>
-<h1>1 过期数据处理策略</h1>
-<p><strong>定时删除</strong></p>
+<h1 id="1-过期数据处理策略"><a href="#1-过期数据处理策略" class="headerlink" title="1 过期数据处理策略"></a>1 过期数据处理策略</h1><p><strong>定时删除</strong></p>
 <ul>
 <li>含义：在设置key的过期时间的同时，为该key创建一个定时器，让定时器在key的过期时间来临时，对key进行删除</li>
 <li>优点：保证内存被尽快释放</li>
-<li>缺点：
-1）若过期key很多，删除这些key会占用很多的CPU时间，在CPU时间紧张的情况下，CPU不能把所有的时间用来做要紧的事儿，还需要去花时间删除这些key
-2）定时器的创建耗时，若为每一个设置了过期时间的key创建一个定时器（将会有大量的定时器产生），性能影响严重
-3）没人用</li>
+<li>缺点：<br>1）若过期key很多，删除这些key会占用很多的CPU时间，在CPU时间紧张的情况下，CPU不能把所有的时间用来做要紧的事儿，还需要去花时间删除这些key<br>2）定时器的创建耗时，若为每一个设置了过期时间的key创建一个定时器（将会有大量的定时器产生），性能影响严重<br>3）没人用</li>
 </ul>
 <p><strong>惰性删除</strong></p>
 <ul>
@@ -21,12 +16,8 @@
 <p><strong>定期删除</strong></p>
 <ul>
 <li>含义：每隔一段时间执行一次删除过期key操作</li>
-<li>优点：
-1）通过限制删除操作的时长和频率，来减少删除操作对CPU时间的占用--处理&quot;定时删除&quot;的缺点
-2）定期删除过期key--处理&quot;惰性删除&quot;的缺点</li>
-<li>缺点
-1）在内存友好方面，不如&quot;定时删除&quot;
-2）在CPU时间友好方面，不如&quot;惰性删除&quot;</li>
+<li>优点：<br>1）通过限制删除操作的时长和频率，来减少删除操作对CPU时间的占用–处理”定时删除”的缺点<br>2）定期删除过期key–处理”惰性删除”的缺点</li>
+<li>缺点<br>1）在内存友好方面，不如”定时删除”<br>2）在CPU时间友好方面，不如”惰性删除”</li>
 <li>难点：合理设置删除操作的执行时长（每次删除执行多长时间）和执行频率（每隔多长时间做一次删除）（这个要根据服务器运行情况来定了）</li>
 </ul>
 <hr>
@@ -40,14 +31,13 @@
 </ul>
 <p>定期删除流程</p>
 <ul>
-<li>遍历每个数据库（就是redis.conf中配置的&quot;database&quot;数量，默认为16）</li>
+<li>遍历每个数据库（就是redis.conf中配置的”database”数量，默认为16）</li>
 <li>检查当前库中的指定个数个key（默认是每个库检查20个key）</li>
 <li>如果当前库中没有一个key设置了过期时间，直接执行下一个库的遍历</li>
 <li>随机获取一个设置了过期时间的key，检查该key是否过期，如果过期，删除key</li>
 <li>判断定期删除操作是否已经达到指定时长，若已经达到，直接退出定期删除。</li>
 </ul>
-<h1>2 内存淘汰策略</h1>
-<p><strong>Redis的内存淘汰策略</strong></p>
+<h1 id="2-内存淘汰策略"><a href="#2-内存淘汰策略" class="headerlink" title="2 内存淘汰策略"></a>2 内存淘汰策略</h1><p><strong>Redis的内存淘汰策略</strong></p>
 <ul>
 <li>noeviction：当内存不足以容纳新写入数据时，新写入操作会报错。</li>
 <li>allkeys-lru：当内存不足以容纳新写入数据时，在键空间中，移除最近最少使用的key。（LRU算法）</li>
@@ -56,8 +46,7 @@
 <li>volatile-random：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，随机移除某个key。</li>
 <li>volatile-ttl：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，有更早过期时间的key优先移除。</li>
 </ul>
-<p><em>最好为Redis指定一种有效的数据淘汰策略以配合maxmemory设置，避免在内存使用满后发生写入失败的情况。</em>
-<em>一般来说，推荐使用的策略是volatile-lru，Redis默认的是noeviction。</em></p>
+<p><em>最好为Redis指定一种有效的数据淘汰策略以配合maxmemory设置，避免在内存使用满后发生写入失败的情况。</em><br><em>一般来说，推荐使用的策略是volatile-lru，Redis默认的是noeviction。</em></p>
 <hr>
 <p>参考</p>
 <ul>
