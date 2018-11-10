@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>javaduqing.github.io/2018/11/10/Quartz%202.2.1%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E2%80%94%E2%80%94JobDetail%E5%92%8CTrigger%E7%9A%84%E6%B3%A8%E5%86%8C/</loc>
+    
+    <lastmod>2018-11-10T06:44:40.578Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>javaduqing.github.io/2018/05/17/RabbitMQ%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9Ahello%20world,work%20queue,PublishSubscribe/</loc>
     
     <lastmod>2018-09-05T06:15:43.501Z</lastmod>
