@@ -1,0 +1,146 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> 【43】Quartz 2.2.1源码分析——线程池与工作线程 · Qingfeng.Du</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="【43】Quartz 2.2.1源码分析——线程池与工作线程 - Du Qingfeng"><meta name="keywords"><meta name="author" content="Du Qingfeng"><link rel="short icon" href="/images/favicon.ico"><link rel="stylesheet" href="/css/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="javaduqing.github.io/atom.xml" title="Qingfeng.Du"></head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="/images/logo.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="https://blog.csdn.net/disiwei1012" target="_blank" data-hover="CSDN" class="nav-list-link">CSDN</a></li><li class="nav-list-item"><a href="http://ot6mc7xfg.bkt.clouddn.com/Java%E5%90%8E%E7%AB%AF+Python%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%20%281%29.pdf" target="_blank" data-hover="简历" class="nav-list-link">简历</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">【43】Quartz 2.2.1源码分析——线程池与工作线程</h1><div class="post-info">2018-11-13<p class="visit"><i data-hk-page="current"></i></p></div><div class="post-content"><p><em>note：上一篇文章中介绍了Quartz的引擎QuartzSchedulerThread，循环寻找待执行的任务。找到任务后要交给工作线程执行。这篇就来说说线程池与工作线程。</em></p>
+<p><em>可以把QuartzSchedulerThread比作公司老板，提供工作。然后老板查找空闲的人员名单，把工作交给空闲人员去做</em></p>
+<p>涉及到的类包括：QuartzSchedulerThread、SimpleThreadPool、WorkerThread、JobRunShell、Job。下面是时序图：<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/Quartz%E6%BA%90%E7%A0%81/Quartz%E6%BA%90%E7%A0%81%E7%AC%AC%E4%B8%89%E7%AF%87-1.png" alt="在这里插入图片描述"></p>
+<a id="more"></a>
+<h2 id="1-SimpleThreadPool的runInThread方法说起"><a href="#1-SimpleThreadPool的runInThread方法说起" class="headerlink" title="1 SimpleThreadPool的runInThread方法说起"></a>1 SimpleThreadPool的runInThread方法说起</h2><p>老板QuartzSchedulerThread把任务交给工人是在runInThread方法中实现的。先从线程池中寻找空闲的工作线程，如果没有可用的工作线程，则QuartzSchedulerThread线程等待直到有空闲工人。</p>
+<blockquote>
+<p>在线程池初始化时，创建并启动指定数量（配置文件中可设置）的工作线程</p>
+</blockquote>
+<p>如果有可用工作线程，但是线程池被关闭，则会从线程池之外重新创建工作线程。</p>
+<pre><code>public boolean runInThread(Runnable runnable) {
+    if (runnable == null) {
+        return false;
+    }
+
+    synchronized (nextRunnableLock) {
+
+        handoffPending = true;
+
+        // Wait until a worker thread is available
+        while ((availWorkers.size() &lt; 1) &amp;&amp; !isShutdown) {
+            try {
+                nextRunnableLock.wait(500);
+            } catch (InterruptedException ignore) {
+            }
+        }
+
+        if (!isShutdown) {
+            WorkerThread wt = (WorkerThread)availWorkers.removeFirst();
+            busyWorkers.add(wt);
+            wt.run(runnable);
+        } else {
+            // If the thread pool is going down, execute the Runnable
+            // within a new additional worker thread (no thread from the pool).
+            WorkerThread wt = new WorkerThread(this, threadGroup,
+                    &quot;WorkerThread-LastJob&quot;, prio, isMakeThreadsDaemons(), runnable);
+            busyWorkers.add(wt);
+            workers.add(wt);
+            wt.start();
+        }
+        nextRunnableLock.notifyAll();
+        handoffPending = false;
+    }
+
+    return true;
+}
+</code></pre><ol>
+<li>workers：工作线程</li>
+<li>availWorkers：可用（空闲）工作线程</li>
+<li>busyWorkers：繁忙工作线程</li>
+</ol>
+<h2 id="2-WorkerThread"><a href="#2-WorkerThread" class="headerlink" title="2 WorkerThread"></a>2 WorkerThread</h2><p>工作线程启动后，会一直循环是否有需要执行的任务，如果有则立即执行，没有则等待，如下（省略了部分代码）：</p>
+<pre><code>@Override
+public void run() {
+    boolean ran = false;
+
+    while (run.get()) {
+        try {
+            synchronized(lock) {
+                while (runnable == null &amp;&amp; run.get()) {
+                    lock.wait(500);
+                }
+
+                if (runnable != null) {
+                    ran = true;
+                    runnable.run();
+                }
+            }
+        } catch (InterruptedException unblock) {
+           ...
+        } finally {
+            synchronized(lock) {
+                runnable = null;
+            }
+            // repair the thread in case the runnable mucked it up...
+            if(getPriority() != tp.getThreadPriority()) {
+                setPriority(tp.getThreadPriority());
+            }
+
+            if (runOnce) {
+                   run.set(false);
+                clearFromBusyWorkersList(this);
+            } else if(ran) {
+                ran = false;
+                makeAvailable(this);
+            }
+
+        }
+    }
+  ...
+</code></pre><p>注意哦，WorkerThread类中还有一个的run方法，就是上面时序图中的第2步，唤醒等待的WorkerThread线程开始工作。</p>
+<pre><code>public void run(Runnable newRunnable) {
+    synchronized(lock) {
+        if(runnable != null) {
+            throw new IllegalStateException(&quot;Already running a Runnable!&quot;);
+        }
+
+        runnable = newRunnable;
+        lock.notifyAll();
+    }
+}
+</code></pre><p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/Quartz%E6%BA%90%E7%A0%81/Quartz%E6%BA%90%E7%A0%81%E7%AC%AC%E4%B8%89%E7%AF%87-2.png" alt="在这里插入图片描述"></p>
+<h2 id="3-JobRunShell"><a href="#3-JobRunShell" class="headerlink" title="3 JobRunShell"></a>3 JobRunShell</h2><p>WorkerThread的run方法会调用JobRunShell类的run方法，从而完成job。</p>
+<pre><code>public void run() {
+    qs.addInternalSchedulerListener(this);
+
+    try {
+        OperableTrigger trigger = (OperableTrigger) jec.getTrigger();
+        JobDetail jobDetail = jec.getJobDetail();
+        do {
+            JobExecutionException jobExEx = null;
+            Job job = jec.getJobInstance();
+            try {
+                begin();
+            } .
+            ...
+            }
+            // notify job &amp; trigger listeners...
+            try {
+                if (!notifyListenersBeginning(jec)) {
+                    break;
+                }
+            } catch(VetoedException ve) {
+                try {
+                    CompletedExecutionInstruction instCode = trigger.executionComplete(jec, null);
+                    qs.notifyJobStoreJobVetoed(trigger, jobDetail, instCode);
+
+                    if (jec.getTrigger().getNextFireTime() == null) {
+                        qs.notifySchedulerListenersFinalized(jec.getTrigger());
+                    }
+                    complete(true);
+                } ...
+                break;
+            }
+            long startTime = System.currentTimeMillis();
+            long endTime = startTime;
+
+            // 执行Job
+            try {
+                log.debug(&quot;Calling execute on job &quot; + jobDetail.getKey());
+                job.execute(jec);
+                endTime = System.currentTimeMillis();
+            } 
+        ...
+</code></pre><hr>
+<p>结束！</p>
+</div></article></div><div class="right-container"><div class="widget"><div class="category"><h4>分类归档</h4><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Deep-Learning/">Deep Learning</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java提高/">Java提高</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL-Redis/">MySQL-Redis</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-cloud/">Spring cloud</a><span class="category-list-count">8</span></li></ul></div></div><div class="widget"><div class="tagcloud"><h4>标签云</h4><a href="/tags/Deep-Learning/" style="font-size: 14px;">Deep Learning</a> <a href="/tags/Java提高/" style="font-size: 18px;">Java提高</a> <a href="/tags/MQ/" style="font-size: 12px;">MQ</a> <a href="/tags/MySQL-Redis/" style="font-size: 20px;">MySQL-Redis</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring-cloud/" style="font-size: 16px;">Spring cloud</a></div></div><div class="widget"><div class="recent"><h4>最近文章</h4><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/11/13/Quartz 2.2.1源码分析——线程池与工作线程/">【43】Quartz 2.2.1源码分析——线程池与工作线程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/12/Quartz 2.2.1源码分析——QuartzSchedulerThread（Quartz引擎）运转过程/">【42】Quartz 2.2.1源码分析——QuartzSchedulerThread（Quartz引擎）运转过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/10/Quartz 2.2.1源码分析——JobDetail和Trigger的注册/">【41】Quartz 2.2.1源码分析——JobDetail和Trigger的注册</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/22/Java7 ConcurrentHashMap 源码分析/">【40】Java7 ConcurrentHashMap 源码分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/08/09/Java 读写锁 ReentrantReadWriteLock 源码分析（1）/">【39】Java7 读写锁 ReentrantReadWriteLock 源码分析</a></li></ul></div></div><div class="widget"><div id="arAnchorBar"></div></div></div></section></div><div class="right-menu"></div><div class="modal search-modal"><div class="input-field"><input type="text" id="search_input"><label for="search-input">搜索</label></div><div id="search_result" class="search-result"></div></div><div class="blog-overlay"></div><footer class="row"><div class="footer-con"><div class="paginator"><a href="/2018/11/12/Quartz 2.2.1源码分析——QuartzSchedulerThread（Quartz引擎）运转过程/" class="next">NEXT</a></div><div class="copyright"><p>© 2016 - 2018 <a target="_blank">Du Qingfeng</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <br> and <a href="https://github.com/Bulandent/hexo-theme-bubuzou" target="_blank">hexo-theme-bubuzou</a></p></div><div class="totop"><i></i></div></div></footer><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="http://apps.bdimg.com/libs/jquery/1.8.2/jquery.min.js"></script><script src="https://cdn1.lncld.net/static/js/av-mini-0.6.10.js"></script><script src="/scripts/hit-kounter-lc-0.2.0.js"></script><script src="/scripts/arAnchor.js"></script><script src="/scripts/main.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
