@@ -147,6 +147,34 @@
   </entry>
   
   <entry>
+    <title>分布式事务（1）——基础理论与解决方案</title>
+    <link href="javaduqing.github.io/2018/08/18/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%EF%BC%881%EF%BC%89%E2%80%94%E2%80%94%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"/>
+    <id>javaduqing.github.io/2018/08/18/分布式事务（1）——基础理论与解决方案/</id>
+    <published>2018-08-18T07:13:02.000Z</published>
+    <updated>2018-11-18T07:14:03.434Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="1-要解决的问题"><a href="#1-要解决的问题" class="headerlink" title="1 要解决的问题"></a>1 要解决的问题</h2><p>跨越多个数据源上数据操作的一致性问题，大家经常举的银行转账的例子这里就不举了。</p><p>关于一致行：</p><ol><li>强一致性：对于关系型数据库，要求更新过的数据能被后续的访问都能看到</li><li>弱一致性：如果能容忍后续的部分或者全部访问不到，则是弱一致性弱一致性：如果能容忍后续的部分或者全部访问不到，则是弱一致性</li><li>最终一致性：如果经过一段时间后要求能访问到更新后的数据，则是最终一致性最终一致性：如果经过一段时间后要求能访问到更新后的数据，则是最终一致性</li></ol><a id="more"></a><h2 id="2-关于分布式事务的几个概念"><a href="#2-关于分布式事务的几个概念" class="headerlink" title="2 关于分布式事务的几个概念"></a>2 关于分布式事务的几个概念</h2><p><strong>2.1 CAP理论</strong></p><p>分布式环境下（数据分布）要任何时刻保证数据一致性是不可能的，只能采取妥协的方案来保证数据最终一致性。这个也就是著名的CAP定理。</p><p>组成部分：</p><ol><li>强一致性（C）</li><li>可用性（A）:非故障的节点在合理的时间内返回合理的响应可用性（A）:非故障的节点在合理的时间内返回合理的响应</li><li>分区容错性（P）:当出现网络分区后，系统能够继续工作。打个比方，这里集群有多台机器，有台机器网络出现了问题，但是这个分区容错性（P）:当出现网络分区后，系统能够继续工作。打个比方，这里集群有多台机器，有台机器网络出现了问题，但是这个集群仍然可以正常工作</li></ol><p>CAP的三个部分不能同时满足：</p><table><thead><tr><th>选择</th><th>说明</th></tr></thead><tbody><tr><td>如果我们选择了CA而放弃了P</td><td>其实就是传统的单机数据库的选择</td></tr><tr><td>AP</td><td>放弃强一致性，这是分布式系统设计时的选择</td></tr><tr><td>CP</td><td>放弃可用性，追求一致性和分区容错，基本不可能，网络问题可能让整个系统不可用</td></tr></tbody></table><blockquote><p>需要明确的一点是，对于一个分布式系统而言，分区容错性是一个最基本的要求。因为既然是一个分布式系统，那么分布式系统中的组件必然需要被部署到不同的节点，否则也就无所谓分布式系统了，因此系统架构师往往需要把精力花在如何根据业务特点在C（一致性）和A（可用性）之间寻求平衡。</p></blockquote><p><strong>2.2 BASE理论</strong></p><p>核心思想是：即使无法做到强一致性，但每个应用都可以根据自身业务特点，采用适当的方式来使系统达到最终一致性,从而提高可用性。</p><p>组成部分：</p><ol><li>基本可用（Basically Available）：分布式系统在出现故障时，允许损失部分可用功能，保证核心功能可用</li><li>软状态（Soft state）：允许系统中的数据存在中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统在不同节点的数据副本之间进行数据同步的过程存在延时软状态（Soft state）：允许系统中的数据存在中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统在不同节点的数据副本之间进行数据同步的过程存在延时</li><li>最终一致性（Eventually consistent）</li></ol><p><strong>2.3 幂等操作</strong></p><p>幂等性，其实是一个数学概念。幂等函数，或幂等方法，是指可以使用相同参数重复执行，并能获得相同结果的函数。</p><pre><code>f(f(x)) = f(x)</code></pre><p>在编程中一个幂等操作的特点是其任意多次执行所产生的影响均与一次执行的影响相同。也就是说，同一个方法，使用同样的参数，调用多次产生的业务结果与调用一次产生的业务结果相同。这一个要求其实也比较好理解，因为要保证数据的最终一致性，很多解决防范都会有很多重试的操作，如果一个方法不保证幂等，那么将无法被重试。</p><h2 id="3-业界方案"><a href="#3-业界方案" class="headerlink" title="3 业界方案"></a>3 业界方案</h2><p><strong>3.1 两阶段提交（2PC）</strong></p><p>XA协议中定义了两阶段提交的标准，主要定义了事务管理器（Transaction Manager）和局部资源管理器（Local Resource Manager）之间的接口。</p><p>XA协议通过两阶段提交来解决分布式事务问题。</p><ul><li>第一阶段（prepare）：TM（事务管理器，又称协调者）请求所有相关数据库准备提交，确认是否所有相关数据库都可以提交各自的事务分支</li><li>第二阶段（commit/rollback）：TM审查所有数据库返回的预提交结果，如所有数据库都可以提交，TM将要求所有数据库做正式提交，这样该分布式事务被提交。而如果有任一数据库预提交返回失败，TM将要求所有其它数据库回滚其操作，这样该分布式事务被回滚<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-1.png" alt="在这里插入图片描述"></li></ul><p>作为Java平台上分布式事务规范JTA，实际上JTA是基于XA架构上建模的，在JTA 中，事务管理器抽象为javax.transaction.TransactionManager接口。像很多其他的java规范一样，JTA仅仅定义了接口，具体的实现则是由供应商（如J2EE厂商）负责提供，目前JTA的实现主要由以下几种：</p><ol><li>J2EE容器所提供的JTA实现（JBoss）</li><li>独立的JTA实现：如JOTM、Atomikos独立的JTA实现</li></ol><p><strong><font color="red">2PC存在的问题：</font></strong></p><ol><li>数据不一致：协调者在给各参与者发出正式提交事务过程中挂了，那么只有一部分参与者收到了正式提交的通知，还是会导致数据不一致。</li><li>单点故障：由于协调者的重要性，一旦协调者发生故障。参与者会一直阻塞下去。尤其在第二阶段，协调者发生故障，那么所有的参与者还都处于锁定事务资源的状态中，而无法继续完成事务操作。（如果是协调者挂掉，可以重新选举一个，但是无法解决因为协调者宕机导致的子系统处于阻塞状态的问题）</li><li>同步阻塞问题：执行过程中，所有参与节点都是事务阻塞型的。当参与者占有公共资源时，其他第三方节点访问公共资源不得不处于阻塞状态。</li></ol><font color="red">疑问：查了很多资料发现都没提及如果第二阶段参与者提交事务失败这种情况？难道参与者正式提交事务就一定能成功吗？如果第二阶段参与者事务提交失败，会把失败的消息反馈给协调者吗？其他参与会一起回滚吗？</font><p><strong>3.2 三阶段提交（3PC)</strong></p><p>与两阶段提交不同的是，三阶段提交有两个改动点。</p><ol><li>引入超时机制。同时在协调者和参与者中都引入超时机制</li><li>在第一阶段和第二阶段中插入一个准备阶段。保证了在最后提交阶段之前各参与节点的状态是一致的，即CanCommit、PreCommit、DoCommit</li></ol><blockquote><p>相对于2PC，3PC主要解决的单点故障问题，并减少阻塞，因为一旦参与者无法及时收到来自协调者的信息之后，他会默认执行commit。而不会一直持有事务资源并处于阻塞状态。但是这种机制也会导致数据一致性问题，因为，由于网络原因，协调者发送的abort响应没有及时被参与者接收到，那么参与者在等待超时之后执行了commit操作。这样就和其他接到abort命令并执行回滚的参与者之间存在数据不一致的情况。</p></blockquote><p>了解了2PC和3PC之后，我们可以发现，无论是二阶段提交还是三阶段提交都无法彻底解决分布式的一致性问题。那么Paxos算法出现了！</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;1-要解决的问题&quot;&gt;&lt;a href=&quot;#1-要解决的问题&quot; class=&quot;headerlink&quot; title=&quot;1 要解决的问题&quot;&gt;&lt;/a&gt;1 要解决的问题&lt;/h2&gt;&lt;p&gt;跨越多个数据源上数据操作的一致性问题，大家经常举的银行转账的例子这里就不举了。&lt;/p&gt;
+&lt;p&gt;关于一致行：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;强一致性：对于关系型数据库，要求更新过的数据能被后续的访问都能看到&lt;/li&gt;
+&lt;li&gt;弱一致性：如果能容忍后续的部分或者全部访问不到，则是弱一致性弱一致性：如果能容忍后续的部分或者全部访问不到，则是弱一致性&lt;/li&gt;
+&lt;li&gt;最终一致性：如果经过一段时间后要求能访问到更新后的数据，则是最终一致性最终一致性：如果经过一段时间后要求能访问到更新后的数据，则是最终一致性&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+      <category term="Java提高" scheme="javaduqing.github.io/categories/Java%E6%8F%90%E9%AB%98/"/>
+    
+    
+      <category term="Java提高" scheme="javaduqing.github.io/tags/Java%E6%8F%90%E9%AB%98/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【39】Java7 读写锁 ReentrantReadWriteLock 源码分析</title>
     <link href="javaduqing.github.io/2018/08/09/Java%20%E8%AF%BB%E5%86%99%E9%94%81%20ReentrantReadWriteLock%20%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%881%EF%BC%89/"/>
     <id>javaduqing.github.io/2018/08/09/Java 读写锁 ReentrantReadWriteLock 源码分析（1）/</id>
@@ -169,29 +197,6 @@
   </entry>
   
   <entry>
-    <title>【38】小米Mace Android demo加载自己训练的 mobilenet-v1 模型</title>
-    <link href="javaduqing.github.io/2018/07/21/%E5%B0%8F%E7%B1%B3Mace%20Android%20demo%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%B7%B1%E8%AE%AD%E7%BB%83%E7%9A%84%20mobilenet-v1%20%E6%A8%A1%E5%9E%8B/"/>
-    <id>javaduqing.github.io/2018/07/21/小米Mace Android demo加载自己训练的 mobilenet-v1 模型/</id>
-    <published>2018-07-21T07:28:02.000Z</published>
-    <updated>2018-07-21T08:39:17.198Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="1-生成model-sha256-checksum"><a href="#1-生成model-sha256-checksum" class="headerlink" title="1 生成model_sha256_checksum"></a>1 生成model_sha256_checksum</h2><p>终端执行如下命令，生成pb文件的sha256校验和：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sha256sum my_frozen_mobilenet_v1.pb &gt;&gt; SHA256.txt</div></pre></td></tr></table></figure></p><p>生成的SHA256.txt文件内容如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/macemobilev1-1.png" alt="这里写图片描述"></p><a id="more"></a><h2 id="2-编写yml文件"><a href="#2-编写yml文件" class="headerlink" title="2 编写yml文件"></a>2 编写yml文件</h2><p>如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">library_name: mobilenet-v1</div><div class="line">target_abis: [armeabi-v7a, arm64-v8a]</div><div class="line">model_graph_format: code</div><div class="line">model_data_format: code</div><div class="line">models:</div><div class="line">  mobilenet_v1:</div><div class="line">    platform: tensorflow</div><div class="line">    model_file_path: /media/root/B/python/mace_201807122/models/my_frozen_mobilenet_v1.pb</div><div class="line">    model_sha256_checksum: d8410c0799862c2041246c2c454132dbc9520bdb0aeeab35ea83f335fea70b7a</div><div class="line">    subgraphs:</div><div class="line">      - input_tensors:</div><div class="line">          - input</div><div class="line">        input_shapes:</div><div class="line">          - 1,224,224,3</div><div class="line">        output_tensors:</div><div class="line">          - MobilenetV1/Predictions/Reshape_1</div><div class="line">        output_shapes:</div><div class="line">          - 1,2</div><div class="line">        validation_inputs_data:</div><div class="line">          - https://cnbj1.fds.api.xiaomi.com/mace/inputs/dog.npy</div><div class="line">    runtime: cpu+gpu</div><div class="line">    limit_opencl_kernel_time: 0</div><div class="line">    nnlib_graph_mode: 0</div><div class="line">    obfuscate: 0</div><div class="line">    winograd: 0</div></pre></td></tr></table></figure><p><code>model_file_path</code>：pb文件路径<br><code>model_sha256_checksum</code>：模型sha256校验和<br><code>input_shapes</code>：图片大小</p><h2 id="3-执行转化命令"><a href="#3-执行转化命令" class="headerlink" title="3 执行转化命令"></a>3 执行转化命令</h2><p>执行小米mace转化命令需要使用mace源码，下载地址如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">www.github.com/xiaomi/mace</div></pre></td></tr></table></figure><p>终端切换到mace源码目录下，执行如下两条命令：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">命令1：</div><div class="line">bash tools/build-standalone-lib.sh</div><div class="line">命令2：</div><div class="line">python tools/converter.py convert </div><div class="line">--config=/media/root/B/python/mace_20180712/models/mobilenet-v1/mobilenet-v1.yml</div></pre></td></tr></table></figure><p><code>--config</code>：生成的yml文件路径</p><p>命令执行完成后，在mace源码目录下生成builds文件夹，内容如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-2.png" alt="这里写图片描述"></p><blockquote><p>注意：这执行命令2前，要切换到Python2.7环境</p></blockquote><h2 id="4-修改Android-demo部分代码"><a href="#4-修改Android-demo部分代码" class="headerlink" title="4 修改Android demo部分代码"></a>4 修改Android demo部分代码</h2><p>使用Android studio打开mace源码中的Android demo，路径为：<code>mace/examples/android</code></p><p><strong>修改1：</strong> <code>android/app/src/main/assets/cacheLabel.txt</code>把内容修改为自己的类别名称，例如：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-4.png" alt="这里写图片描述"></p><p><strong>修改2：</strong> <code>android/macelibrary/src/main/cpp/image_classify.cc</code>，修改第48、50行为自己的类别数，如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-5.png" alt="这里写图片描述"></p><p><strong>修改3：</strong>在<code>android/macelibrary/src/main/cpp</code>目录下新建<code>include.mace.public、lib、model</code>三个文件夹，如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-6.png" alt="这里写图片描述"></p><p>并将生成的builds文件夹中的：<br>1）<code>builds/include/mace/public</code>和<code>builds/mobilenet-v1/include/mace/public</code>目录下的文件拷贝到<code>include.mace.public</code>下。<br>2）<code>builds/lib</code>目录下的文件拷贝到lib下<br>3）<code>builds/mobilenet-v1/model</code>目录下的文件改名为<code>mobilenet.a</code>，拷贝到model目录下</p><p>最终效果如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-7.png" alt="这里写图片描述"></p><h2 id="5-运行Android-demo，安装APK"><a href="#5-运行Android-demo，安装APK" class="headerlink" title="5 运行Android demo，安装APK"></a>5 运行Android demo，安装APK</h2><p>最终效果如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-8.png" alt="这里写图片描述"></p><h2 id="6-参考"><a href="#6-参考" class="headerlink" title="6 参考"></a>6 参考</h2><ol><li><a href="https://github.com/XiaoMi/mace" target="_blank" rel="external">小米AI mace项目地址</a></li><li><a href="https://mace.readthedocs.io/en/latest/index.html" target="_blank" rel="external">小米mace官方文档地址</a></li></ol>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;1-生成model-sha256-checksum&quot;&gt;&lt;a href=&quot;#1-生成model-sha256-checksum&quot; class=&quot;headerlink&quot; title=&quot;1 生成model_sha256_checksum&quot;&gt;&lt;/a&gt;1 生成model_sha256_checksum&lt;/h2&gt;&lt;p&gt;终端执行如下命令，生成pb文件的sha256校验和：&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;sha256sum my_frozen_mobilenet_v1.pb &amp;gt;&amp;gt; SHA256.txt&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;生成的SHA256.txt文件内容如下：&lt;br&gt;&lt;img src=&quot;http://p7n2owwza.bkt.clouddn.com/macemobilev1-1.png&quot; alt=&quot;这里写图片描述&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Deep Learning" scheme="javaduqing.github.io/categories/Deep-Learning/"/>
-    
-    
-      <category term="Deep Learning" scheme="javaduqing.github.io/tags/Deep-Learning/"/>
-    
-  </entry>
-  
-  <entry>
     <title>【37】使用TensorFlow slim 训练 mobilenet-v1 网络</title>
     <link href="javaduqing.github.io/2018/07/21/%E4%BD%BF%E7%94%A8TensorFlow%20slim%20%E8%AE%AD%E7%BB%83%20mobilenet-v1%20%E7%BD%91%E7%BB%9C/"/>
     <id>javaduqing.github.io/2018/07/21/使用TensorFlow slim 训练 mobilenet-v1 网络/</id>
@@ -204,6 +209,29 @@
     
       &lt;p&gt;下载 TensorFlow models 源码，在 TensorFlow models 中包含了 slim，&lt;a href=&quot;https://github.com/tensorflow/models&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;地址点这里&lt;/a&gt;。slim的代码在&lt;code&gt;models/research/slim&lt;/code&gt;目录下。&lt;/p&gt;
 &lt;h2 id=&quot;1-训练数据准备&quot;&gt;&lt;a href=&quot;#1-训练数据准备&quot; class=&quot;headerlink&quot; title=&quot;1 训练数据准备&quot;&gt;&lt;/a&gt;1 训练数据准备&lt;/h2&gt;&lt;p&gt;将图片按文件夹存放，每个文件夹中的图像属于一个类别，如下，包含两类：face 和 tongue。&lt;br&gt;&lt;img src=&quot;http://p7n2owwza.bkt.clouddn.com/TensorFlowslim-1.png&quot; alt=&quot;这里写图片描述&quot;&gt;&lt;br&gt;&lt;img src=&quot;http://p7n2owwza.bkt.clouddn.com/TensorFlowslim-2.png&quot; alt=&quot;这里写图片描述&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Deep Learning" scheme="javaduqing.github.io/categories/Deep-Learning/"/>
+    
+    
+      <category term="Deep Learning" scheme="javaduqing.github.io/tags/Deep-Learning/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【38】小米Mace Android demo加载自己训练的 mobilenet-v1 模型</title>
+    <link href="javaduqing.github.io/2018/07/21/%E5%B0%8F%E7%B1%B3Mace%20Android%20demo%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%B7%B1%E8%AE%AD%E7%BB%83%E7%9A%84%20mobilenet-v1%20%E6%A8%A1%E5%9E%8B/"/>
+    <id>javaduqing.github.io/2018/07/21/小米Mace Android demo加载自己训练的 mobilenet-v1 模型/</id>
+    <published>2018-07-21T07:28:02.000Z</published>
+    <updated>2018-07-21T08:39:17.198Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="1-生成model-sha256-checksum"><a href="#1-生成model-sha256-checksum" class="headerlink" title="1 生成model_sha256_checksum"></a>1 生成model_sha256_checksum</h2><p>终端执行如下命令，生成pb文件的sha256校验和：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sha256sum my_frozen_mobilenet_v1.pb &gt;&gt; SHA256.txt</div></pre></td></tr></table></figure></p><p>生成的SHA256.txt文件内容如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/macemobilev1-1.png" alt="这里写图片描述"></p><a id="more"></a><h2 id="2-编写yml文件"><a href="#2-编写yml文件" class="headerlink" title="2 编写yml文件"></a>2 编写yml文件</h2><p>如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">library_name: mobilenet-v1</div><div class="line">target_abis: [armeabi-v7a, arm64-v8a]</div><div class="line">model_graph_format: code</div><div class="line">model_data_format: code</div><div class="line">models:</div><div class="line">  mobilenet_v1:</div><div class="line">    platform: tensorflow</div><div class="line">    model_file_path: /media/root/B/python/mace_201807122/models/my_frozen_mobilenet_v1.pb</div><div class="line">    model_sha256_checksum: d8410c0799862c2041246c2c454132dbc9520bdb0aeeab35ea83f335fea70b7a</div><div class="line">    subgraphs:</div><div class="line">      - input_tensors:</div><div class="line">          - input</div><div class="line">        input_shapes:</div><div class="line">          - 1,224,224,3</div><div class="line">        output_tensors:</div><div class="line">          - MobilenetV1/Predictions/Reshape_1</div><div class="line">        output_shapes:</div><div class="line">          - 1,2</div><div class="line">        validation_inputs_data:</div><div class="line">          - https://cnbj1.fds.api.xiaomi.com/mace/inputs/dog.npy</div><div class="line">    runtime: cpu+gpu</div><div class="line">    limit_opencl_kernel_time: 0</div><div class="line">    nnlib_graph_mode: 0</div><div class="line">    obfuscate: 0</div><div class="line">    winograd: 0</div></pre></td></tr></table></figure><p><code>model_file_path</code>：pb文件路径<br><code>model_sha256_checksum</code>：模型sha256校验和<br><code>input_shapes</code>：图片大小</p><h2 id="3-执行转化命令"><a href="#3-执行转化命令" class="headerlink" title="3 执行转化命令"></a>3 执行转化命令</h2><p>执行小米mace转化命令需要使用mace源码，下载地址如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">www.github.com/xiaomi/mace</div></pre></td></tr></table></figure><p>终端切换到mace源码目录下，执行如下两条命令：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">命令1：</div><div class="line">bash tools/build-standalone-lib.sh</div><div class="line">命令2：</div><div class="line">python tools/converter.py convert </div><div class="line">--config=/media/root/B/python/mace_20180712/models/mobilenet-v1/mobilenet-v1.yml</div></pre></td></tr></table></figure><p><code>--config</code>：生成的yml文件路径</p><p>命令执行完成后，在mace源码目录下生成builds文件夹，内容如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-2.png" alt="这里写图片描述"></p><blockquote><p>注意：这执行命令2前，要切换到Python2.7环境</p></blockquote><h2 id="4-修改Android-demo部分代码"><a href="#4-修改Android-demo部分代码" class="headerlink" title="4 修改Android demo部分代码"></a>4 修改Android demo部分代码</h2><p>使用Android studio打开mace源码中的Android demo，路径为：<code>mace/examples/android</code></p><p><strong>修改1：</strong> <code>android/app/src/main/assets/cacheLabel.txt</code>把内容修改为自己的类别名称，例如：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-4.png" alt="这里写图片描述"></p><p><strong>修改2：</strong> <code>android/macelibrary/src/main/cpp/image_classify.cc</code>，修改第48、50行为自己的类别数，如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-5.png" alt="这里写图片描述"></p><p><strong>修改3：</strong>在<code>android/macelibrary/src/main/cpp</code>目录下新建<code>include.mace.public、lib、model</code>三个文件夹，如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-6.png" alt="这里写图片描述"></p><p>并将生成的builds文件夹中的：<br>1）<code>builds/include/mace/public</code>和<code>builds/mobilenet-v1/include/mace/public</code>目录下的文件拷贝到<code>include.mace.public</code>下。<br>2）<code>builds/lib</code>目录下的文件拷贝到lib下<br>3）<code>builds/mobilenet-v1/model</code>目录下的文件改名为<code>mobilenet.a</code>，拷贝到model目录下</p><p>最终效果如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-7.png" alt="这里写图片描述"></p><h2 id="5-运行Android-demo，安装APK"><a href="#5-运行Android-demo，安装APK" class="headerlink" title="5 运行Android demo，安装APK"></a>5 运行Android demo，安装APK</h2><p>最终效果如下：<br><img src="http://p7n2owwza.bkt.clouddn.com/mobilenetv1-8.png" alt="这里写图片描述"></p><h2 id="6-参考"><a href="#6-参考" class="headerlink" title="6 参考"></a>6 参考</h2><ol><li><a href="https://github.com/XiaoMi/mace" target="_blank" rel="external">小米AI mace项目地址</a></li><li><a href="https://mace.readthedocs.io/en/latest/index.html" target="_blank" rel="external">小米mace官方文档地址</a></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;1-生成model-sha256-checksum&quot;&gt;&lt;a href=&quot;#1-生成model-sha256-checksum&quot; class=&quot;headerlink&quot; title=&quot;1 生成model_sha256_checksum&quot;&gt;&lt;/a&gt;1 生成model_sha256_checksum&lt;/h2&gt;&lt;p&gt;终端执行如下命令，生成pb文件的sha256校验和：&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;sha256sum my_frozen_mobilenet_v1.pb &amp;gt;&amp;gt; SHA256.txt&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;生成的SHA256.txt文件内容如下：&lt;br&gt;&lt;img src=&quot;http://p7n2owwza.bkt.clouddn.com/macemobilev1-1.png&quot; alt=&quot;这里写图片描述&quot;&gt;&lt;/p&gt;
     
     </summary>
     
@@ -491,28 +519,6 @@
 &lt;li&gt;原生命令安装&lt;/li&gt;
 &lt;li&gt;官方工具安装&lt;/li&gt;
 &lt;/ol&gt;
-    
-    </summary>
-    
-      <category term="MySQL-Redis" scheme="javaduqing.github.io/categories/MySQL-Redis/"/>
-    
-    
-      <category term="MySQL-Redis" scheme="javaduqing.github.io/tags/MySQL-Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【23】Redis 过期数据处理策略和内存淘汰策略</title>
-    <link href="javaduqing.github.io/2018/06/12/Redis%20%E8%BF%87%E6%9C%9F%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5%E5%92%8C%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/"/>
-    <id>javaduqing.github.io/2018/06/12/Redis 过期数据处理策略和内存淘汰策略/</id>
-    <published>2018-06-12T04:59:02.000Z</published>
-    <updated>2018-07-21T08:26:31.125Z</updated>
-    
-    <content type="html"><![CDATA[<p><em>Redis的过期策略就是指当Redis中缓存的key过期了，Redis如何处理。</em><br><em>Redis的内存淘汰策略是指在Redis的用于缓存的内存不足时，怎么处理需要新写入且需要申请额外空间的数据。</em></p><a id="more"></a><hr><h1 id="1-过期数据处理策略"><a href="#1-过期数据处理策略" class="headerlink" title="1 过期数据处理策略"></a>1 过期数据处理策略</h1><p><strong>定时删除</strong></p><ul><li>含义：在设置key的过期时间的同时，为该key创建一个定时器，让定时器在key的过期时间来临时，对key进行删除</li><li>优点：保证内存被尽快释放</li><li>缺点：<br>1）若过期key很多，删除这些key会占用很多的CPU时间，在CPU时间紧张的情况下，CPU不能把所有的时间用来做要紧的事儿，还需要去花时间删除这些key<br>2）定时器的创建耗时，若为每一个设置了过期时间的key创建一个定时器（将会有大量的定时器产生），性能影响严重<br>3）没人用</li></ul><p><strong>惰性删除</strong></p><ul><li>含义：key过期的时候不删除，每次从数据库获取key的时候去检查是否过期，若过期，则删除，返回null。</li><li>优点：删除操作只发生在从数据库取出key的时候发生，而且只删除当前key，所以对CPU时间的占用是比较少的，而且此时的删除是已经到了非做不可的地步（如果此时还不删除的话，我们就会获取到了已经过期的key了）</li><li>缺点：若大量的key在超出超时时间后，很久一段时间内，都没有被获取过，那么可能发生内存泄露（无用的垃圾占用了大量的内存）</li></ul><p><strong>定期删除</strong></p><ul><li>含义：每隔一段时间执行一次删除过期key操作</li><li>优点：<br>1）通过限制删除操作的时长和频率，来减少删除操作对CPU时间的占用–处理”定时删除”的缺点<br>2）定期删除过期key–处理”惰性删除”的缺点</li><li>缺点<br>1）在内存友好方面，不如”定时删除”<br>2）在CPU时间友好方面，不如”惰性删除”</li><li>难点：合理设置删除操作的执行时长（每次删除执行多长时间）和执行频率（每隔多长时间做一次删除）（这个要根据服务器运行情况来定了）</li></ul><hr><p><strong>Redis采用的过期策略</strong></p><p>惰性删除+定期删除</p><p>惰性删除流程：</p><ul><li>在进行get或setnx等操作时，先检查key是否过期，</li><li>若过期，删除key，然后执行相应操作；</li><li>若没过期，直接执行相应操作</li></ul><p>定期删除流程</p><ul><li>遍历每个数据库（就是redis.conf中配置的”database”数量，默认为16）</li><li>检查当前库中的指定个数个key（默认是每个库检查20个key）</li><li>如果当前库中没有一个key设置了过期时间，直接执行下一个库的遍历</li><li>随机获取一个设置了过期时间的key，检查该key是否过期，如果过期，删除key</li><li>判断定期删除操作是否已经达到指定时长，若已经达到，直接退出定期删除。</li></ul><h1 id="2-内存淘汰策略"><a href="#2-内存淘汰策略" class="headerlink" title="2 内存淘汰策略"></a>2 内存淘汰策略</h1><p><strong>Redis的内存淘汰策略</strong></p><ul><li>noeviction：当内存不足以容纳新写入数据时，新写入操作会报错。</li><li>allkeys-lru：当内存不足以容纳新写入数据时，在键空间中，移除最近最少使用的key。（LRU算法）</li><li>allkeys-random：当内存不足以容纳新写入数据时，在键空间中，随机移除某个key。</li><li>volatile-lru：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，移除最近最少使用的key。（LRU算法）</li><li>volatile-random：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，随机移除某个key。</li><li>volatile-ttl：当内存不足以容纳新写入数据时，在设置了过期时间的键空间中，有更早过期时间的key优先移除。</li></ul><p><em>最好为Redis指定一种有效的数据淘汰策略以配合maxmemory设置，避免在内存使用满后发生写入失败的情况。</em><br><em>一般来说，推荐使用的策略是volatile-lru，Redis默认的是noeviction。</em></p><hr><p>参考</p><ul><li>《Redis设计与实现》</li><li>《Redis开发与运维》</li></ul>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;em&gt;Redis的过期策略就是指当Redis中缓存的key过期了，Redis如何处理。&lt;/em&gt;&lt;br&gt;&lt;em&gt;Redis的内存淘汰策略是指在Redis的用于缓存的内存不足时，怎么处理需要新写入且需要申请额外空间的数据。&lt;/em&gt;&lt;/p&gt;
     
     </summary>
     
