@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> 【45】分布式事务（2）——Basic Paxos算法 · Qingfeng.Du</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="【45】分布式事务（2）——Basic Paxos算法 - Du Qingfeng"><meta name="keywords"><meta name="author" content="Du Qingfeng"><link rel="short icon" href="/images/favicon.ico"><link rel="stylesheet" href="/css/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="javaduqing.github.io/atom.xml" title="Qingfeng.Du"></head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="/images/logo.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="https://blog.csdn.net/disiwei1012" target="_blank" data-hover="CSDN" class="nav-list-link">CSDN</a></li><li class="nav-list-item"><a href="http://ot6mc7xfg.bkt.clouddn.com/Java%E5%90%8E%E7%AB%AF+Python%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%20%281%29.pdf" target="_blank" data-hover="简历" class="nav-list-link">简历</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">【45】分布式事务（2）——Basic Paxos算法</h1><div class="post-info">2018-11-20<p class="visit"><i data-hk-page="current"></i></p></div><div class="post-content"><h2 id="什么是paxos协议"><a href="#什么是paxos协议" class="headerlink" title="什么是paxos协议"></a>什么是paxos协议</h2><p>Paxos用于解决分布式系统中一致性问题。分布式一致性算法（Consensus Algorithm）是一个分布式计算领域的基础性问题，其最基本的功能是为了在多个进程之间对某个（某些）值达成一致（强一致）；</p>
 <p>简单来说就是确定一个值，一旦被写入就不可改变。paxos用来实现多节点写入来完成一件事情，例如mysql主从也是一种方案，但这种方案有个致命的缺陷，如果主库挂了会直接影响业务，导致业务不可写，从而影响整个系统的高可用性。paxos协议是只是一个协议，不是具体的一套解决方案。目的是解决多节点写入问题。</p>
 <blockquote>
-<p>paxos协议用来解决的问题可以用一句话来简化： 将所有节点都写入同一个值，且被写入后不再更改。</p>
+<p>paxos协议解决的问题可以用一句话简化： 将所有节点都写入同一个值，且被写入后不再更改。</p>
 </blockquote>
 <h2 id="paxos的几个基本概念"><a href="#paxos的几个基本概念" class="headerlink" title="paxos的几个基本概念"></a>paxos的几个基本概念</h2><ol>
 <li>Proposal Value：提议的值；</li>
@@ -20,8 +20,9 @@
 </ol>
 </li>
 <li><p>接受阶段（提交阶段）</p>
+<ul>
+<li><p>第二阶段A：整个协议最为关键的点：Proposer得到了Acceptor响应</p>
 <ol>
-<li>第二阶段A：整个协议最为关键的点：Proposer得到了Acceptor响应<ol>
 <li>如果未超过半数accpetor响应，直接转为提议失败； </li>
 <li>如果超过多数Acceptor的承诺，又分为不同情况：如果超过多数Acceptor的承诺，又分为不同情况：<ol>
 <li>如果所有Acceptor都未接收过值（都为null），那么向所有的Acceptor发起自己的值和提议编号n，记住，一定是所有Acceptor都没接受过值</li>
@@ -30,10 +31,9 @@
 </li>
 </ol>
 </li>
-</ol>
-<ol>
-<li>第二阶段B：Acceptor接收到提议后，如果该提议版本号不等于自身保存记录的版本号（第一阶段记录的），不接受该请求，相等则写入。</li>
-</ol>
+<li><p>第二阶段B：Acceptor接收到提议后，如果该提议版本号不等于自身保存记录的版本号（第一阶段记录的），不接受该请求，相等则写入。</p>
+</li>
+</ul>
 </li>
 </ol>
 <h2 id="案例分析1——正常的paxos提议确定流程"><a href="#案例分析1——正常的paxos提议确定流程" class="headerlink" title="案例分析1——正常的paxos提议确定流程"></a>案例分析1——正常的paxos提议确定流程</h2><p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A12-1.png" alt="在这里插入图片描述"></p>
