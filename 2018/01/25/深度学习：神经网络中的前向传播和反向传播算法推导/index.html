@@ -3,23 +3,23 @@
 <a id="more"></a>
 <h1 id="2、举例说明"><a href="#2、举例说明" class="headerlink" title="2、举例说明"></a>2、举例说明</h1><p>以下图这个的全连接神经网络为例子，一步一步的来理解整个流程：<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-1.jpg" alt="这里写图片描述"></p>
 <p>第一层是输入层，也就是我们的样本；第二层是隐藏层；第三层是输出层，获得估计值</p>
-<p>下面给出这个例子的损失函数，我们的目标就是不断更新w，使<br><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-17.png" alt="这里写图片描述"><br>不断减小。（本例子中暂不考虑正则化惩罚项、使用sigmoid为激励函数）</p>
-<p><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-2.png" alt="这里写图片描述"></p>
+<p>下面给出这个例子的损失函数，我们的目标就是不断更新w，使<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-17.png" alt="这里写图片描述"><br>不断减小。（本例子中暂不考虑正则化惩罚项、使用sigmoid为激励函数）</p>
+<p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-2.png" alt="这里写图片描述"></p>
 <blockquote>
 <p>具有初始值的变量包括：i1、i2、w1、w2、w3、w4、w5、w6、w7、w8、b1、b2</p>
 </blockquote>
-<h2 id="前向传播"><a href="#前向传播" class="headerlink" title="前向传播"></a>前向传播</h2><p><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-3.png" alt="这里写图片描述"></p>
+<h2 id="前向传播"><a href="#前向传播" class="headerlink" title="前向传播"></a>前向传播</h2><p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-3.png" alt="这里写图片描述"></p>
 <p>上图以单个样本i1为例（其他样本相似）详细表达了具体前向传播的流程：</p>
 <p>1、首先i1与w1通过乘法得到i1<em>w1，然后i1</em>w1与b1通过加法门得到net h1，即</p>
-<p><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-4.png" alt="这里写图片描述"></p>
+<p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-4.png" alt="这里写图片描述"></p>
 <p>2、net h1通过sigmoid函数变换，得到out h1，即</p>
-<p><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-5.png" alt="这里写图片描述"></p>
+<p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-5.png" alt="这里写图片描述"></p>
 <p>3、out h1与w5通过乘法门，然后与b2通过加法门得到net h2，即</p>
-<p><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-6.png" alt="这里写图片描述"></p>
+<p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-6.png" alt="这里写图片描述"></p>
 <p>4、net o1通过sigmoid函数变换，得到out 01，即</p>
-<p><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-7.png" alt="这里写图片描述"></p>
+<p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-7.png" alt="这里写图片描述"></p>
 <p>6、out o1通过softmax_loss函数变换，得到具体损失值loss，即</p>
-<p><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-8.png" alt="这里写图片描述"></p>
+<p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-8.png" alt="这里写图片描述"></p>
 <blockquote>
 <p>前向传播就是一个求中间变量和损失值的过程，所求得的损失值就是为了反向传播，更新w、b参数</p>
 <p>注：<br>    &nbsp;&nbsp;&nbsp;①sigmoid函数只是激励函数的一种，类似的还有relu、tanh函数等；<br>    &nbsp;&nbsp;&nbsp;②softmax_loss函数只是计算损失值的一种，类似的还有SVM等；</p>
@@ -27,21 +27,21 @@
 <h2 id="反向传播（BP算法）"><a href="#反向传播（BP算法）" class="headerlink" title="反向传播（BP算法）"></a>反向传播（BP算法）</h2><p>首先要明白一点，反向传播的目的是什么？</p>
 <p>在上面我们求得了损失值，损失值越大说明我们预测（分类）的越不准确，我们知道最终的预测值是和权重参数w、b相关的，所以我们就需要调整参数的大小，那么怎么调整呢？每个参数应该调整多大合适呢？</p>
 <p>对于损失值，每个参数的所起到的作用是不一样的，可以通过链式求（即求梯度的过程）导获得每一个参数对最后损失值所起作用的大小，然后更新参数，进而降低损失值。</p>
-<p>下面先求w1对损失值的梯度<br><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-16.png" alt="这里写图片描述"><br>，从后往前，一步一步来：</p>
-<p><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-9.png" alt="这里写图片描述"></p>
-<p>对于图片中的每一个门单元（每个圆圈）求导然后相乘就是我们想要的<br><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-16.png" alt="这里写图片描述"><br>（本图还是以一个样本i1为例子）</p>
-<p><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-10.png" alt="这里写图片描述"></p>
+<p>下面先求w1对损失值的梯度<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-16.png" alt="这里写图片描述"><br>，从后往前，一步一步来：</p>
+<p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-9.png" alt="这里写图片描述"></p>
+<p>对于图片中的每一个门单元（每个圆圈）求导然后相乘就是我们想要的<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-16.png" alt="这里写图片描述"><br>（本图还是以一个样本i1为例子）</p>
+<p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-10.png" alt="这里写图片描述"></p>
 <blockquote>
 <p>对于乘法门和加法门求导的规则这里不详细赘述，<font color="red">加法门可以忽略，乘法门交换律</font></p>
 </blockquote>
-<p><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-11.png" alt="这里写图片描述"></p>
+<p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-11.png" alt="这里写图片描述"></p>
 <blockquote>
 <p>softmax 交叉熵损失求导参考：<a href="http://blog.csdn.net/qian99/article/details/78046329" target="_blank" rel="external">http://blog.csdn.net/qian99/article/details/78046329</a><br>sigmoid函数求导参考：<a href="http://blog.csdn.net/vincent2610/article/details/53811323" target="_blank" rel="external">http://blog.csdn.net/vincent2610/article/details/53811323</a></p>
 </blockquote>
 <p><strong>最终得到，其他参数同理可得：</strong></p>
-<p><img src="http://http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-12.png" alt="这里写图片描述"></p>
+<p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-12.png" alt="这里写图片描述"></p>
 <h2 id="更新权重参数"><a href="#更新权重参数" class="headerlink" title="更新权重参数"></a>更新权重参数</h2><p>得到w1的梯度之后，就可以更新w1了，下面的式子中r表示学习率：</p>
-<p><img src="javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-13.png" alt="这里写图片描述"></p>
+<p><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/QiuniuTransfer/network-13.png" alt="这里写图片描述"></p>
 <hr>
 <h1 id="3、代码实现（激活函数tanh）"><a href="#3、代码实现（激活函数tanh）" class="headerlink" title="3、代码实现（激活函数tanh）"></a>3、代码实现（激活函数tanh）</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_moons</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="comment"># 手动生成一个随机的平面点分布，并画出来</span></div><div class="line">np.random.seed(<span class="number">0</span>)</div><div class="line">X, y = make_moons(<span class="number">200</span>, noise=<span class="number">0.20</span>)</div></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 咱们先顶一个一个函数来画决策边界</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_decision_boundary</span><span class="params">(pred_func)</span>:</span></div><div class="line"></div><div class="line">    <span class="comment"># 设定最大最小值，附加一点点边缘填充</span></div><div class="line">    <span class="comment"># 第一列最小值、最大值</span></div><div class="line">    x_min, x_max = X[:, <span class="number">0</span>].min() - <span class="number">.5</span>, X[:, <span class="number">0</span>].max() + <span class="number">.5</span></div><div class="line">    <span class="comment"># 第二列最小值、最大值</span></div><div class="line">    y_min, y_max = X[:, <span class="number">1</span>].min() - <span class="number">.5</span>, X[:, <span class="number">1</span>].max() + <span class="number">.5</span></div><div class="line">    h = <span class="number">0.01</span></div><div class="line"></div><div class="line">    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))</div><div class="line"></div><div class="line">    <span class="comment"># 用预测函数预测一下</span></div><div class="line">    Z = pred_func(np.c_[xx.ravel(), yy.ravel()])</div><div class="line">    Z = Z.reshape(xx.shape)</div><div class="line"></div><div class="line">    <span class="comment"># 然后画出图</span></div><div class="line">    plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral)</div><div class="line">    plt.scatter(X[:, <span class="number">0</span>], X[:, <span class="number">1</span>], c=y, cmap=plt.cm.Spectral)</div></pre></td></tr></table></figure>
