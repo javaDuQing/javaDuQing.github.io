@@ -1,15 +1,15 @@
 <!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> 【47】分布式事务（4）——本地消息表 · Qingfeng.Du</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="【47】分布式事务（4）——本地消息表 - Du Qingfeng"><meta name="keywords"><meta name="author" content="Du Qingfeng"><link rel="short icon" href="/images/favicon.ico"><link rel="stylesheet" href="/css/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="javaduqing.github.io/atom.xml" title="Qingfeng.Du"></head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="/images/logo.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="https://blog.csdn.net/disiwei1012" target="_blank" data-hover="CSDN" class="nav-list-link">CSDN</a></li><li class="nav-list-item"><a href="http://ot6mc7xfg.bkt.clouddn.com/Java%E5%90%8E%E7%AB%AF+Python%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%20%281%29.pdf" target="_blank" data-hover="简历" class="nav-list-link">简历</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">【47】分布式事务（4）——本地消息表</h1><div class="post-info">2018-11-24<p class="visit"><i data-hk-page="current"></i></p></div><div class="post-content"><p><em>note：上篇文章中介绍一种较为理想化的解决方案，但由于消息中间件不支持的问题，自己实现一个消息中间件很困难，这篇文章来看一种稍有变通的解决方案（据说是目前使用最广泛的一种方案）——本地消息表</em></p>
 <p>上篇文章中说到：常见的中间件框架都不支持第一阶段的逻辑，那么是否可以把第一阶段的逻辑在充值模块中实现呢。</p>
-<p>本地消息表的实现逻辑图如下：
-<img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A14-1.png" alt="在这里插入图片描述"></p>
-<p>&lt;!--more--&gt;</p>
+<p>本地消息表的实现逻辑图如下：<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A14-1.png" alt="在这里插入图片描述"></p>
+<a id="more"></a>
 <p>下面来分别分析：</p>
 <ol>
 <li>正向流程</li>
 <li>异常流程</li>
 </ol>
 <p><strong>正向流程</strong></p>
-<p>&lt;font color='red'&gt;有一点需要特别注意：业务操作与消息存储均放在充值模块中，并且一起放在本地的同一个事务中，两者要么同时执行成功，要么同时执行失败。&lt;/font&gt;</p>
+<font color="red">有一点需要特别注意：业务操作与消息存储均放在充值模块中，并且一起放在本地的同一个事务中，两者要么同时执行成功，要么同时执行失败。</font>
+
 <p>充值模块的业务和消息存储均存储成功后，将消息发送给消息中间件。然后中间件将消息发送给消费者（订单模块），订单模块收到消息后，执行相应业务并写入数据库。</p>
 <p>订单模块执行完成后，向充值模块发起“消息确认”通知，充值模块修改数据库中消息的状态。</p>
 <p><strong>异常流程</strong></p>

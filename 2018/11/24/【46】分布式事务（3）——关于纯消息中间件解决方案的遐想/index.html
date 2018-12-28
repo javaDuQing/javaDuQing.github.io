@@ -1,9 +1,7 @@
 <!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> 【46】分布式事务（3）——关于纯消息中间件解决方案的遐想 · Qingfeng.Du</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="【46】分布式事务（3）——关于纯消息中间件解决方案的遐想 - Du Qingfeng"><meta name="keywords"><meta name="author" content="Du Qingfeng"><link rel="short icon" href="/images/favicon.ico"><link rel="stylesheet" href="/css/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="javaduqing.github.io/atom.xml" title="Qingfeng.Du"></head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="/images/logo.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="https://blog.csdn.net/disiwei1012" target="_blank" data-hover="CSDN" class="nav-list-link">CSDN</a></li><li class="nav-list-item"><a href="http://ot6mc7xfg.bkt.clouddn.com/Java%E5%90%8E%E7%AB%AF+Python%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%20%281%29.pdf" target="_blank" data-hover="简历" class="nav-list-link">简历</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">【46】分布式事务（3）——关于纯消息中间件解决方案的遐想</h1><div class="post-info">2018-11-24<p class="visit"><i data-hk-page="current"></i></p></div><div class="post-content"><p><em>note：继续总结分布式事务解决方案，这篇文章要说说用纯中间件解决的过程及存在的问题</em></p>
-<h2>正向流程</h2>
-<p>以充值订单为例子吧：充值为单独一个服务，订单为一个单独服务，当完成充值后，订单状态需要做相应的修改。</p>
-<p>如果用消息中间件来完成这一整套操作，简单来想，当在充值模块中完成业务后，发送“业务完成”消息到消息中间件，消息中间件对消息进行持久化，然后将消息发送给消费者，也就是订单模块，然后完成订单模块状态的修改，整个正向流程结束。如下图：
-<img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A13-1.png" alt="在这里插入图片描述"></p>
-<p>&lt;!--more--&gt;</p>
+<h2 id="正向流程"><a href="#正向流程" class="headerlink" title="正向流程"></a>正向流程</h2><p>以充值订单为例子吧：充值为单独一个服务，订单为一个单独服务，当完成充值后，订单状态需要做相应的修改。</p>
+<p>如果用消息中间件来完成这一整套操作，简单来想，当在充值模块中完成业务后，发送“业务完成”消息到消息中间件，消息中间件对消息进行持久化，然后将消息发送给消费者，也就是订单模块，然后完成订单模块状态的修改，整个正向流程结束。如下图：<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A13-1.png" alt="在这里插入图片描述"></p>
+<a id="more"></a>
 <p>这只是简单的正向流程，现在来考虑一个问题：</p>
 <table>
 <thead>
@@ -21,16 +19,12 @@
 </tbody>
 </table>
 <p>对于第一个问题，可以通过回滚充值模块的业务来解决；对于第二个问题，如果充值模块长时间没有接受到消息中间件存储成功的消息，也进行回滚来解决。</p>
-<p>基于这种回滚的想法，我们来重新设计正向流程：
-<img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A13-2.png" alt="在这里插入图片描述">
-在充值模块业务执行前先向消息中间件发送一个“待确认”的消息，然后消息中间件将“待确认”消息持久化，消息中间件返回持久化结果。</p>
+<p>基于这种回滚的想法，我们来重新设计正向流程：<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A13-2.png" alt="在这里插入图片描述"><br>在充值模块业务执行前先向消息中间件发送一个“待确认”的消息，然后消息中间件将“待确认”消息持久化，消息中间件返回持久化结果。</p>
 <ul>
-<li>持久化成功，执行充值业务
-<ul>
-<li>将充值业务执行情况发送给消息中间件
-<ul>
+<li>持久化成功，执行充值业务<ul>
+<li>将充值业务执行情况发送给消息中间件<ul>
 <li>如果业务执行成功，则将消息中间件存储的消息状态改为“待发送”</li>
-<li>否则，删除消息中间件中的“待确认”消息</li>
+<li>否则，删除消息中间件中的“待确认”消息 </li>
 </ul>
 </li>
 </ul>
@@ -38,16 +32,12 @@
 <li>持久化失败，不执行充值业务</li>
 </ul>
 <p>通过这种方案，能够很好的解决上面提到的问题。</p>
-<h2>异常流程的处理方案</h2>
-<p><strong>关于第一阶段的异常流程（充值模块---&gt;消息中间件）</strong></p>
-<p>对于充值模块与消息中间件之间的消息传递与存储，任何一个环节都可能出错。
-<img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A13-3.png" alt="在这里插入图片描述"></p>
+<h2 id="异常流程的处理方案"><a href="#异常流程的处理方案" class="headerlink" title="异常流程的处理方案"></a>异常流程的处理方案</h2><p><strong>关于第一阶段的异常流程（充值模块—&gt;消息中间件）</strong></p>
+<p>对于充值模块与消息中间件之间的消息传递与存储，任何一个环节都可能出错。<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A13-3.png" alt="在这里插入图片描述"></p>
 <ol>
 <li>预发送消息失败，不影响一致性</li>
-<li>消息中间件返回存储结果失败：
-2.1.	消息已存储，&lt;font color='red'&gt;影响一致性&lt;/font&gt;
-2.2.	消息未存储，不影响一致性</li>
-<li>收到消息存储成功的结果，但执行业务失败或发送业务执行结果失败，&lt;font color='red'&gt;无法把消息状态改为“待发送”&lt;/font&gt;</li>
+<li>消息中间件返回存储结果失败：<br> 2.1.    消息已存储，<font color="red">影响一致性</font><br> 2.2.    消息未存储，不影响一致性</li>
+<li>收到消息存储成功的结果，但执行业务失败或发送业务执行结果失败，<font color="red">无法把消息状态改为“待发送”</font></li>
 </ol>
 <table>
 <thead>
@@ -63,20 +53,16 @@
 </tr>
 <tr>
 <td style="text-align:left">3</td>
-<td style="text-align:left">充值模块提供业务是否执行成功接口，若成功，更新消息状态，执行消息投递；&lt;br&gt;否则，删除消息</td>
+<td style="text-align:left">充值模块提供业务是否执行成功接口，若成功，更新消息状态，执行消息投递；<br>否则，删除消息</td>
 </tr>
 </tbody>
 </table>
-<p><strong>关于第二阶段的异常流程（消息中间件----&gt;订单模块）</strong></p>
-<p>同样，对于第二个阶段，每一步也都可能发生异常。
-<img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A13-4.png" alt="在这里插入图片描述">
-上面的这些问题，可以通过一种方法来解决：消息重新投递！消息中间件根据存储的消息状态来投递，上面的任何一步发生异常，都不会更新消息的状态，所以，都会被重新投递。</p>
-<p>但是假如说订单模块更新状态成功，但是返回发生异常，这样的话，消息重新投递就需&lt;font color='red'&gt;要订单模块实现幂等性。&lt;/font&gt;</p>
+<p><strong>关于第二阶段的异常流程（消息中间件—-&gt;订单模块）</strong></p>
+<p>同样，对于第二个阶段，每一步也都可能发生异常。<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A13-4.png" alt="在这里插入图片描述"><br>上面的这些问题，可以通过一种方法来解决：消息重新投递！消息中间件根据存储的消息状态来投递，上面的任何一步发生异常，都不会更新消息的状态，所以，都会被重新投递。</p>
+<p>但是假如说订单模块更新状态成功，但是返回发生异常，这样的话，消息重新投递就需<font color="red">要订单模块实现幂等性。</font></p>
 <p>极端情况：消息重发也是有次数限制的，要不然会导致一直循环投递，对于超过重发次数限制的，进入DLQ，等待人工干预处理。</p>
-<h2>总结</h2>
-<p>为什么把这篇文章取名为“遐想”呢，是因为这种方案太过于理想化，最主要的一个问题是常见的消息中间件都不能提供定制化的业务，第一阶段的业务消息中间件都不能完成，那么本文中阐述的方法就无从实现了。</p>
-<h2>参考</h2>
-<ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>为什么把这篇文章取名为“遐想”呢，是因为这种方案太过于理想化，最主要的一个问题是常见的消息中间件都不能提供定制化的业务，第一阶段的业务消息中间件都不能完成，那么本文中阐述的方法就无从实现了。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
 <li><a href="https://www.cnblogs.com/savorboard/p/distributed-system-transaction-consistency.html" target="_blank" rel="external">聊聊分布式事务，再说说解决方案</a></li>
 <li><a href="https://www.jianshu.com/p/6c7f64220f89" target="_blank" rel="external">一个分布式事务的解决方案</a></li>
 <li><a href="https://www.cnblogs.com/dwlsxj/p/RabbitMQ.html" target="_blank" rel="external">RabbitMQ基础知识</a></li>

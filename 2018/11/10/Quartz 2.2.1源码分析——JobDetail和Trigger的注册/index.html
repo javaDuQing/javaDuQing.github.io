@@ -1,44 +1,41 @@
 <!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="1EB8XoOl0C"><meta name="google-site-verification" content="K7thEgdLm0UfRWJ5MGdF7sCcjClSzAlxFLPv2Oz5CGM"><title> 【41】Quartz 2.2.1源码分析——JobDetail和Trigger的注册 · Qingfeng.Du</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="【41】Quartz 2.2.1源码分析——JobDetail和Trigger的注册 - Du Qingfeng"><meta name="keywords"><meta name="author" content="Du Qingfeng"><link rel="short icon" href="/images/favicon.ico"><link rel="stylesheet" href="/css/bubuzou.css"><link rel="search" type="application/opensearchdescription+xml" href="javaduqing.github.io/atom.xml" title="Qingfeng.Du"></head><body><header><div class="header row"> <a href="/" class="logo-link"><img src="/images/logo.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" data-hover="博文" class="nav-list-link">博文</a></li><li class="nav-list-item"><a href="/archives/" target="_self" data-hover="归档" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="https://blog.csdn.net/disiwei1012" target="_blank" data-hover="CSDN" class="nav-list-link">CSDN</a></li><li class="nav-list-item"><a href="http://ot6mc7xfg.bkt.clouddn.com/Java%E5%90%8E%E7%AB%AF+Python%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%20%281%29.pdf" target="_blank" data-hover="简历" class="nav-list-link">简历</a></li></ul><div class="search"><a id="search_btn" href="#search"></a></div></div></header><div class="row scroll-con"><section class="container"><!-- for archive page--><div id="postAr" class="post"><article class="post-block"><h1 class="post-title">【41】Quartz 2.2.1源码分析——JobDetail和Trigger的注册</h1><div class="post-info">2018-11-10<p class="visit"><i data-hk-page="current"></i></p></div><div class="post-content"><p>从一小段简单的程序来开始阅读源码：</p>
 <pre><code>public class SchedulerFactoryTest {
 
-	public static void main(String[] args) throws SchedulerException {
-	
-		SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-        	Scheduler scheduler = schedulerFactory.getScheduler();
-        
-       	        // 添加监听器 
-		SchedulerListener schedulerListener = new MySchedulerListener(); 
-		scheduler.getListenerManager().addSchedulerListener(schedulerListener); 
-		// Job 
-		JobDetail job = newJob(SimpleJob1.class).withIdentity(&quot;job1&quot;, &quot;group1&quot;) .build(); 
-		// Tirgger 
-		Trigger trigger = newTrigger().withIdentity(&quot;trigger1&quot;, &quot;group1&quot;) .startNow().build(); 
-		// 将job任务加入到调度器 
-		scheduler.scheduleJob(job, trigger); 
-		// 开始任务 
-		scheduler.start(); 
-	}
+    public static void main(String[] args) throws SchedulerException {
+
+        SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+            Scheduler scheduler = schedulerFactory.getScheduler();
+
+                   // 添加监听器 
+        SchedulerListener schedulerListener = new MySchedulerListener(); 
+        scheduler.getListenerManager().addSchedulerListener(schedulerListener); 
+        // Job 
+        JobDetail job = newJob(SimpleJob1.class).withIdentity(&quot;job1&quot;, &quot;group1&quot;) .build(); 
+        // Tirgger 
+        Trigger trigger = newTrigger().withIdentity(&quot;trigger1&quot;, &quot;group1&quot;) .startNow().build(); 
+        // 将job任务加入到调度器 
+        scheduler.scheduleJob(job, trigger); 
+        // 开始任务 
+        scheduler.start(); 
+    }
 }
-</code></pre>
-<blockquote>
+</code></pre><blockquote>
 <p>MySchedulerListener为SchedulerListener 的实现类，形如：</p>
 <pre><code> public class MySchedulerListener implements SchedulerListener {
- 
- 	@Override
-	public void jobScheduled(Trigger trigger) {
-		System.out.println(&quot;MySchedulerListener jobScheduled trigger&quot;);
-	}
-	...
+
+     @Override
+    public void jobScheduled(Trigger trigger) {
+        System.out.println(&quot;MySchedulerListener jobScheduled trigger&quot;);
+    }
+    ...
 }
-</code></pre>
-</blockquote>
+</code></pre></blockquote>
 <p>上面的实例代码中包括了，JobDetail 、Trigger 、SchedulerListener 三方面的内容，是Quartz的核心，也是本文分析的核心。</p>
-<p>&lt;!--more--&gt;</p>
-<h2>1 Job 与 Trigger 的注册概述</h2>
-<p>进入<code>scheduler.scheduleJob(job, trigger);</code> 方法，</p>
+<a id="more"></a>
+<h2 id="1-Job-与-Trigger-的注册概述"><a href="#1-Job-与-Trigger-的注册概述" class="headerlink" title="1 Job 与 Trigger 的注册概述"></a>1 Job 与 Trigger 的注册概述</h2><p>进入<code>scheduler.scheduleJob(job, trigger);</code> 方法，</p>
 <pre><code>/**
  * &lt;p&gt;
- * Calls the equivalent method on the 'proxied' &lt;code&gt;QuartzScheduler&lt;/code&gt;.
+ * Calls the equivalent method on the &apos;proxied&apos; &lt;code&gt;QuartzScheduler&lt;/code&gt;.
  * &lt;/p&gt;
  */
 public Date scheduleJob(JobDetail jobDetail, Trigger trigger)
@@ -57,22 +54,22 @@ public Date scheduleJob(JobDetail jobDetail,
     if (jobDetail == null) {
         throw new SchedulerException(&quot;JobDetail cannot be null&quot;);
     }
-    
+
     // trigger不能为null
     if (trigger == null) {
         throw new SchedulerException(&quot;Trigger cannot be null&quot;);
     }
-    
+
     // jobDetail Key不能为null
     // jobDetail 的 Key， withIdentity方法设置
     if (jobDetail.getKey() == null) {
-        throw new SchedulerException(&quot;Job's key cannot be null&quot;);
+        throw new SchedulerException(&quot;Job&apos;s key cannot be null&quot;);
     }
 
     if (jobDetail.getJobClass() == null) {
-        throw new SchedulerException(&quot;Job's class cannot be null&quot;);
+        throw new SchedulerException(&quot;Job&apos;s class cannot be null&quot;);
     }
-    
+
     OperableTrigger trig = (OperableTrigger)trigger;
 
 // trigger Key要与jobDetail 的 Key保持一致
@@ -98,7 +95,7 @@ public Date scheduleJob(JobDetail jobDetail,
     if (ft == null) {
         throw new SchedulerException(
                 &quot;Based on configured schedule, 
-                the given trigger '&quot; + trigger.getKey() + &quot;' will never fire.&quot;);
+                the given trigger &apos;&quot; + trigger.getKey() + &quot;&apos; will never fire.&quot;);
     }
 
 // 注册Job和Trigger
@@ -112,11 +109,8 @@ public Date scheduleJob(JobDetail jobDetail,
 
     return ft;
 }
-</code></pre>
-<p>JobDetail与 Trigger 的注册的注册流程可以总结如下：
-<img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/Quartz%E6%BA%90%E7%A0%81/Quartz%E6%BA%90%E7%A0%81%E7%AC%AC%E4%B8%80%E7%AF%87-1.png" alt="在这里插入图片描述"></p>
-<h2>2 StdScheduler 与 QuartzScheduler的初始化</h2>
-<p>这整个过程都在QuartzScheduler类中完成，在StdScheduler中有一个QuartzScheduler类的实例，观察StdScheduler的构造函数发现，在初始化StdScheduler类时，需要给一个QuartzScheduler实例。来看一下StdScheduler的实例是怎么得到的：</p>
+</code></pre><p>JobDetail与 Trigger 的注册的注册流程可以总结如下：<br><img src="http://javaduqing.oss-cn-hangzhou.aliyuncs.com/Quartz%E6%BA%90%E7%A0%81/Quartz%E6%BA%90%E7%A0%81%E7%AC%AC%E4%B8%80%E7%AF%87-1.png" alt="在这里插入图片描述"></p>
+<h2 id="2-StdScheduler-与-QuartzScheduler的初始化"><a href="#2-StdScheduler-与-QuartzScheduler的初始化" class="headerlink" title="2 StdScheduler 与 QuartzScheduler的初始化"></a>2 StdScheduler 与 QuartzScheduler的初始化</h2><p>这整个过程都在QuartzScheduler类中完成，在StdScheduler中有一个QuartzScheduler类的实例，观察StdScheduler的构造函数发现，在初始化StdScheduler类时，需要给一个QuartzScheduler实例。来看一下StdScheduler的实例是怎么得到的：</p>
 <pre><code>// 在上面的例子中
 SchedulerFactory schedulerFactory = new StdSchedulerFactory();
 Scheduler scheduler = schedulerFactory.getScheduler();
@@ -145,11 +139,9 @@ public Scheduler getScheduler() throws SchedulerException {
 
     return sched;
 }
-</code></pre>
-<p>这段代码中，首先从缓存中根据SchedulerName尝试获取Scheduler，如果获取失败，则重新创建一个，由<code>sched = instantiate();</code>这句代码实现Scheduler与QuartzScheduler的创建，代码相当复杂，这篇文章先不分析。</p>
+</code></pre><p>这段代码中，首先从缓存中根据SchedulerName尝试获取Scheduler，如果获取失败，则重新创建一个，由<code>sched = instantiate();</code>这句代码实现Scheduler与QuartzScheduler的创建，代码相当复杂，这篇文章先不分析。</p>
 <p>Scheduler是Quartz框架的心脏，用来管理Trigger和Job，并保证Job能被触发执行。程序员与框架内部之间的调用都是通过org.quartz.Scheduler接口来完成的。对于Scheduler接口的实现，其实只是核心调度QuartzScheduler的一个代理，对代理的方法进行调用时会传递到底层核心调度实例上。QuartzScheduler处于Quartz框架的根位置，驱动着整个Quartz框架。</p>
-<h2>3 Job 与 Trigger 的注册流程</h2>
-<pre><code>// RAMJobStore.java
+<h2 id="3-Job-与-Trigger-的注册流程"><a href="#3-Job-与-Trigger-的注册流程" class="headerlink" title="3 Job 与 Trigger 的注册流程"></a>3 Job 与 Trigger 的注册流程</h2><pre><code>// RAMJobStore.java
 public void storeJobAndTrigger(JobDetail newJob,
         OperableTrigger newTrigger) throws JobPersistenceException {
     // 注册Job
@@ -157,8 +149,7 @@ public void storeJobAndTrigger(JobDetail newJob,
     // 注册Trigger
     storeTrigger(newTrigger, false);
 }
-</code></pre>
-<p>storeJob与storeTrigger方法的第二个boolean参数都是用来表示是否覆盖已存在的Job/Trigger。</p>
+</code></pre><p>storeJob与storeTrigger方法的第二个boolean参数都是用来表示是否覆盖已存在的Job/Trigger。</p>
 <pre><code>public void storeJob(JobDetail newJob,
         boolean replaceExisting) throws ObjectAlreadyExistsException {
     JobWrapper jw = new JobWrapper((JobDetail)newJob.clone());
@@ -194,8 +185,7 @@ public void storeJobAndTrigger(JobDetail newJob,
         }
     }
 }
-</code></pre>
-<p>中间有两个Map需要注意下：</p>
+</code></pre><p>中间有两个Map需要注意下：</p>
 <ol>
 <li>jobsByGroup ： Group与job的对应关系</li>
 <li>jobsByKey：Key与job的对应关系</li>
@@ -211,7 +201,7 @@ public void storeJobAndTrigger(JobDetail newJob,
             if (!replaceExisting) {
                 throw new ObjectAlreadyExistsException(newTrigger);
             }
-  		// 从triggersByKey、triggersByGroup移除老的triggers
+          // 从triggersByKey、triggersByGroup移除老的triggers
             removeTrigger(newTrigger.getKey(), false);
         }
 
@@ -226,7 +216,7 @@ public void storeJobAndTrigger(JobDetail newJob,
         triggers.add(tw);
         // 加入triggersByGroup中
         HashMap&lt;TriggerKey, TriggerWrapper&gt; grpMap 
-        	= triggersByGroup.get(newTrigger.getKey().getGroup());
+            = triggersByGroup.get(newTrigger.getKey().getGroup());
         if (grpMap == null) {
             grpMap = new HashMap&lt;TriggerKey, TriggerWrapper&gt;(100);
             triggersByGroup.put(newTrigger.getKey().getGroup(), grpMap);
@@ -253,8 +243,7 @@ public void storeJobAndTrigger(JobDetail newJob,
         }
     }
 }
-</code></pre>
-<p>storeTrigger相较于storeJob略微复杂，由两个Map变成多个Map，包括：</p>
+</code></pre><p>storeTrigger相较于storeJob略微复杂，由两个Map变成多个Map，包括：</p>
 <ol>
 <li>triggersByKey：trigger与Key的对应关系</li>
 <li>triggersByGroup：trigger与Group的对应关系</li>
@@ -262,15 +251,13 @@ public void storeJobAndTrigger(JobDetail newJob,
 <li>triggers：所有trigger</li>
 </ol>
 <p>trigger具有8个状态：STATE_WAITING、STATE_ACQUIRED、STATE_EXECUTING、STATE_COMPLETE、STATE_PAUSED、STATE_BLOCKED、STATE_PAUSED_BLOCKED、STATE_ERROR。</p>
-<h2>4 通知监听者</h2>
-<p>在文章的开头实例中，有下面一段代码：</p>
+<h2 id="4-通知监听者"><a href="#4-通知监听者" class="headerlink" title="4 通知监听者"></a>4 通知监听者</h2><p>在文章的开头实例中，有下面一段代码：</p>
 <pre><code>// 添加监听器 
 SchedulerListener schedulerListener = new MySchedulerListener(); 
 scheduler.getListenerManager().addSchedulerListener(schedulerListener); 
-</code></pre>
-<p>Scheduler类中有一个listenerManager变量用于专门管理监听者（和之前的版本不一样），管理的监听者类型包括：SchedulerListener、TriggerListener、JobListener。可由该变量管理这三类监听者是增删改查。</p>
+</code></pre><p>Scheduler类中有一个listenerManager变量用于专门管理监听者（和之前的版本不一样），管理的监听者类型包括：SchedulerListener、TriggerListener、JobListener。可由该变量管理这三类监听者是增删改查。</p>
 <p>下面来看：</p>
-<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">notifySchedulerListenersJobAdded(jobDetail);</div><div class="line">notifySchedulerListenersSchduled(trigger);</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">notifySchedulerListenersJobAdded(jobDetail);</div><div class="line">notifySchedulerListenersSchduled(trigger);</div></pre></td></tr></table></figure>
 <pre><code>// QuartzScheduler.java
 public void notifySchedulerListenersJobAdded(JobDetail jobDetail) {
     // build a list of all scheduler listeners that are to be notified...
@@ -289,8 +276,6 @@ public void notifySchedulerListenersJobAdded(JobDetail jobDetail) {
         }
     }
 }
-</code></pre>
-<p>notifySchedulerListenersSchduled代码与notifySchedulerListenersJobAdded类似，不做赘余。</p>
-<h2>总结</h2>
-<p>本文只是对Job与Trigger 的注册流程做了一个详尽的分析，但没有涉及到Quartz的执行引擎和线程模型，还会有下一篇文章。</p>
+</code></pre><p>notifySchedulerListenersSchduled代码与notifySchedulerListenersJobAdded类似，不做赘余。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文只是对Job与Trigger 的注册流程做了一个详尽的分析，但没有涉及到Quartz的执行引擎和线程模型，还会有下一篇文章。</p>
 </div></article></div><div class="right-container"><div class="widget"><div class="category"><h4>分类归档</h4><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Deep-Learning/">Deep Learning</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java提高/">Java提高</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MQ/">MQ</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL-Redis/">MySQL-Redis</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-cloud/">Spring cloud</a><span class="category-list-count">8</span></li></ul></div></div><div class="widget"><div class="tagcloud"><h4>标签云</h4><a href="/tags/Deep-Learning/" style="font-size: 14px;">Deep Learning</a> <a href="/tags/Java提高/" style="font-size: 20px;">Java提高</a> <a href="/tags/MQ/" style="font-size: 12px;">MQ</a> <a href="/tags/MySQL-Redis/" style="font-size: 18px;">MySQL-Redis</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring-cloud/" style="font-size: 16px;">Spring cloud</a></div></div><div class="widget"><div class="recent"><h4>最近文章</h4><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/12/25/Eureka令牌桶算法的实现/">【50】Eureka中令牌桶算法的实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/08/zookeeper与Redis解决分布式锁问题/">【49】zookeeper与Redis解决分布式锁问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/25/【48】分布式事务（5）——独立消息服务/">【48】分布式事务（5）——独立消息服务</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/24/【47】分布式事务（4）——本地消息表/">【47】分布式事务（4）——本地消息表</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/24/【46】分布式事务（3）——关于纯消息中间件解决方案的遐想/">【46】分布式事务（3）——关于纯消息中间件解决方案的遐想</a></li></ul></div></div><div class="widget"><div id="arAnchorBar"></div></div></div></section></div><div class="right-menu"></div><div class="modal search-modal"><div class="input-field"><input type="text" id="search_input"><label for="search-input">搜索</label></div><div id="search_result" class="search-result"></div></div><div class="blog-overlay"></div><footer class="row"><div class="footer-con"><div class="paginator"><a href="/2018/11/12/Quartz 2.2.1源码分析——QuartzSchedulerThread（Quartz引擎）运转过程/" class="prev">PREV</a><a href="/2018/08/22/Java7 ConcurrentHashMap 源码分析/" class="next">NEXT</a></div><div class="copyright"><p>© 2016 - 2018 <a target="_blank">Du Qingfeng</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <br> and <a href="https://github.com/Bulandent/hexo-theme-bubuzou" target="_blank">hexo-theme-bubuzou</a></p></div><div class="totop"><i></i></div></div></footer><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script src="http://apps.bdimg.com/libs/jquery/1.8.2/jquery.min.js"></script><script src="https://cdn1.lncld.net/static/js/av-mini-0.6.10.js"></script><script src="/scripts/hit-kounter-lc-0.2.0.js"></script><script src="/scripts/arAnchor.js"></script><script src="/scripts/main.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
