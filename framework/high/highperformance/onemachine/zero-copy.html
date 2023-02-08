@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>零拷贝技术 | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.a5a0d673.css" as="style"><link rel="preload" href="/assets/js/app.6f65b538.js" as="script"><link rel="preload" href="/assets/js/3.e3636143.js" as="script"><link rel="preload" href="/assets/js/1.0294b526.js" as="script"><link rel="preload" href="/assets/js/38.117f25f0.js" as="script"><link rel="prefetch" href="/assets/js/10.91a0b122.js"><link rel="prefetch" href="/assets/js/11.4c57cb6c.js"><link rel="prefetch" href="/assets/js/12.a5df0bba.js"><link rel="prefetch" href="/assets/js/13.dff2f2b1.js"><link rel="prefetch" href="/assets/js/14.06bd0f66.js"><link rel="prefetch" href="/assets/js/15.4d1387f7.js"><link rel="prefetch" href="/assets/js/16.1a2aea2a.js"><link rel="prefetch" href="/assets/js/17.240f3a59.js"><link rel="prefetch" href="/assets/js/18.a0912b8d.js"><link rel="prefetch" href="/assets/js/19.a7d5b34a.js"><link rel="prefetch" href="/assets/js/20.3254b0c2.js"><link rel="prefetch" href="/assets/js/21.6f010b66.js"><link rel="prefetch" href="/assets/js/22.3269dfef.js"><link rel="prefetch" href="/assets/js/23.a0bab4ed.js"><link rel="prefetch" href="/assets/js/24.e50783bc.js"><link rel="prefetch" href="/assets/js/25.8c5ad0e7.js"><link rel="prefetch" href="/assets/js/26.68587f15.js"><link rel="prefetch" href="/assets/js/27.52793212.js"><link rel="prefetch" href="/assets/js/28.ed57ed22.js"><link rel="prefetch" href="/assets/js/29.ed249bfb.js"><link rel="prefetch" href="/assets/js/30.c8a7dee7.js"><link rel="prefetch" href="/assets/js/31.328a2547.js"><link rel="prefetch" href="/assets/js/32.d7b94cdb.js"><link rel="prefetch" href="/assets/js/33.0683ac09.js"><link rel="prefetch" href="/assets/js/34.65e6c9c6.js"><link rel="prefetch" href="/assets/js/35.7c8f4a3b.js"><link rel="prefetch" href="/assets/js/36.bb4bfc58.js"><link rel="prefetch" href="/assets/js/37.8c232dd7.js"><link rel="prefetch" href="/assets/js/39.3d2ed127.js"><link rel="prefetch" href="/assets/js/4.586f792b.js"><link rel="prefetch" href="/assets/js/40.e0dc7e59.js"><link rel="prefetch" href="/assets/js/41.9f2f9149.js"><link rel="prefetch" href="/assets/js/42.2735b5ec.js"><link rel="prefetch" href="/assets/js/43.42cb7526.js"><link rel="prefetch" href="/assets/js/5.e3629659.js"><link rel="prefetch" href="/assets/js/6.6748e9bb.js"><link rel="prefetch" href="/assets/js/7.3321eee6.js"><link rel="prefetch" href="/assets/js/8.7ae28660.js"><link rel="prefetch" href="/assets/js/9.d9787f12.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.a5a0d673.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="nav-link"><i class="undefined"></i>
+  PPC 与 TPC
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="nav-link"><i class="undefined"></i>
+  RAID vs. HDFS
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  高性能指标
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 什么是“5个9”的可靠性
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="nav-link"><i class="undefined"></i>
+  指标 - 影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  高可用监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  保证 - 熔断、限流、降级、排队、资源隔离理解
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/hystrix-framework.html" class="nav-link"><i class="undefined"></i>
+  保证 - Hystrix架构设计
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/fusing.html" class="nav-link"><i class="undefined"></i>
+  保证 - 如何设计熔断 / 降级
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/double-active.html" class="nav-link"><i class="undefined"></i>
+  保证 - 灾备、双活、两地三中心
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  传统的可扩展架构模式：分层架构和SOA
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/micro-kernel.html" class="nav-link"><i class="undefined"></i>
+  微内核架构
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-1.html" class="nav-link"><i class="undefined"></i>
+  深入理解微服务架构：银弹 or 焦油坑
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-2.html" class="nav-link"><i class="undefined"></i>
+  微服务 —— 服务粒度与拆分方法
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/garbage-filter.html" class="nav-link"><i class="undefined"></i>
+  信息过滤与反垃圾
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  分布式
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>32</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="nav-link"><i class="undefined"></i>
+  PPC 与 TPC
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="nav-link"><i class="undefined"></i>
+  RAID vs. HDFS
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  高性能指标
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 什么是“5个9”的可靠性
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="nav-link"><i class="undefined"></i>
+  指标 - 影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  高可用监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  保证 - 熔断、限流、降级、排队、资源隔离理解
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/hystrix-framework.html" class="nav-link"><i class="undefined"></i>
+  保证 - Hystrix架构设计
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/fusing.html" class="nav-link"><i class="undefined"></i>
+  保证 - 如何设计熔断 / 降级
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/double-active.html" class="nav-link"><i class="undefined"></i>
+  保证 - 灾备、双活、两地三中心
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  传统的可扩展架构模式：分层架构和SOA
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/micro-kernel.html" class="nav-link"><i class="undefined"></i>
+  微内核架构
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-1.html" class="nav-link"><i class="undefined"></i>
+  深入理解微服务架构：银弹 or 焦油坑
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-2.html" class="nav-link"><i class="undefined"></i>
+  微服务 —— 服务粒度与拆分方法
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/garbage-filter.html" class="nav-link"><i class="undefined"></i>
+  信息过滤与反垃圾
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  分布式
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>内容大纲</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/" aria-current="page" class="sidebar-link">内容大纲</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>单机高性能架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highperformance/onemachine/zero-copy.html" aria-current="page" class="active sidebar-link">零拷贝技术</a></li><li><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="sidebar-link">PPC 与 TPC</a></li><li><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="sidebar-link">Reactor 与 Proactor</a></li><li><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="sidebar-link">RAID vs. HDFS</a></li><li><a href="/framework/high/highperformance/onemachine/network opt.html" class="sidebar-link">网络方面的优化</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>高性能架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highperformance/high/index-high.html" class="sidebar-link">高性能指标</a></li><li><a href="/framework/high/highperformance/high/how2design.html" class="sidebar-link">如何设计高性能系统</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>高可用架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highavailable/5-9.html" class="sidebar-link">指标 - 什么是“5个9”的可靠性</a></li><li><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="sidebar-link">指标 - 影响请求占比</a></li><li><a href="/framework/high/highavailable/monitor.html" class="sidebar-link">高可用监控</a></li><li><a href="/framework/high/highavailable/conception.html" class="sidebar-link">保证 - 熔断、限流、降级、排队、资源隔离理解</a></li><li><a href="/framework/high/highavailable/hystrix-framework.html" class="sidebar-link">保证 - Hystrix架构设计</a></li><li><a href="/framework/high/highavailable/fusing.html" class="sidebar-link">保证 - 如何设计熔断 / 降级</a></li><li><a href="/framework/high/highavailable/double-active.html" class="sidebar-link">保证 - 灾备、双活、两地三中心</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>可扩展架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highextend/base.html" class="sidebar-link">可扩展架构的基本思想和模式</a></li><li><a href="/framework/high/highextend/layered-framework.html" class="sidebar-link">传统的可扩展架构模式：分层架构和SOA</a></li><li><a href="/framework/high/highextend/micro-kernel.html" class="sidebar-link">微内核架构</a></li><li><a href="/framework/high/highextend/microservices-1.html" class="sidebar-link">深入理解微服务架构：银弹 or 焦油坑</a></li><li><a href="/framework/high/highextend/microservices-2.html" class="sidebar-link">微服务 —— 服务粒度与拆分方法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>高安全架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highsafe/encryption-tech.html" class="sidebar-link">信息加密技术</a></li><li><a href="/framework/high/highsafe/attack-mode.html" class="sidebar-link">常见的攻击方式与防火墙</a></li><li><a href="/framework/high/highsafe/garbage-filter.html" class="sidebar-link">信息过滤与反垃圾</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>零拷贝技术</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">零拷贝技术</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/7</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/framework/high/highperformance/onemachine/zero-copy.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><h2 id="_1-传统数据读写与网络发送的瓶颈"><a href="#_1-传统数据读写与网络发送的瓶颈" class="header-anchor">#</a> 1 传统数据读写与网络发送的瓶颈</h2> <p><em>如下伪代码会进行几次拷贝：</em> <em>File.read(file, buf, len);</em> <em>Socket.send(file, buf, len);</em> <em>会进行4次拷贝</em> <em>会进行几次上下文切换呢？（内核态与用户态之间的切换），也是4次：</em></p> <ol><li><em>File.read这个代码是在用户态先执行的，然后要切到内核态进行第一次拷贝</em></li> <li><em>把从内核态拷贝的数据 放到 应用程序的buf中，这是第二个切换</em></li> <li><em>Socket.send是在用户态执行的，要从用户态把buf中的数据拷贝到内核态的套接字发送缓冲区</em></li> <li><em>用户态把buf中的数据拷贝到内核态的状态要返回给用户态</em></li></ol> <h2 id="_2-拷贝的优化"><a href="#_2-拷贝的优化" class="header-anchor">#</a> 2 拷贝的优化</h2> <p><em>讲道理2，3两步拷贝不需要，可以优化掉</em> <em>零拷贝（Zero-copy）：是指计算机执行操作时，CPU不需要先将数据从某处内存复制到另外一个特定区域；主要是减少不必要的数据拷贝、和不必要的上下文切换</em></p> <h3 id="_2-1-linux-mmap内存映射"><a href="#_2-1-linux-mmap内存映射" class="header-anchor">#</a> 2.1 Linux——MMAP内存映射</h3> <p><em>3次拷贝，4次上下文切换，Java代码如下：</em></p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">String</span> path <span class="token operator">=</span> <span class="token string">&quot;F:\\mmap&quot;</span><span class="token punctuation">;</span> <span class="token comment">// 需要进行内存映射的文件目录</span>
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token class-name">File</span> file1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">RandomAccessFile</span> accessFile <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RandomAccessFile</span><span class="token punctuation">(</span>file1<span class="token punctuation">,</span> <span class="token string">&quot;rw&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> len <span class="token operator">=</span> <span class="token number">2048</span><span class="token punctuation">;</span>
+    <span class="token class-name">MappedByteBuffer</span> mmap <span class="token operator">=</span> accessFile<span class="token punctuation">.</span><span class="token function">getChannel</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token class-name">FileChannel<span class="token punctuation">.</span>MapMode</span><span class="token punctuation">.</span><span class="token constant">READ_WRITE</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> len<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    mmap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">&quot;k&quot;</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    mmap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">&quot;i&quot;</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    mmap<span class="token punctuation">.</span><span class="token function">flip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1625664849905-d107d6d8-b057-4a62-82e6-c317528ed712.png#clientId=u6540e6e8-a0e2-4&amp;from=paste&amp;height=398&amp;id=u2d2aa6f8&amp;name=image.png&amp;originHeight=398&amp;originWidth=726&amp;originalType=binary&amp;ratio=1&amp;size=58299&amp;status=done&amp;style=none&amp;taskId=u2deaf4eb-5560-4c18-8ed2-21329b2aedf&amp;width=726" alt="image.png"> <em>mmap是一种内存映射文件的方法，即将一个文件或者其它对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系。实现这样的映射关系后，进程就可以采用指针的方式读写操作这一段内存，而系统会自动回写脏页面到对应的文件磁盘上，即完成了对文件的操作而不必再调用read,write等系统调用函数。相反，内核空间对这段区域的修改也直接反映用户空间，从而可以实现不同进程间的文件共享</em></p> <h3 id="_2-2-linux-sendfile"><a href="#_2-2-linux-sendfile" class="header-anchor">#</a> 2.2 Linux——sendfile</h3> <p><em>3/2次拷贝：3次拷贝如图所示；Linux 2.4支持两次拷贝，文件读取缓冲区直接把地址发送给网卡（第一次使用 DMA 引擎从文件拷贝到内核缓冲区，第二次从内核缓冲区将数据拷贝到网络协议栈；内核缓存区只会拷贝一些 offset 和 length 信息到 SocketBuffer，基本无消耗）</em> <img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1625712429051-1e9bca4a-c4d6-4db5-90c8-762571929794.png#clientId=u92c765e3-1b98-4&amp;from=paste&amp;height=300&amp;id=ua6533377&amp;name=image.png&amp;originHeight=300&amp;originWidth=638&amp;originalType=binary&amp;ratio=1&amp;size=28762&amp;status=done&amp;style=none&amp;taskId=u5bd59fb0-ec1a-4b45-89e6-06b2b4de4a5&amp;width=638" alt="image.png"> <em>（疑问：拷贝offset和length到socket buffer有啥用？）</em> <em>2次上下文切换：用户态通知系统态进行文件发送，系统态通知用户态发送结果</em></p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+    <span class="token class-name">SocketChannel</span> socketChannel <span class="token operator">=</span> <span class="token class-name">SocketChannel</span><span class="token punctuation">.</span><span class="token keyword">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    socketChannel<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InetSocketAddress</span><span class="token punctuation">(</span><span class="token string">&quot;localhost&quot;</span><span class="token punctuation">,</span> <span class="token number">8089</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    socketChannel<span class="token punctuation">.</span><span class="token function">configureBlocking</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token class-name">String</span> fileName <span class="token operator">=</span> <span class="token string">&quot;C://Users//king.jpg&quot;</span><span class="token punctuation">;</span>
+    <span class="token class-name">FileChannel</span> fileChannel <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileInputStream</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getChannel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">long</span> transferCount <span class="token operator">=</span> fileChannel<span class="token punctuation">.</span><span class="token function">transferTo</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> 
+                                fileChannel<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> socketChannel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    fileChannel<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    socketChannel<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="_2-3-两种拷贝之间的区别"><a href="#_2-3-两种拷贝之间的区别" class="header-anchor">#</a> 2.3 两种拷贝之间的区别</h3> <ol><li><em>mmap主要优化的是【 硬盘到应用之间的数据拷贝】</em></li> <li><em>sendfile优化的是 【硬盘到网卡之间的数据拷贝】</em></li> <li><em>mmap 适合小数据量读写，sendFile 适合大文件传输</em></li></ol> <h2 id="_3-消息中间件的选择"><a href="#_3-消息中间件的选择" class="header-anchor">#</a> 3 消息中间件的选择</h2> <p><em>RocketMQ使用mmap是因为RocketMQ实现的很多功能要内存处理，例如消息过滤，顺序消息等</em> <em>Kafka应该没在内存中做一些事情</em></p></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/" class="prev router-link-active">
+          内容大纲
+        </a></span> <span class="next"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html">
+          PPC 与 TPC
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/framework/high/highperformance/onemachine/zero-copy.html#_1-传统数据读写与网络发送的瓶颈" class="sidebar-link reco-side-_1-传统数据读写与网络发送的瓶颈" data-v-b57cc07c>1 传统数据读写与网络发送的瓶颈</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/high/highperformance/onemachine/zero-copy.html#_2-拷贝的优化" class="sidebar-link reco-side-_2-拷贝的优化" data-v-b57cc07c>2 拷贝的优化</a></li><li class="level-3" data-v-b57cc07c><a href="/framework/high/highperformance/onemachine/zero-copy.html#_2-1-linux-mmap内存映射" class="sidebar-link reco-side-_2-1-linux-mmap内存映射" data-v-b57cc07c>2.1 Linux——MMAP内存映射</a></li><li class="level-3" data-v-b57cc07c><a href="/framework/high/highperformance/onemachine/zero-copy.html#_2-2-linux-sendfile" class="sidebar-link reco-side-_2-2-linux-sendfile" data-v-b57cc07c>2.2 Linux——sendfile</a></li><li class="level-3" data-v-b57cc07c><a href="/framework/high/highperformance/onemachine/zero-copy.html#_2-3-两种拷贝之间的区别" class="sidebar-link reco-side-_2-3-两种拷贝之间的区别" data-v-b57cc07c>2.3 两种拷贝之间的区别</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/high/highperformance/onemachine/zero-copy.html#_3-消息中间件的选择" class="sidebar-link reco-side-_3-消息中间件的选择" data-v-b57cc07c>3 消息中间件的选择</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div></div></div>
+    <script src="/assets/js/app.6f65b538.js" defer></script><script src="/assets/js/3.e3636143.js" defer></script><script src="/assets/js/1.0294b526.js" defer></script><script src="/assets/js/38.117f25f0.js" defer></script>
+  </body>
+</html>

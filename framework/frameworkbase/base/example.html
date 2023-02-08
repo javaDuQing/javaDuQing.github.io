@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>示例：网站架构演进过程 | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.a5a0d673.css" as="style"><link rel="preload" href="/assets/js/app.6f65b538.js" as="script"><link rel="preload" href="/assets/js/3.e3636143.js" as="script"><link rel="preload" href="/assets/js/1.0294b526.js" as="script"><link rel="preload" href="/assets/js/14.06bd0f66.js" as="script"><link rel="prefetch" href="/assets/js/10.91a0b122.js"><link rel="prefetch" href="/assets/js/11.4c57cb6c.js"><link rel="prefetch" href="/assets/js/12.a5df0bba.js"><link rel="prefetch" href="/assets/js/13.dff2f2b1.js"><link rel="prefetch" href="/assets/js/15.4d1387f7.js"><link rel="prefetch" href="/assets/js/16.1a2aea2a.js"><link rel="prefetch" href="/assets/js/17.240f3a59.js"><link rel="prefetch" href="/assets/js/18.a0912b8d.js"><link rel="prefetch" href="/assets/js/19.a7d5b34a.js"><link rel="prefetch" href="/assets/js/20.3254b0c2.js"><link rel="prefetch" href="/assets/js/21.6f010b66.js"><link rel="prefetch" href="/assets/js/22.3269dfef.js"><link rel="prefetch" href="/assets/js/23.a0bab4ed.js"><link rel="prefetch" href="/assets/js/24.e50783bc.js"><link rel="prefetch" href="/assets/js/25.8c5ad0e7.js"><link rel="prefetch" href="/assets/js/26.68587f15.js"><link rel="prefetch" href="/assets/js/27.52793212.js"><link rel="prefetch" href="/assets/js/28.ed57ed22.js"><link rel="prefetch" href="/assets/js/29.ed249bfb.js"><link rel="prefetch" href="/assets/js/30.c8a7dee7.js"><link rel="prefetch" href="/assets/js/31.328a2547.js"><link rel="prefetch" href="/assets/js/32.d7b94cdb.js"><link rel="prefetch" href="/assets/js/33.0683ac09.js"><link rel="prefetch" href="/assets/js/34.65e6c9c6.js"><link rel="prefetch" href="/assets/js/35.7c8f4a3b.js"><link rel="prefetch" href="/assets/js/36.bb4bfc58.js"><link rel="prefetch" href="/assets/js/37.8c232dd7.js"><link rel="prefetch" href="/assets/js/38.117f25f0.js"><link rel="prefetch" href="/assets/js/39.3d2ed127.js"><link rel="prefetch" href="/assets/js/4.586f792b.js"><link rel="prefetch" href="/assets/js/40.e0dc7e59.js"><link rel="prefetch" href="/assets/js/41.9f2f9149.js"><link rel="prefetch" href="/assets/js/42.2735b5ec.js"><link rel="prefetch" href="/assets/js/43.42cb7526.js"><link rel="prefetch" href="/assets/js/5.e3629659.js"><link rel="prefetch" href="/assets/js/6.6748e9bb.js"><link rel="prefetch" href="/assets/js/7.3321eee6.js"><link rel="prefetch" href="/assets/js/8.7ae28660.js"><link rel="prefetch" href="/assets/js/9.d9787f12.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.a5a0d673.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="nav-link"><i class="undefined"></i>
+  PPC 与 TPC
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="nav-link"><i class="undefined"></i>
+  RAID vs. HDFS
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  高性能指标
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 什么是“5个9”的可靠性
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="nav-link"><i class="undefined"></i>
+  指标 - 影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  高可用监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  保证 - 熔断、限流、降级、排队、资源隔离理解
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/hystrix-framework.html" class="nav-link"><i class="undefined"></i>
+  保证 - Hystrix架构设计
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/fusing.html" class="nav-link"><i class="undefined"></i>
+  保证 - 如何设计熔断 / 降级
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/double-active.html" class="nav-link"><i class="undefined"></i>
+  保证 - 灾备、双活、两地三中心
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  传统的可扩展架构模式：分层架构和SOA
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/micro-kernel.html" class="nav-link"><i class="undefined"></i>
+  微内核架构
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-1.html" class="nav-link"><i class="undefined"></i>
+  深入理解微服务架构：银弹 or 焦油坑
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-2.html" class="nav-link"><i class="undefined"></i>
+  微服务 —— 服务粒度与拆分方法
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/garbage-filter.html" class="nav-link"><i class="undefined"></i>
+  信息过滤与反垃圾
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  分布式
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>32</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="nav-link"><i class="undefined"></i>
+  PPC 与 TPC
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="nav-link"><i class="undefined"></i>
+  RAID vs. HDFS
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  高性能指标
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 什么是“5个9”的可靠性
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="nav-link"><i class="undefined"></i>
+  指标 - 影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  高可用监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  保证 - 熔断、限流、降级、排队、资源隔离理解
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/hystrix-framework.html" class="nav-link"><i class="undefined"></i>
+  保证 - Hystrix架构设计
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/fusing.html" class="nav-link"><i class="undefined"></i>
+  保证 - 如何设计熔断 / 降级
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/double-active.html" class="nav-link"><i class="undefined"></i>
+  保证 - 灾备、双活、两地三中心
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  传统的可扩展架构模式：分层架构和SOA
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/micro-kernel.html" class="nav-link"><i class="undefined"></i>
+  微内核架构
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-1.html" class="nav-link"><i class="undefined"></i>
+  深入理解微服务架构：银弹 or 焦油坑
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-2.html" class="nav-link"><i class="undefined"></i>
+  微服务 —— 服务粒度与拆分方法
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/garbage-filter.html" class="nav-link"><i class="undefined"></i>
+  信息过滤与反垃圾
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  分布式
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>内容大纲</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/frameworkbase/base/framework-all.html" class="sidebar-link">内容大纲</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>架构基础</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/frameworkbase/base/what-is-framework.html" class="sidebar-link">什么是架构</a></li><li><a href="/framework/frameworkbase/base/goal.html" class="sidebar-link">架构设计的目的</a></li><li><a href="/framework/frameworkbase/base/3principle.html" class="sidebar-link">架构设计的 3 个原则</a></li><li><a href="/framework/frameworkbase/base/example.html" aria-current="page" class="active sidebar-link">示例：网站架构演进过程</a></li><li><a href="/framework/frameworkbase/base/design-steps.html" class="sidebar-link">架构设计流程</a></li><li><a href="/framework/frameworkbase/base/big-website-base.html" class="sidebar-link">大型网站架构基础</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>架构基础 - 拓展知识</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/frameworkbase/expand/visual-angle.html" class="sidebar-link">理解构架的视角</a></li><li><a href="/framework/frameworkbase/expand/common-patterns.html" class="sidebar-link">常见的架构模式</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>示例：网站架构演进过程</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">示例：网站架构演进过程</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/6</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/framework/frameworkbase/base/example.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><h2 id="初始阶段的网站架构"><a href="#初始阶段的网站架构" class="header-anchor">#</a> 初始阶段的网站架构</h2> <p>大型网站都是从小型网站发展而来，网站架构也是一样，是从小型网站架构逐步演化而来。小型网站最开始没有太多人访问，只需要一台服务器就绰绰有余，这时的网站架构如下图所示：</p> <img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675688930823-3012dea4-2873-443a-8a84-be6e6e5bd60b.png#averageHue=%23efefee&amp;clientId=ua7df73cd-eca2-4&amp;from=paste&amp;height=690&amp;id=u7e55c052&amp;name=image.png&amp;originHeight=690&amp;originWidth=948&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=346225&amp;status=done&amp;style=none&amp;taskId=ue3c06955-0f93-4345-af6a-2ec3bb0f7b4&amp;title=&amp;width=948" width="400" height="213" align="bottom"> <p>应用程序、数据库、文件等所有资源都在一台服务器上。通常服务器操作系统使用Linux、应用程序使用PHP开发、然后部署在Apache上、数据库使用MySQL，汇集各种免费的开源软件以及一台廉价服务器就可以开始网站的发展之路了</p> <h2 id="应用服务和数据服务分离"><a href="#应用服务和数据服务分离" class="header-anchor">#</a> 应用服务和数据服务分离</h2> <p>随着网站业务的发展，一台服务器逐渐不能满足需求：越来越多的用户访问导致性能越来越差，越来越多的数据导致存储空间不足。这时就需要将应用和数据分离。应用和数据分离后整个网站使用3台服务器：应用服务器、文件服务器和数据库服务器。这 3 台服务器对硬件资源的要求各不相同：</p> <ol><li>应用服务器需要处理大量的业务逻辑，因此需要更快更强大的CPU</li> <li>数据库服务器需要快速磁盘检索和数据缓存，因此需要更快的磁盘和更大的内存</li> <li>文件服务器需要存储大量用户上传的文件，因此需要更大的硬盘</li></ol> <p>此时，网站系统的架构如下图所示：</p> <img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675689005292-56117b27-a506-4a8e-ac8a-8bf74927f00f.png#averageHue=%23f2f2f1&amp;clientId=ua7df73cd-eca2-4&amp;from=paste&amp;height=868&amp;id=u8ccef5f1&amp;name=image.png&amp;originHeight=868&amp;originWidth=1214&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=435849&amp;status=done&amp;style=none&amp;taskId=ubee4e89c-4847-4c86-8b28-1da0daf895d&amp;title=&amp;width=1214" width="500" height="313" align="bottom"> <p>应用和数据分离后，不同特性的服务器承担不同的服务角色，网站的并发处理能力和数据存储空间得到了很大改善，支持网站业务进一步发展。但是随着用户逐渐增多，网站又一次面临挑战：数据库压力太大导致访问延迟，进而影响整个网站的性能，用户体验受到影响。这时需要对网站架构进一步优化</p> <h2 id="使用缓存改善网站性能"><a href="#使用缓存改善网站性能" class="header-anchor">#</a> 使用缓存改善网站性能</h2> <p>网站访问的特点和现实世界的财富分配一样遵循二八定律：80% 的业务访问集中在20% 的数据上。既然大部分业务访问集中在一小部分数据上，那么如果把这一小部分数据缓存在内存中，就可以减少数据库的访问压力，提高整个网站的数据访问速度，改善数据库的写入性能了。 网站使用的缓存可以分为两种：缓存在应用服务器上的本地缓存和缓存在专门的分布式缓存服务器上的远程缓存</p> <ul><li>本地缓存的访问速度更快一些，但是受应用服务器内存限制，其缓存数据量有限，而且会出现和应用程序争用内存的情况</li> <li>远程分布式缓存可以使用集群的方式，部署大内存的服务器作为专门的缓存服务器，可以在理论上做到不受内存容量限制的缓存服务</li></ul> <img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675689096946-3d77a887-4391-49e9-ab86-77812984ce15.png#averageHue=%23f1f1f0&amp;clientId=ua7df73cd-eca2-4&amp;from=paste&amp;height=1274&amp;id=u796915e2&amp;name=image.png&amp;originHeight=1274&amp;originWidth=1274&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=741615&amp;status=done&amp;style=none&amp;taskId=uc5381caa-9072-465f-8c17-9d7a70a48e9&amp;title=&amp;width=1274" width="500" height="413" align="bottom"> <p>使用缓存后，数据访问压力得到有效缓解，但是单一应用服务器能够处理的请求连接有限，在网站访问高峰期，应用服务器成为整个网站的瓶颈</p> <h2 id="使用应用服务器集群改善网站的并发处理能力"><a href="#使用应用服务器集群改善网站的并发处理能力" class="header-anchor">#</a> 使用应用服务器集群改善网站的并发处理能力</h2> <p>使用集群是网站解决高并发、海量数据问题的常用手段。当一台服务器的处理能力、存储空间不足时，不要企图去更换更强大的服务器，对大型网站而言，不管多么强大的服务器，都满足不了网站持续增长的业务需求。这种情况下，更恰当的做法是增加一台服务器分担原有服务器的访问及存储压力。 对网站架构而言，只要能通过增加一台服务器的方式改善负载压力，就可以以同样的方式持续增加服务器不断改善系统性能，从而实现系统的可伸缩性。应用服务器实现集群是网站可伸缩架构设计中较为简单成熟的一种，如下图所示：</p> <img width="500" height="413" align="bottom" src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675689175518-63e4a1b5-db7b-4b01-a316-e97c6ef7ee59.png#averageHue=%23f4f4f3&amp;clientId=ua7df73cd-eca2-4&amp;from=paste&amp;height=1168&amp;id=uf6c97498&amp;name=image.png&amp;originHeight=1168&amp;originWidth=1634&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=751330&amp;status=done&amp;style=none&amp;taskId=u958f67ec-c75a-405a-be9c-ff17c079b26&amp;title=&amp;width=1634"> <p>通过负载均衡调度服务器，可以将来自用户浏览器的访问请求分发到应用服务器集群中的任何一台服务器上，如果有更多用户，就在集群中加入更多的应用服务器，使应用服务器的压力不再成为整个网站的瓶颈</p> <h2 id="数据库读写分离"><a href="#数据库读写分离" class="header-anchor">#</a> 数据库读写分离</h2> <p>网站在使用缓存后，使对大部分数据读操作访问都可以不通过数据库就能完成，但是仍有一部分读操作（缓存访问不命中、缓存过期）和全部的写操作都需要访问数据库，在网站的用户达到一定规模后，数据库因为负载压力过高而成为网站的瓶颈。 目前大部分的主流数据库都提供主从热备功能，通过配置两台数据库主从关系，可以将一台数据库服务器的数据更新同步到另一台服务器上。网站利用数据库的这一功能，实现数据库读写分离，从而改善数据库负载压力。如下图所示：</p> <img width="600" height="513" align="bottom" src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675689254942-ce20f5ea-3e3c-4668-b5d3-6dc726b0deb3.png#averageHue=%23f3f3f2&amp;clientId=ua7df73cd-eca2-4&amp;from=paste&amp;height=1192&amp;id=u7f5762fd&amp;name=image.png&amp;originHeight=1192&amp;originWidth=1582&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=815488&amp;status=done&amp;style=none&amp;taskId=u79759671-9f38-4de4-9560-64623916024&amp;title=&amp;width=1582"> <p>应用服务器在写数据的时候，访问主数据库，主数据库通过主从复制机制将数据更新同步到从数据库，这样当应用服务器读数据的时候，就可以通过从数据库获得数据。为了便于应用程序访问读写分离后的数据库，通常在应用服务器端使用专门的数据访问模块，使数据库读写分离对应用透明</p> <h2 id="使用反向代理和-cdn-加速网站响应"><a href="#使用反向代理和-cdn-加速网站响应" class="header-anchor">#</a> 使用反向代理和 CDN 加速网站响应</h2> <p>随着网站业务不断发展，用户规模越来越大，由于中国复杂的网络环境，不同地区的用户访问网站时，速度差别也极大。有研究表明，网站访问延迟和用户流失率正相关，网站访问越慢，用户越容易失去耐心而离开。为了提供更好的用户体验，留住用户，网站需要加速网站访问速度。主要手段有使用 CDN 和反向代理。如下图所示：</p> <img width="600" height="513" align="bottom" src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675689343365-b576bd89-b1bf-4349-b797-9fd01bff5368.png#averageHue=%23f2f2f1&amp;clientId=ua7df73cd-eca2-4&amp;from=paste&amp;height=1362&amp;id=u5d460492&amp;name=image.png&amp;originHeight=1362&amp;originWidth=1888&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=1129319&amp;status=done&amp;style=none&amp;taskId=u6f15dc0c-be12-4fef-ba9b-13a206009ec&amp;title=&amp;width=1888"> <p>使用 CDN 和反向代理的目的都是尽早返回数据给用户，一方面加快用户访问速度，另一方面也减轻后端服务器的负载压力</p> <h2 id="使用分布式文件系统和分布式数据库系统"><a href="#使用分布式文件系统和分布式数据库系统" class="header-anchor">#</a> 使用分布式文件系统和分布式数据库系统</h2> <p>任何强大的单一服务器都满足不了大型网站持续增长的业务需求。数据库经过读写分离后，从一台服务器拆分成两台服务器，但是随着网站业务的发展依然不能满足需求，这时需要使用分布式数据库。文件系统也一样，需要使用分布式文件系统。如下图所示：</p> <img width="600" height="413" align="bottom" src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675689407310-e4a4f166-a6bb-4dfe-b073-44ae08199740.png#averageHue=%23f1f1f0&amp;clientId=ua7df73cd-eca2-4&amp;from=paste&amp;height=1094&amp;id=ud3758a48&amp;name=image.png&amp;originHeight=1094&amp;originWidth=1628&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=881514&amp;status=done&amp;style=none&amp;taskId=ua9dd9be9-fda0-40aa-b918-462d657db6e&amp;title=&amp;width=1628"> <p>分布式数据库是网站数据库拆分的最后手段，只有在单表数据规模非常庞大的时候才使用。不到不得已时，网站更常用的数据库拆分手段是业务分库，将不同业务的数据部署在不同的物理服务器上</p> <h2 id="使用-nosql-和搜索引擎"><a href="#使用-nosql-和搜索引擎" class="header-anchor">#</a> 使用 NoSQL 和搜索引擎</h2> <p>随着网站业务越来越复杂，对数据存储和检索的需求也越来越复杂，网站需要采用一些非关系数据库技术如 NoSQL 和非数据库查询技术如搜索引擎。如下图所示：
+<img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675689466689-ea5fcf90-c640-4941-b4d7-1c0664f5f925.png#averageHue=%23efefee&amp;clientId=ua7df73cd-eca2-4&amp;from=paste&amp;height=1022&amp;id=ucd23ef29&amp;name=image.png&amp;originHeight=1022&amp;originWidth=1532&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=887867&amp;status=done&amp;style=none&amp;taskId=uaeceb3fb-4fa1-4d3b-86a3-ff6104c1b6b&amp;title=&amp;width=1532" alt="image.png">
+NoSQL 和搜索引擎都是源自互联网的技术手段，对可伸缩的分布式特性具有更好的支持。应用服务器则通过一个统一数据访问模块访问各种数据，减轻应用程序管理诸多数据源的麻烦</p> <h2 id="业务拆分"><a href="#业务拆分" class="header-anchor">#</a> 业务拆分</h2> <p>大型网站为了应对日益复杂的业务场景，通过使用分而治之的手段将整个网站业务分成不同的产品线。如大型购物交易网站都会将首页、商铺、订单、买家、卖家等拆分成不同的产品线，分归不同的业务团队负责。
+具体到技术上，也会根据产品线划分，将一个网站拆分成许多不同的应用，每个应用独立部署。应用之间可以通过一个超链接建立关系（在首页上的导航链接每个都指向不同的应用地址），也可以通过消息队列进行数据分发，当然最多的还是通过访问同一个数据存储系统来构成一个关联的完整系统，如下图所示：
+<img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675689515621-7bae6735-9434-4ba7-963a-8c1246996968.png#averageHue=%23eeeeed&amp;clientId=ua7df73cd-eca2-4&amp;from=paste&amp;height=1050&amp;id=u119cb93b&amp;name=image.png&amp;originHeight=1050&amp;originWidth=1870&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=1149208&amp;status=done&amp;style=none&amp;taskId=u5bb6d6e2-f519-4f92-8512-9b14d36bd14&amp;title=&amp;width=1870" alt="image.png"></p> <h2 id="分布式服务"><a href="#分布式服务" class="header-anchor">#</a> 分布式服务</h2> <p>随着业务拆分越来越小，存储系统越来越庞大，应用系统的整体复杂度呈指数级增加，部署维护越来越困难。由于所有应用要和所有数据库系统连接，在数万台服务器规模的网站中，这些连接的数目是服务器规模的平方，导致数据库连接资源不足，拒绝服务。
+既然每一个应用系统都需要执行许多相同的业务操作，比如用户管理、商品管理等，那么可以将这些共用的业务提取出来，独立部署。由这些可复用的业务连接数据库，提供共用业务服务，而应用系统只需要管理用户界面，通过分布式服务调用共用业务服务完成具体业务操作。如下图所示：
+<img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675689561968-611592b6-eeb9-4aae-9859-3431dc669641.png#averageHue=%23ececeb&amp;clientId=ua7df73cd-eca2-4&amp;from=paste&amp;height=1014&amp;id=uf752c8fb&amp;name=image.png&amp;originHeight=1014&amp;originWidth=1794&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=1132777&amp;status=done&amp;style=none&amp;taskId=u6fe5dbe7-d94a-4903-b085-c6b15835f31&amp;title=&amp;width=1794" alt="image.png"></p> <h2 id="参考"><a href="#参考" class="header-anchor">#</a> 参考</h2> <ol><li>《大型网站技术架构：核心原理与案例分析》</li></ol></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/framework/frameworkbase/base/3principle.html" class="prev">
+          架构设计的 3 个原则
+        </a></span> <span class="next"><a href="/framework/frameworkbase/base/design-steps.html">
+          架构设计流程
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/framework/frameworkbase/base/example.html#初始阶段的网站架构" class="sidebar-link reco-side-初始阶段的网站架构" data-v-b57cc07c>初始阶段的网站架构</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/frameworkbase/base/example.html#应用服务和数据服务分离" class="sidebar-link reco-side-应用服务和数据服务分离" data-v-b57cc07c>应用服务和数据服务分离</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/frameworkbase/base/example.html#使用缓存改善网站性能" class="sidebar-link reco-side-使用缓存改善网站性能" data-v-b57cc07c>使用缓存改善网站性能</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/frameworkbase/base/example.html#使用应用服务器集群改善网站的并发处理能力" class="sidebar-link reco-side-使用应用服务器集群改善网站的并发处理能力" data-v-b57cc07c>使用应用服务器集群改善网站的并发处理能力</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/frameworkbase/base/example.html#数据库读写分离" class="sidebar-link reco-side-数据库读写分离" data-v-b57cc07c>数据库读写分离</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/frameworkbase/base/example.html#使用反向代理和-cdn-加速网站响应" class="sidebar-link reco-side-使用反向代理和-cdn-加速网站响应" data-v-b57cc07c>使用反向代理和 CDN 加速网站响应</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/frameworkbase/base/example.html#使用分布式文件系统和分布式数据库系统" class="sidebar-link reco-side-使用分布式文件系统和分布式数据库系统" data-v-b57cc07c>使用分布式文件系统和分布式数据库系统</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/frameworkbase/base/example.html#使用-nosql-和搜索引擎" class="sidebar-link reco-side-使用-nosql-和搜索引擎" data-v-b57cc07c>使用 NoSQL 和搜索引擎</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/frameworkbase/base/example.html#业务拆分" class="sidebar-link reco-side-业务拆分" data-v-b57cc07c>业务拆分</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/frameworkbase/base/example.html#分布式服务" class="sidebar-link reco-side-分布式服务" data-v-b57cc07c>分布式服务</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/frameworkbase/base/example.html#参考" class="sidebar-link reco-side-参考" data-v-b57cc07c>参考</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div></div></div>
+    <script src="/assets/js/app.6f65b538.js" defer></script><script src="/assets/js/3.e3636143.js" defer></script><script src="/assets/js/1.0294b526.js" defer></script><script src="/assets/js/14.06bd0f66.js" defer></script>
+  </body>
+</html>

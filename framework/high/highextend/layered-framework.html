@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>传统的可扩展架构模式：分层架构和SOA | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.a5a0d673.css" as="style"><link rel="preload" href="/assets/js/app.6f65b538.js" as="script"><link rel="preload" href="/assets/js/3.e3636143.js" as="script"><link rel="preload" href="/assets/js/1.0294b526.js" as="script"><link rel="preload" href="/assets/js/28.ed57ed22.js" as="script"><link rel="prefetch" href="/assets/js/10.91a0b122.js"><link rel="prefetch" href="/assets/js/11.4c57cb6c.js"><link rel="prefetch" href="/assets/js/12.a5df0bba.js"><link rel="prefetch" href="/assets/js/13.dff2f2b1.js"><link rel="prefetch" href="/assets/js/14.06bd0f66.js"><link rel="prefetch" href="/assets/js/15.4d1387f7.js"><link rel="prefetch" href="/assets/js/16.1a2aea2a.js"><link rel="prefetch" href="/assets/js/17.240f3a59.js"><link rel="prefetch" href="/assets/js/18.a0912b8d.js"><link rel="prefetch" href="/assets/js/19.a7d5b34a.js"><link rel="prefetch" href="/assets/js/20.3254b0c2.js"><link rel="prefetch" href="/assets/js/21.6f010b66.js"><link rel="prefetch" href="/assets/js/22.3269dfef.js"><link rel="prefetch" href="/assets/js/23.a0bab4ed.js"><link rel="prefetch" href="/assets/js/24.e50783bc.js"><link rel="prefetch" href="/assets/js/25.8c5ad0e7.js"><link rel="prefetch" href="/assets/js/26.68587f15.js"><link rel="prefetch" href="/assets/js/27.52793212.js"><link rel="prefetch" href="/assets/js/29.ed249bfb.js"><link rel="prefetch" href="/assets/js/30.c8a7dee7.js"><link rel="prefetch" href="/assets/js/31.328a2547.js"><link rel="prefetch" href="/assets/js/32.d7b94cdb.js"><link rel="prefetch" href="/assets/js/33.0683ac09.js"><link rel="prefetch" href="/assets/js/34.65e6c9c6.js"><link rel="prefetch" href="/assets/js/35.7c8f4a3b.js"><link rel="prefetch" href="/assets/js/36.bb4bfc58.js"><link rel="prefetch" href="/assets/js/37.8c232dd7.js"><link rel="prefetch" href="/assets/js/38.117f25f0.js"><link rel="prefetch" href="/assets/js/39.3d2ed127.js"><link rel="prefetch" href="/assets/js/4.586f792b.js"><link rel="prefetch" href="/assets/js/40.e0dc7e59.js"><link rel="prefetch" href="/assets/js/41.9f2f9149.js"><link rel="prefetch" href="/assets/js/42.2735b5ec.js"><link rel="prefetch" href="/assets/js/43.42cb7526.js"><link rel="prefetch" href="/assets/js/5.e3629659.js"><link rel="prefetch" href="/assets/js/6.6748e9bb.js"><link rel="prefetch" href="/assets/js/7.3321eee6.js"><link rel="prefetch" href="/assets/js/8.7ae28660.js"><link rel="prefetch" href="/assets/js/9.d9787f12.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.a5a0d673.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="nav-link"><i class="undefined"></i>
+  PPC 与 TPC
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="nav-link"><i class="undefined"></i>
+  RAID vs. HDFS
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  高性能指标
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 什么是“5个9”的可靠性
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="nav-link"><i class="undefined"></i>
+  指标 - 影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  高可用监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  保证 - 熔断、限流、降级、排队、资源隔离理解
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/hystrix-framework.html" class="nav-link"><i class="undefined"></i>
+  保证 - Hystrix架构设计
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/fusing.html" class="nav-link"><i class="undefined"></i>
+  保证 - 如何设计熔断 / 降级
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/double-active.html" class="nav-link"><i class="undefined"></i>
+  保证 - 灾备、双活、两地三中心
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  传统的可扩展架构模式：分层架构和SOA
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/micro-kernel.html" class="nav-link"><i class="undefined"></i>
+  微内核架构
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-1.html" class="nav-link"><i class="undefined"></i>
+  深入理解微服务架构：银弹 or 焦油坑
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-2.html" class="nav-link"><i class="undefined"></i>
+  微服务 —— 服务粒度与拆分方法
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/garbage-filter.html" class="nav-link"><i class="undefined"></i>
+  信息过滤与反垃圾
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  分布式
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>32</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="nav-link"><i class="undefined"></i>
+  PPC 与 TPC
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="nav-link"><i class="undefined"></i>
+  RAID vs. HDFS
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  高性能指标
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 什么是“5个9”的可靠性
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="nav-link"><i class="undefined"></i>
+  指标 - 影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  高可用监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  保证 - 熔断、限流、降级、排队、资源隔离理解
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/hystrix-framework.html" class="nav-link"><i class="undefined"></i>
+  保证 - Hystrix架构设计
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/fusing.html" class="nav-link"><i class="undefined"></i>
+  保证 - 如何设计熔断 / 降级
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/double-active.html" class="nav-link"><i class="undefined"></i>
+  保证 - 灾备、双活、两地三中心
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  传统的可扩展架构模式：分层架构和SOA
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/micro-kernel.html" class="nav-link"><i class="undefined"></i>
+  微内核架构
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-1.html" class="nav-link"><i class="undefined"></i>
+  深入理解微服务架构：银弹 or 焦油坑
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-2.html" class="nav-link"><i class="undefined"></i>
+  微服务 —— 服务粒度与拆分方法
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/garbage-filter.html" class="nav-link"><i class="undefined"></i>
+  信息过滤与反垃圾
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  分布式
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>内容大纲</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/" aria-current="page" class="sidebar-link">内容大纲</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>单机高性能架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="sidebar-link">零拷贝技术</a></li><li><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="sidebar-link">PPC 与 TPC</a></li><li><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="sidebar-link">Reactor 与 Proactor</a></li><li><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="sidebar-link">RAID vs. HDFS</a></li><li><a href="/framework/high/highperformance/onemachine/network opt.html" class="sidebar-link">网络方面的优化</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>高性能架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highperformance/high/index-high.html" class="sidebar-link">高性能指标</a></li><li><a href="/framework/high/highperformance/high/how2design.html" class="sidebar-link">如何设计高性能系统</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>高可用架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highavailable/5-9.html" class="sidebar-link">指标 - 什么是“5个9”的可靠性</a></li><li><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="sidebar-link">指标 - 影响请求占比</a></li><li><a href="/framework/high/highavailable/monitor.html" class="sidebar-link">高可用监控</a></li><li><a href="/framework/high/highavailable/conception.html" class="sidebar-link">保证 - 熔断、限流、降级、排队、资源隔离理解</a></li><li><a href="/framework/high/highavailable/hystrix-framework.html" class="sidebar-link">保证 - Hystrix架构设计</a></li><li><a href="/framework/high/highavailable/fusing.html" class="sidebar-link">保证 - 如何设计熔断 / 降级</a></li><li><a href="/framework/high/highavailable/double-active.html" class="sidebar-link">保证 - 灾备、双活、两地三中心</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>可扩展架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highextend/base.html" class="sidebar-link">可扩展架构的基本思想和模式</a></li><li><a href="/framework/high/highextend/layered-framework.html" aria-current="page" class="active sidebar-link">传统的可扩展架构模式：分层架构和SOA</a></li><li><a href="/framework/high/highextend/micro-kernel.html" class="sidebar-link">微内核架构</a></li><li><a href="/framework/high/highextend/microservices-1.html" class="sidebar-link">深入理解微服务架构：银弹 or 焦油坑</a></li><li><a href="/framework/high/highextend/microservices-2.html" class="sidebar-link">微服务 —— 服务粒度与拆分方法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>高安全架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highsafe/encryption-tech.html" class="sidebar-link">信息加密技术</a></li><li><a href="/framework/high/highsafe/attack-mode.html" class="sidebar-link">常见的攻击方式与防火墙</a></li><li><a href="/framework/high/highsafe/garbage-filter.html" class="sidebar-link">信息过滤与反垃圾</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>传统的可扩展架构模式：分层架构和SOA</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">传统的可扩展架构模式：分层架构和SOA</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/7</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/framework/high/highextend/layered-framework.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><hr> <p><strong><em>from：《从 0 开始学架构》</em></strong></p> <hr> <p>相比于高性能、高可用架构模式在最近几十年的迅猛发展来说，可扩展架构模式的发展可以说是步履蹒跚，最近几年火热的微服务模式算是可扩展模式发展历史中为数不多的亮点，但这也导致了现在谈可扩展的时候必谈微服务，甚至微服务架构都成了架构设计的银弹，高性能也用微服务、高可用也用微服务，很多时候这样的架构设计看起来高大上，实际上是大炮打蚊子，违背了架构设计的“合适原则”和“简单原则”</p> <p>为了帮助你在实践中更好的进行可扩展架构设计，我将分别介绍几种可扩展架构模式，指出每种架构模式的关键点和优缺点。今天我来介绍传统的可扩展模式，包括分层架构和SOA，后面还会介绍微服务架构</p> <h2 id="分层架构"><a href="#分层架构" class="header-anchor">#</a> 分层架构</h2> <p>分层架构是很常见的架构模式，它也叫 N 层架构，通常情况下，N 至少是 2 层。例如，C/S 架构、B/S 架构。常见的是 3 层架构（例如，MVC、MVP 架构）、4 层架构，5 层架构的比较少见，一般是比较复杂的系统才会达到或者超过 5 层，比如操作系统内核架构
+按照分层架构进行设计时，根据不同的划分维度和对象，可以得到多种不同的分层架构：</p> <ol><li>C/S 架构、B/S 架构</li></ol> <p>划分的对象是整个业务系统，划分的维度是用户交互，即将和用户交互的部分独立为一层，支撑用户交互的后台作为另外一层。例如，下面是 C/S 架构结构图：
+<img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1650425329917-cbe435d5-7975-454d-a83b-b425f7cd881a.png#clientId=u673669c7-af24-4&amp;from=paste&amp;height=230&amp;id=ue160f269&amp;name=image.png&amp;originHeight=412&amp;originWidth=676&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=142271&amp;status=done&amp;style=none&amp;taskId=u8107a5bc-f431-4642-b36a-d6276d88ecf&amp;title=&amp;width=378" alt="image.png"></p> <ol start="2"><li>MVC 架构、MVP 架构</li></ol> <p>划分的对象是单个业务子系统，划分的维度是职责，将不同的职责划分到独立层，但各层的依赖关系比较灵活。例如，MVC 架构中各层之间是两两交互的：
+<img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1650425377205-e5074ecb-93d9-48ac-a2b5-68de9395dfd7.png#clientId=u673669c7-af24-4&amp;from=paste&amp;height=163&amp;id=u80998d89&amp;name=image.png&amp;originHeight=346&amp;originWidth=624&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=72778&amp;status=done&amp;style=none&amp;taskId=u9e86008c-806a-423f-9771-2d933e9bd43&amp;title=&amp;width=294" alt="image.png"></p> <ol start="3"><li>逻辑分层架构</li></ol> <p>划分的对象可以是单个业务子系统，也可以是整个业务系统，划分的维度也是职责。虽然都是基于职责划分，但逻辑分层架构和 MVC 架构、MVP 架构的不同点在于，逻辑分层架构中的层是自顶向下依赖的。典型的有操作系统内核架构、TCP/IP 架构。例如，下面是 Android 操作系统架构图：
+<img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1650425446956-6f1cec45-f721-4f1e-93bb-3ce833f1e714.png#clientId=u673669c7-af24-4&amp;from=paste&amp;height=986&amp;id=u8a08b3f9&amp;name=image.png&amp;originHeight=986&amp;originWidth=1502&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=883127&amp;status=done&amp;style=none&amp;taskId=u09ce102a-5aaa-4e64-bbed-24b8574080c&amp;title=&amp;width=1502" alt="image.png">
+银行系统架构图：
+<img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1650425485822-35c3c395-4987-4c67-b5c4-74fb0fa8a82b.png#clientId=u673669c7-af24-4&amp;from=paste&amp;height=326&amp;id=u81620658&amp;name=image.png&amp;originHeight=676&amp;originWidth=638&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=261286&amp;status=done&amp;style=none&amp;taskId=ua5fb9e68-8e6c-4870-94b1-ca2dd33be74&amp;title=&amp;width=308" alt="image.png">
+无论采取何种分层维度，分层架构设计最核心的一点就是需要保证各层之间的差异足够清晰，边界足够明显，让人看到架构图后就能看懂整个架构，这也是分层不能分太多层的原因。否则如果两个层的差异不明显，就会出现程序员小明认为某个功能应该放在 A 层，而程序员老王却认为同样的功能应该放在B层，这样会导致分层混乱。如果这样的架构进入实际开发落地，则 A 层和 B 层就会乱成一锅粥，也就失去了分层的意义</p> <p>分层架构之所以能够较好地支撑系统扩展，本质在于隔离关注点（separation of concerns），即每个层中的组件只会处理本层的逻辑。比如说，展示层只需要处理展示逻辑，业务层中只需要处理业务逻辑，这样我们在扩展某层时，其他层是不受影响的，通过这种方式可以支撑系统在某层上快速扩展。例如，Linux 内核如果要增加一个新的文件系统，则只需要修改文件存储层即可，其他内核层无须变动</p> <p>当然，并不是简单地分层就一定能够实现隔离关注点从而支撑快速扩展，分层时要保证层与层之间的依赖是稳定的，才能真正支撑快速扩展。例如，Linux 内核为了支撑不同的文件系统格式，抽象了VFS文件系统接口，架构图如下：
+<img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1650425618591-c26e1140-6a9b-44cd-a96a-2cc662e0371a.png#clientId=u6cad699f-e564-4&amp;from=paste&amp;height=373&amp;id=u1c82ea11&amp;name=image.png&amp;originHeight=590&amp;originWidth=738&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=200428&amp;status=done&amp;style=none&amp;taskId=u51222bd6-ceaf-4d83-923a-3f5c8bbde89&amp;title=&amp;width=466" alt="image.png">
+如果没有 VFS，只是简单地将 ext2、ext3、reiser 等文件系统划为“文件系统层”，那么这个分层是达不到支撑可扩展的目的的。因为增加一个新的文件系统后，所有基于文件系统的功能都要适配新的文件系统接口；而有了 VFS 后，只需要 VFS 适配新的文件系统接口，其他基于文件系统的功能是依赖 VFS 的，不会受到影响</p> <p>对于操作系统这类复杂的系统，接口本身也可以成为独立的一层。例如，我们把 VFS 独立为一层是完全可以的。而对于一个简单的业务系统，接口可能就是Java语言上的几个interface定义，这种情况下如果独立为一层，看起来可能就比较重了。例如，经典的J2EE分层架构中，Presentation Layer 和 Business Layer 之间如果硬要拆分一个独立的接口层，则显得有点多余了</p> <p>分层结构的另外一个特点就是层层传递，也就是说一旦分层确定，整个业务流程是按照层进行依次传递的，不能在层之间进行跳跃。最简单的 C/S 结构，用户必须先使用 C 层，然后 C 层再传递到 S 层，用户是不能直接访问 S 层的。传统的 J2EE 4 层架构，收到请求后，必须按照下面的方式传递请求：
+<img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1650425757413-d32caf52-9bb9-4ab9-8f34-bf56b5bdcd24.png#clientId=u6cad699f-e564-4&amp;from=paste&amp;height=352&amp;id=ud369fa31&amp;name=image.png&amp;originHeight=638&amp;originWidth=922&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=277283&amp;status=done&amp;style=none&amp;taskId=u39e11d78-5d02-4650-8982-2ff09f758b9&amp;title=&amp;width=509" alt="image.png">
+分层结构的这种约束，好处在于强制将分层依赖限定为两两依赖，降低了整体系统复杂度。例如，Business Layer被Presentation Layer 依赖，自己只依赖 Persistence Layer 但分层结构的代价就是冗余，也就是说，不管这个业务有多么简单，每层都必须要参与处理（算是一个缺点）</p> <h2 id="soa"><a href="#soa" class="header-anchor">#</a> SOA</h2> <p>SOA 与 微服务的区别可以先看看这个：
+<a href="https://www.yuque.com/go/doc/66687995?view=doc_embed" target="_blank" rel="noopener noreferrer">概念理解<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>
+SOA 的全称是 Service Oriented Architecture，中文翻译为“面向服务的架构”，诞生于上世纪 90 年代，1996 年Gartner 的两位分析师 Roy W. Schulte和Yefm V. Natis 发表了第一个 SOA 的报告
+2005年，Gartner 预言：到了 2008 年，SOA 将成为 80% 的开发项目的基础。历史证明这个预言并不十分靠谱，SOA 虽然在很多企业成功推广，但没有达到占有绝对优势的地步。SOA 更多是在传统企业（例如，制造业、金融业等）落地和推广，在互联网行业并没有大规模地实践和推广。互联网行业推行SOA最早的应该是亚马逊，得益于杰弗·贝索斯的远见卓识，亚马逊内部的系统都以服务的方式构造，间接地促使了后来的亚马逊云计算技术的出现</p> <p>SOA 出现的背景是企业内部的IT系统重复建设且效率低下，主要体现在：
+企业各部门有独立的IT系统，比如人力资源系统、财务系统、销售系统，这些系统可能都涉及人员管理，各IT系统都需要重复开发人员管理的功能。例如，某个员工离职后，需要分别到上述三个系统中删除员工的权限。各个独立的IT系统可能采购于不同的供应商，实现技术不同，企业自己也不太可能基于这些系统进行重构</p> <p>随着业务的发展，复杂度越来越高，更多的流程和业务需要多个IT系统合作完成。由于各个独立的IT系统没有标准的实现方式（例如，人力资源系统用Java开发，对外提供RPC；而财务系统用C#开发，对外提供SOAP协议），每次开发新的流程和业务，都需要协调大量的IT系统，同时定制开发，效率很低。为了应对传统IT系统存在的问题，SOA提出了3个关键概念：</p> <ol><li>服务：所有业务功能都是一项服务，服务就意味着要对外提供开放的能力，当其他系统需要使用这项功能时，无须定制化开发；服务可大可小，可简单也可复杂。例如，人力资源管理可以是一项服务，包括人员基本信息管理、请假管理、组织结构管理等功能；而人员基本信息管理也可以作为一项独立的服务，组织结构管理也可以作为一项独立的服务。到底是划分为粗粒度的服务，还是划分为细粒度的服务，需要根据企业的实际情况进行判断</li> <li>ESB：ESB 的全称是 Enterprise Service Bus，中文翻译为“企业服务总线”。从名字就可以看出，ESB 参考了计算机总线的概念。计算机中的总线将各个不同的设备连接在一起，ESB 将企业中各个不同的服务连接在一起。因为各个独立的服务是异构的，如果没有统一的标准，则各个异构系统对外提供的接口是各式各样的。SOA 使用ESB 来屏蔽异构系统对外提供各种不同的接口方式，以此来达到服务间高效的互联互通</li> <li>松耦合：松耦合的目的是减少各个服务间的依赖和互相影响。因为采用 SOA 架构后，各个服务是相互独立运行的，甚至都不清楚某个服务到底有多少对其他服务的依赖。如果做不到松耦合，某个服务一升级，依赖它的其他服务全部故障，这样肯定是无法满足业务需求的。但实际上真正做到松耦合并没有那么容易，要做到完全后向兼容，是一项复杂的任务</li></ol> <p>典型的 SOA 架构样例如下：
+<img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1650426338091-cbc40ece-e23f-4b4c-bb18-633b392a9827.png#clientId=u1a9dcbfe-9a67-4&amp;from=paste&amp;height=343&amp;id=u1f6c363e&amp;name=image.png&amp;originHeight=540&amp;originWidth=854&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=434300&amp;status=done&amp;style=none&amp;taskId=ude7ad7b4-963e-4995-8a69-a5a964b9fec&amp;title=&amp;width=542" alt="image.png">
+SOA 架构是比较高层级的架构设计理念，一般情况下我们可以说某个企业采用了 SOA 的架构来构建 IT 系统，但不会说某个独立的系统采用了 SOA 架构。例如，某企业采用 SOA 架构，将系统分为“人力资源管理服务”“考勤服务”“财务服务”</p> <p>SOA 解决了传统IT系统重复建设和扩展效率低的问题，但其本身也引入了更多的复杂性。SOA 最广为人诟病的就是 ESB，ESB 需要实现与各种系统间的协议转换、数据转换、透明的动态路由等功能。例如，下图中 ESB 将JSON 转换为 Java ：
+<img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1650426419888-2c9b278d-b937-40eb-b17d-a1a1de1cc8a4.png#clientId=u1a9dcbfe-9a67-4&amp;from=paste&amp;height=197&amp;id=u9770815e&amp;name=image.png&amp;originHeight=348&amp;originWidth=1066&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=280095&amp;status=done&amp;style=none&amp;taskId=u09b6027b-34ab-4798-9925-3f648154f94&amp;title=&amp;width=603" alt="image.png">
+下图中 ESB 将 REST 协议转换为 RMI 和 AMQP 两个不同的协议：
+<img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1650426454658-9ad76f0b-6d6f-4a7d-a50e-871dae268720.png#clientId=u1a9dcbfe-9a67-4&amp;from=paste&amp;height=191&amp;id=u05d132ab&amp;name=image.png&amp;originHeight=332&amp;originWidth=1072&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=220073&amp;status=done&amp;style=none&amp;taskId=u3d96e284-3142-42ad-bd56-dcb95474ba0&amp;title=&amp;width=618" alt="image.png">
+ESB 虽然功能强大，但现实中的协议有很多种，如 JMS、WS、HTTP、RPC等，数据格式也有很多种，如XML、JSON、二进制、HTML 等。ESB 要完成这么多协议和数据格式的互相转换，工作量和复杂度都很大，而且这种转换是需要耗费大量计算性能的，当 ESB 承载的消息太多时，ESB 本身会成为整个系统的性能瓶颈</p> <p>当然，SOA 的 ESB 设计也是无奈之举。回想一下 SOA 的提出背景就可以发现，企业在应用 SOA 时，各种异构的IT系统都已经存在很多年了，完全重写或者按照统一标准进行改造的成本是非常大的，只能通过 ESB 方式去适配已经存在的各种异构系统</p></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/framework/high/highextend/base.html" class="prev">
+          可扩展架构的基本思想和模式
+        </a></span> <span class="next"><a href="/framework/high/highextend/micro-kernel.html">
+          微内核架构
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/framework/high/highextend/layered-framework.html#分层架构" class="sidebar-link reco-side-分层架构" data-v-b57cc07c>分层架构</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/high/highextend/layered-framework.html#soa" class="sidebar-link reco-side-soa" data-v-b57cc07c>SOA</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div></div></div>
+    <script src="/assets/js/app.6f65b538.js" defer></script><script src="/assets/js/3.e3636143.js" defer></script><script src="/assets/js/1.0294b526.js" defer></script><script src="/assets/js/28.ed57ed22.js" defer></script>
+  </body>
+</html>

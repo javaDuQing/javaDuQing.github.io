@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Reactor 与 Proactor | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.a5a0d673.css" as="style"><link rel="preload" href="/assets/js/app.6f65b538.js" as="script"><link rel="preload" href="/assets/js/3.e3636143.js" as="script"><link rel="preload" href="/assets/js/1.0294b526.js" as="script"><link rel="preload" href="/assets/js/36.bb4bfc58.js" as="script"><link rel="prefetch" href="/assets/js/10.91a0b122.js"><link rel="prefetch" href="/assets/js/11.4c57cb6c.js"><link rel="prefetch" href="/assets/js/12.a5df0bba.js"><link rel="prefetch" href="/assets/js/13.dff2f2b1.js"><link rel="prefetch" href="/assets/js/14.06bd0f66.js"><link rel="prefetch" href="/assets/js/15.4d1387f7.js"><link rel="prefetch" href="/assets/js/16.1a2aea2a.js"><link rel="prefetch" href="/assets/js/17.240f3a59.js"><link rel="prefetch" href="/assets/js/18.a0912b8d.js"><link rel="prefetch" href="/assets/js/19.a7d5b34a.js"><link rel="prefetch" href="/assets/js/20.3254b0c2.js"><link rel="prefetch" href="/assets/js/21.6f010b66.js"><link rel="prefetch" href="/assets/js/22.3269dfef.js"><link rel="prefetch" href="/assets/js/23.a0bab4ed.js"><link rel="prefetch" href="/assets/js/24.e50783bc.js"><link rel="prefetch" href="/assets/js/25.8c5ad0e7.js"><link rel="prefetch" href="/assets/js/26.68587f15.js"><link rel="prefetch" href="/assets/js/27.52793212.js"><link rel="prefetch" href="/assets/js/28.ed57ed22.js"><link rel="prefetch" href="/assets/js/29.ed249bfb.js"><link rel="prefetch" href="/assets/js/30.c8a7dee7.js"><link rel="prefetch" href="/assets/js/31.328a2547.js"><link rel="prefetch" href="/assets/js/32.d7b94cdb.js"><link rel="prefetch" href="/assets/js/33.0683ac09.js"><link rel="prefetch" href="/assets/js/34.65e6c9c6.js"><link rel="prefetch" href="/assets/js/35.7c8f4a3b.js"><link rel="prefetch" href="/assets/js/37.8c232dd7.js"><link rel="prefetch" href="/assets/js/38.117f25f0.js"><link rel="prefetch" href="/assets/js/39.3d2ed127.js"><link rel="prefetch" href="/assets/js/4.586f792b.js"><link rel="prefetch" href="/assets/js/40.e0dc7e59.js"><link rel="prefetch" href="/assets/js/41.9f2f9149.js"><link rel="prefetch" href="/assets/js/42.2735b5ec.js"><link rel="prefetch" href="/assets/js/43.42cb7526.js"><link rel="prefetch" href="/assets/js/5.e3629659.js"><link rel="prefetch" href="/assets/js/6.6748e9bb.js"><link rel="prefetch" href="/assets/js/7.3321eee6.js"><link rel="prefetch" href="/assets/js/8.7ae28660.js"><link rel="prefetch" href="/assets/js/9.d9787f12.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.a5a0d673.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="nav-link"><i class="undefined"></i>
+  PPC 与 TPC
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="nav-link"><i class="undefined"></i>
+  RAID vs. HDFS
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  高性能指标
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 什么是“5个9”的可靠性
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="nav-link"><i class="undefined"></i>
+  指标 - 影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  高可用监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  保证 - 熔断、限流、降级、排队、资源隔离理解
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/hystrix-framework.html" class="nav-link"><i class="undefined"></i>
+  保证 - Hystrix架构设计
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/fusing.html" class="nav-link"><i class="undefined"></i>
+  保证 - 如何设计熔断 / 降级
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/double-active.html" class="nav-link"><i class="undefined"></i>
+  保证 - 灾备、双活、两地三中心
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  传统的可扩展架构模式：分层架构和SOA
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/micro-kernel.html" class="nav-link"><i class="undefined"></i>
+  微内核架构
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-1.html" class="nav-link"><i class="undefined"></i>
+  深入理解微服务架构：银弹 or 焦油坑
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-2.html" class="nav-link"><i class="undefined"></i>
+  微服务 —— 服务粒度与拆分方法
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/garbage-filter.html" class="nav-link"><i class="undefined"></i>
+  信息过滤与反垃圾
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  分布式
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>32</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="nav-link"><i class="undefined"></i>
+  PPC 与 TPC
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="nav-link"><i class="undefined"></i>
+  RAID vs. HDFS
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  高性能指标
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 什么是“5个9”的可靠性
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="nav-link"><i class="undefined"></i>
+  指标 - 影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  高可用监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  保证 - 熔断、限流、降级、排队、资源隔离理解
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/hystrix-framework.html" class="nav-link"><i class="undefined"></i>
+  保证 - Hystrix架构设计
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/fusing.html" class="nav-link"><i class="undefined"></i>
+  保证 - 如何设计熔断 / 降级
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/double-active.html" class="nav-link"><i class="undefined"></i>
+  保证 - 灾备、双活、两地三中心
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  传统的可扩展架构模式：分层架构和SOA
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/micro-kernel.html" class="nav-link"><i class="undefined"></i>
+  微内核架构
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-1.html" class="nav-link"><i class="undefined"></i>
+  深入理解微服务架构：银弹 or 焦油坑
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-2.html" class="nav-link"><i class="undefined"></i>
+  微服务 —— 服务粒度与拆分方法
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/garbage-filter.html" class="nav-link"><i class="undefined"></i>
+  信息过滤与反垃圾
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  分布式
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>内容大纲</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/" aria-current="page" class="sidebar-link">内容大纲</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>单机高性能架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="sidebar-link">零拷贝技术</a></li><li><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="sidebar-link">PPC 与 TPC</a></li><li><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" aria-current="page" class="active sidebar-link">Reactor 与 Proactor</a></li><li><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="sidebar-link">RAID vs. HDFS</a></li><li><a href="/framework/high/highperformance/onemachine/network opt.html" class="sidebar-link">网络方面的优化</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>高性能架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highperformance/high/index-high.html" class="sidebar-link">高性能指标</a></li><li><a href="/framework/high/highperformance/high/how2design.html" class="sidebar-link">如何设计高性能系统</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>高可用架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highavailable/5-9.html" class="sidebar-link">指标 - 什么是“5个9”的可靠性</a></li><li><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="sidebar-link">指标 - 影响请求占比</a></li><li><a href="/framework/high/highavailable/monitor.html" class="sidebar-link">高可用监控</a></li><li><a href="/framework/high/highavailable/conception.html" class="sidebar-link">保证 - 熔断、限流、降级、排队、资源隔离理解</a></li><li><a href="/framework/high/highavailable/hystrix-framework.html" class="sidebar-link">保证 - Hystrix架构设计</a></li><li><a href="/framework/high/highavailable/fusing.html" class="sidebar-link">保证 - 如何设计熔断 / 降级</a></li><li><a href="/framework/high/highavailable/double-active.html" class="sidebar-link">保证 - 灾备、双活、两地三中心</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>可扩展架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highextend/base.html" class="sidebar-link">可扩展架构的基本思想和模式</a></li><li><a href="/framework/high/highextend/layered-framework.html" class="sidebar-link">传统的可扩展架构模式：分层架构和SOA</a></li><li><a href="/framework/high/highextend/micro-kernel.html" class="sidebar-link">微内核架构</a></li><li><a href="/framework/high/highextend/microservices-1.html" class="sidebar-link">深入理解微服务架构：银弹 or 焦油坑</a></li><li><a href="/framework/high/highextend/microservices-2.html" class="sidebar-link">微服务 —— 服务粒度与拆分方法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>高安全架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highsafe/encryption-tech.html" class="sidebar-link">信息加密技术</a></li><li><a href="/framework/high/highsafe/attack-mode.html" class="sidebar-link">常见的攻击方式与防火墙</a></li><li><a href="/framework/high/highsafe/garbage-filter.html" class="sidebar-link">信息过滤与反垃圾</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>Reactor 与 Proactor</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">Reactor 与 Proactor</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/7</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/framework/high/highperformance/onemachine/Reactor-Proactor.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><p>上一篇介绍了单服务器高性能的 PPC 和 TPC 模式，它们的优点是实现简单，缺点是都无法支撑高并发的场景，尤其是互联网发展到现在，各种海量用户业务的出现， PPC 和 TPC 完全无能为力。今天我将介绍可以应对高并发场景的单服务器高性能架构模式：Reactor 和 Proactor</p> <h2 id="_1-reactor"><a href="#_1-reactor" class="header-anchor">#</a> 1 Reactor</h2> <p>PPC 模式最主要的问题就是每个连接都要创建进程（为了描述简洁，这里只以 PPC 和进程为例，实际上换成TPC 和线程，原理是一样的），连接结束后进程就销毁了，这样做其实是很大的浪费。为了解决这个问题，一个自然而然的想法就是资源复用，即不再单独为每个连接创建进程，而是创建一个进程池，将连接分配给进程，一个进程可以处理多个连接的业务</p> <p>引入资源池的处理方式后，会引出一个新的问题：进程如何才能高效地处理多个连接的业务？当一个连接一个进程时，进程可以采用“ read -&gt; 业务处理 -&gt; write ”的处理流程，如果当前连接没有数据可以读，则进程就阻塞在read 操作上。这种阻塞的方式在一个连接一个进程的场景下没有问题，但如果一个进程处理多个连接，进程阻塞在某个连接的 read 操作上，此时即使其他连接有数据可读，进程也无法去处理，很显然这样是无法做到高性能的</p> <p>解决这个问题的最简单的方式是将 read 操作改为非阻塞，然后进程不断地轮询多个连接。这种方式能够解决阻塞的问题，但解决的方式并不优雅。首先，轮询是要消耗 CPU 的；其次，如果一个进程处理几千上万的连接，则轮询的效率是很低的</p> <p><strong>为了能够更好地解决上述问题，很容易可以想到，只有当连接上有数据的时候进程才去处理，这就是I/O多路复用技术的来源</strong></p> <p>I/O 多路复用技术归纳起来有两个关键实现点：</p> <ol><li>当多条连接共用一个阻塞对象后，进程只需要在一个阻塞对象上等待，而无须再轮询所有连接，常见的实现方式有 select、epoll、kqueue 等 <strong>（这里注意下：select、epoll、kqueue 只是一种技术，这种技术能实现 I/O 事件的监控）</strong></li> <li>当某条连接有新的数据可以处理时，操作系统会通知进程，进程从阻塞状态返回，开始进行业务处理</li></ol> <p>I/O 多路复用结合线程池，完美地解决了 PPC 和 TPC 的问题，而且“大神们”给它取了一个很牛的名字 Reactor，中文是“反应堆”。联想到“核反应堆”，听起来就很吓人，实际上这里的“反应”不是聚变、裂变反应的意思，而是“事件反应”的意思，可以通俗地理解为“来了一个事件我就有相应的反应”，这里的“我”就 Reactor，具体的反应就是我们写的代码，Reactor会根据事件类型来调用相应的代码进行处理。Reactor模式也 Dispatcher 模式（在很多开源的系统里面会看到这个名称的类，其实就是实现 Reactor 模式的），更加贴近模式本身的含义，即 I/O 多路复用统一监听事件，收到事件后分配（Dispatch）给某个进程</p> <p>Reactor 模式的核心组成部分包括 Reactor 和处理资源池（进程池或线程池），其中 Reactor 负责监听和分配事件，处理资源池负责处理事件。初看 Reactor 的实现是比较简单的，但实际上结合不同的业务场景，Reactor 模式的具体实现方案灵活多变，主要体现在：</p> <ul><li>Reactor 的数量可以变化：可以是一个 Reactor，也可以是多个 Reactor</li> <li>资源池的数量可以变化：以进程为例，可以是单个进程，也可以是多个进程（线程类似）</li></ul> <p>将上面两个因素排列组合一下，理论上可以有4种选择，但由于“多 Reactor 单进程”实现方案相比“单 Reactor 单进程”方案，既复杂又没有性能优势，因此 “多 Reactor 单进程”方案仅仅是一个理论上的方案，实际没有应用</p> <p><strong>最终 Reactor 模式有这三种典型的实现方案：</strong></p> <ol><li>单Reactor单进程/线程</li> <li>单Reactor多线程</li> <li>多Reactor多进程/线程</li></ol> <p>以上方案具体选择进程还是线程，更多地是和编程语言及平台相关。例如，Java 语言一般使用线程（例如，Netty ），C语言使用进程和线程都可以。例如，Nginx 使用进程，Memcache 使用线程</p> <h3 id="_1-1-单-reactor-单进程-线程"><a href="#_1-1-单-reactor-单进程-线程" class="header-anchor">#</a> 1.1 单 Reactor 单进程 / 线程</h3> <p>单 Reactor 单进程/线程的方案示意图如下（以进程为例）：</p> <p><img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1648813173151-ec3252d1-89a5-48fa-a346-a745ca621040.png#clientId=uff5ed277-3865-4&amp;from=paste&amp;height=376&amp;id=ue97596a0&amp;name=image.png&amp;originHeight=376&amp;originWidth=644&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=79569&amp;status=done&amp;style=none&amp;taskId=ua03f119b-efb7-4fa5-9957-c3a9742c9ff&amp;title=&amp;width=644" alt="image.png"></p> <p><em>注意，select、accept、read、send 是标准的网络编程 API ，dispatch 和“业务处理”是需要完成的操作，其他方案示意图类似</em></p> <p>详细说明一下这个方案：</p> <ol><li>Reactor 对象通过 select 监控连接事件，收到事件后通过 dispatch 进行分发</li> <li>如果是连接建立的事件，则由 Acceptor 处理，Acceptor 通过 accept 接受连接，并创建一个 Handler 来处理连接后续的各种事件</li> <li>如果不是连接建立事件，则 Reactor 会调用连接对应的 Handler（第2步中创建的 Handler ）来进行响应</li> <li>Handler 会完成 read -&gt;业务处理-&gt; send 的完整业务流程</li></ol> <p>单 Reactor 单进程的模式优点就是很简单，没有进程间通信，没有进程竞争，全部都在同一个进程内完成。但其缺点也是非常明显，具体表现有：</p> <ol><li>只有一个进程，无法发挥多核 CPU 的性能；只能采取部署多个系统来利用多核 CPU，但这样会带来运维复杂度，本来只要维护一个系统，用这种方式需要在一台机器上维护多套系统</li> <li>Handler 在处理某个连接上的业务时，整个进程无法处理其他连接的事件，很容易导致性能瓶颈</li></ol> <p>因此，单 Reactor 单进程的方案在实践中应用场景不多，只适用于业务处理非常快速的场景，目前比较著名的开源软件中<strong>使用单 Reactor 单进程的是 Redis</strong></p> <h3 id="_1-2-单-reactor-多线程"><a href="#_1-2-单-reactor-多线程" class="header-anchor">#</a> 1.2 单 Reactor 多线程</h3> <p>为了克服单 Reactor 单进程/线程方案的缺点，引入多进程/多线程是显而易见的，这就产生了第2个方案：单Reactor 多线程，示意图是：</p> <p><img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1648813514443-72064e7e-92ff-4198-8849-7e036610679a.png#clientId=uc1ddd5b5-0995-4&amp;from=paste&amp;height=286&amp;id=uf1c150ee&amp;name=image.png&amp;originHeight=286&amp;originWidth=746&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=110867&amp;status=done&amp;style=none&amp;taskId=u932855a6-5535-4d6f-80d9-d0f3dcc630d&amp;title=&amp;width=746" alt="image.png"></p> <p>我来介绍一下这个方案：</p> <ol><li>主线程中，Reactor 对象通过 select 监控连接事件，收到事件后通过 dispatch 进行分发</li> <li>如果是连接建立的事件，则由 Acceptor 处理，Acceptor 通过 accept 接受连接，并创建一个 Handler 来处理连接后续的各种事件</li> <li>如果不是连接建立事件，则 Reactor 会调用连接对应的 Handler（第2步中创建的 Handler ）来进行响应</li> <li><strong>Handler 只负责响应事件，不进行业务处理；Handler 通过 read 读取到数据后，会发给 Processor 进行业务处理</strong></li> <li><strong>Processor 会在独立的子线程中完成真正的业务处理，然后将响应结果发给主进程的 Handler 处理；Handler收到响应后通过 send 将响应结果返回给 client</strong></li></ol> <p>单 Reator 多线程方案能够充分利用多核多 CPU 的处理能力，但同时也存在下面的问题：</p> <ol><li>多线程数据共享和访问比较复杂。例如，子线程完成业务处理后，要把结果传递给主线程的 Reactor 进行发送，这里涉及共享数据的互斥和保护机制</li> <li><strong>Reactor 承担所有事件的监听和响应，只在主线程中运行，瞬间高并发时会成为性能瓶颈</strong></li></ol> <p>你可能会发现，我只列出了 “单 Reactor 多线程” 方案，没有列出 “单 Reactor 多进程”方案，这是什么原因呢？主要原因在于如果采用多进程，子进程完成业务处理后，将结果返回给父进程，并通知父进程发送给哪个c lient，这是很麻烦的事情。因为父进程只是通过 Reacto r监听各个连接上的事件然后进行分配，子进程与父进程通信时并不是一个连接。如果要将父进程和子进程之间的通信模拟为一个连接，并加入Reactor进行监听，则是比较复杂的。而采用多线程时，因为多线程是共享数据的，因此线程间通信是非常方便的。虽然要额外考
+虑线程间共享数据时的同步问题，但这个复杂度比进程间通信的复杂度要低很多</p> <h3 id="_1-3-多-reactor-多进程-线程"><a href="#_1-3-多-reactor-多进程-线程" class="header-anchor">#</a> 1.3 多 Reactor 多进程 / 线程</h3> <p>为了解决单 Reactor 多线程的问题，最直观的方法就是将单 Reactor 改为多 Reactor ，这就产生了第3个方案：多 Reactor 多进程/线程。示意图是（以进程为例）：</p> <p><img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1648813855182-3da42b45-4931-41df-afb5-d3bf2ac8a985.png#clientId=uc1ddd5b5-0995-4&amp;from=paste&amp;height=343&amp;id=u7a48fea5&amp;name=image.png&amp;originHeight=343&amp;originWidth=738&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=119328&amp;status=done&amp;style=none&amp;taskId=u1d36514c-1df3-4199-82ca-34c2a18d560&amp;title=&amp;width=738" alt="image.png"></p> <p>方案详细说明如下：</p> <ol><li>父进程中 mainReactor 对象通过 select 监控连接建立事件，收到事件后通过 Acceptor 接收，将新的连接分配给某个子进程</li> <li>子进程的 subReactor 将 mainReactor 分配的连接加入连接队列进行监听，并创建一个 Handler 用于处理连接的各种事件</li> <li>当有新的事件发生时，subReactor 会调用连接对应的 Handler（即第2步中创建的 Handler ）来进行响应</li> <li>Handler 完成 read →业务处理→ send 的完整业务流程。</li></ol> <p>多 Reactor 多进程/线程的方案看起来比单 Reactor 多线程要复杂，但实际实现时反而更加简单，主要原因是：</p> <ol><li>父进程和子进程的职责非常明确，父进程只负责接收新连接，子进程负责完成后续的业务处理</li> <li>父进程和子进程的交互很简单，父进程只需要把新连接传给子进程，子进程无须返回数据</li> <li>子进程之间是互相独立的，无须同步共享之类的处理</li></ol> <p><strong>目前著名的开源系统 Nginx 采用的是多 Reactor 多进程，采用多 Reactor 多线程的实现有 Memcache 和 Netty</strong></p> <h2 id="_2-proactor"><a href="#_2-proactor" class="header-anchor">#</a> 2 Proactor</h2> <p>理解参见：《Linux五种IO模型》</p> <p>目前 Windows下通过 IOCP 实现了真正的异步 I/O，而在 Linux 系统下的 AIO 并不完善，因此在 Linux 下实现高并发网络编程时都是以 Reactor 模式为主</p> <hr> <p>来自：《从 0 开始学架构》</p></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="prev">
+          PPC 与 TPC
+        </a></span> <span class="next"><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html">
+          RAID vs. HDFS
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html#_1-reactor" class="sidebar-link reco-side-_1-reactor" data-v-b57cc07c>1 Reactor</a></li><li class="level-3" data-v-b57cc07c><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html#_1-1-单-reactor-单进程-线程" class="sidebar-link reco-side-_1-1-单-reactor-单进程-线程" data-v-b57cc07c>1.1 单 Reactor 单进程 / 线程</a></li><li class="level-3" data-v-b57cc07c><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html#_1-2-单-reactor-多线程" class="sidebar-link reco-side-_1-2-单-reactor-多线程" data-v-b57cc07c>1.2 单 Reactor 多线程</a></li><li class="level-3" data-v-b57cc07c><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html#_1-3-多-reactor-多进程-线程" class="sidebar-link reco-side-_1-3-多-reactor-多进程-线程" data-v-b57cc07c>1.3 多 Reactor 多进程 / 线程</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html#_2-proactor" class="sidebar-link reco-side-_2-proactor" data-v-b57cc07c>2 Proactor</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div></div></div>
+    <script src="/assets/js/app.6f65b538.js" defer></script><script src="/assets/js/3.e3636143.js" defer></script><script src="/assets/js/1.0294b526.js" defer></script><script src="/assets/js/36.bb4bfc58.js" defer></script>
+  </body>
+</html>

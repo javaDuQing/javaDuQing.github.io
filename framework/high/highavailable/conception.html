@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>熔断、限流、降级、排队、资源隔离理解 | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.a5a0d673.css" as="style"><link rel="preload" href="/assets/js/app.6f65b538.js" as="script"><link rel="preload" href="/assets/js/3.e3636143.js" as="script"><link rel="preload" href="/assets/js/1.0294b526.js" as="script"><link rel="preload" href="/assets/js/21.6f010b66.js" as="script"><link rel="prefetch" href="/assets/js/10.91a0b122.js"><link rel="prefetch" href="/assets/js/11.4c57cb6c.js"><link rel="prefetch" href="/assets/js/12.a5df0bba.js"><link rel="prefetch" href="/assets/js/13.dff2f2b1.js"><link rel="prefetch" href="/assets/js/14.06bd0f66.js"><link rel="prefetch" href="/assets/js/15.4d1387f7.js"><link rel="prefetch" href="/assets/js/16.1a2aea2a.js"><link rel="prefetch" href="/assets/js/17.240f3a59.js"><link rel="prefetch" href="/assets/js/18.a0912b8d.js"><link rel="prefetch" href="/assets/js/19.a7d5b34a.js"><link rel="prefetch" href="/assets/js/20.3254b0c2.js"><link rel="prefetch" href="/assets/js/22.3269dfef.js"><link rel="prefetch" href="/assets/js/23.a0bab4ed.js"><link rel="prefetch" href="/assets/js/24.e50783bc.js"><link rel="prefetch" href="/assets/js/25.8c5ad0e7.js"><link rel="prefetch" href="/assets/js/26.68587f15.js"><link rel="prefetch" href="/assets/js/27.52793212.js"><link rel="prefetch" href="/assets/js/28.ed57ed22.js"><link rel="prefetch" href="/assets/js/29.ed249bfb.js"><link rel="prefetch" href="/assets/js/30.c8a7dee7.js"><link rel="prefetch" href="/assets/js/31.328a2547.js"><link rel="prefetch" href="/assets/js/32.d7b94cdb.js"><link rel="prefetch" href="/assets/js/33.0683ac09.js"><link rel="prefetch" href="/assets/js/34.65e6c9c6.js"><link rel="prefetch" href="/assets/js/35.7c8f4a3b.js"><link rel="prefetch" href="/assets/js/36.bb4bfc58.js"><link rel="prefetch" href="/assets/js/37.8c232dd7.js"><link rel="prefetch" href="/assets/js/38.117f25f0.js"><link rel="prefetch" href="/assets/js/39.3d2ed127.js"><link rel="prefetch" href="/assets/js/4.586f792b.js"><link rel="prefetch" href="/assets/js/40.e0dc7e59.js"><link rel="prefetch" href="/assets/js/41.9f2f9149.js"><link rel="prefetch" href="/assets/js/42.2735b5ec.js"><link rel="prefetch" href="/assets/js/43.42cb7526.js"><link rel="prefetch" href="/assets/js/5.e3629659.js"><link rel="prefetch" href="/assets/js/6.6748e9bb.js"><link rel="prefetch" href="/assets/js/7.3321eee6.js"><link rel="prefetch" href="/assets/js/8.7ae28660.js"><link rel="prefetch" href="/assets/js/9.d9787f12.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.a5a0d673.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="nav-link"><i class="undefined"></i>
+  PPC 与 TPC
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="nav-link"><i class="undefined"></i>
+  RAID vs. HDFS
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  高性能指标
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 什么是“5个9”的可靠性
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="nav-link"><i class="undefined"></i>
+  指标 - 影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  高可用监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  保证 - 熔断、限流、降级、排队、资源隔离理解
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/hystrix-framework.html" class="nav-link"><i class="undefined"></i>
+  保证 - Hystrix架构设计
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/fusing.html" class="nav-link"><i class="undefined"></i>
+  保证 - 如何设计熔断 / 降级
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/double-active.html" class="nav-link"><i class="undefined"></i>
+  保证 - 灾备、双活、两地三中心
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  传统的可扩展架构模式：分层架构和SOA
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/micro-kernel.html" class="nav-link"><i class="undefined"></i>
+  微内核架构
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-1.html" class="nav-link"><i class="undefined"></i>
+  深入理解微服务架构：银弹 or 焦油坑
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-2.html" class="nav-link"><i class="undefined"></i>
+  微服务 —— 服务粒度与拆分方法
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/garbage-filter.html" class="nav-link"><i class="undefined"></i>
+  信息过滤与反垃圾
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  分布式
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>32</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="nav-link"><i class="undefined"></i>
+  PPC 与 TPC
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="nav-link"><i class="undefined"></i>
+  RAID vs. HDFS
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  高性能指标
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 什么是“5个9”的可靠性
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="nav-link"><i class="undefined"></i>
+  指标 - 影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  高可用监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  保证 - 熔断、限流、降级、排队、资源隔离理解
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/hystrix-framework.html" class="nav-link"><i class="undefined"></i>
+  保证 - Hystrix架构设计
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/fusing.html" class="nav-link"><i class="undefined"></i>
+  保证 - 如何设计熔断 / 降级
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/double-active.html" class="nav-link"><i class="undefined"></i>
+  保证 - 灾备、双活、两地三中心
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  传统的可扩展架构模式：分层架构和SOA
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/micro-kernel.html" class="nav-link"><i class="undefined"></i>
+  微内核架构
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-1.html" class="nav-link"><i class="undefined"></i>
+  深入理解微服务架构：银弹 or 焦油坑
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/microservices-2.html" class="nav-link"><i class="undefined"></i>
+  微服务 —— 服务粒度与拆分方法
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/garbage-filter.html" class="nav-link"><i class="undefined"></i>
+  信息过滤与反垃圾
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  分布式
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>内容大纲</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/" aria-current="page" class="sidebar-link">内容大纲</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>单机高性能架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="sidebar-link">零拷贝技术</a></li><li><a href="/framework/high/highperformance/onemachine/PPC-TPC.html" class="sidebar-link">PPC 与 TPC</a></li><li><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="sidebar-link">Reactor 与 Proactor</a></li><li><a href="/framework/high/highperformance/onemachine/RAID-HDFS.html" class="sidebar-link">RAID vs. HDFS</a></li><li><a href="/framework/high/highperformance/onemachine/network opt.html" class="sidebar-link">网络方面的优化</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>高性能架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highperformance/high/index-high.html" class="sidebar-link">高性能指标</a></li><li><a href="/framework/high/highperformance/high/how2design.html" class="sidebar-link">如何设计高性能系统</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>高可用架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highavailable/5-9.html" class="sidebar-link">指标 - 什么是“5个9”的可靠性</a></li><li><a href="/framework/high/highavailable/proportion-of-affected-requests.html" class="sidebar-link">指标 - 影响请求占比</a></li><li><a href="/framework/high/highavailable/monitor.html" class="sidebar-link">高可用监控</a></li><li><a href="/framework/high/highavailable/conception.html" aria-current="page" class="active sidebar-link">保证 - 熔断、限流、降级、排队、资源隔离理解</a></li><li><a href="/framework/high/highavailable/hystrix-framework.html" class="sidebar-link">保证 - Hystrix架构设计</a></li><li><a href="/framework/high/highavailable/fusing.html" class="sidebar-link">保证 - 如何设计熔断 / 降级</a></li><li><a href="/framework/high/highavailable/double-active.html" class="sidebar-link">保证 - 灾备、双活、两地三中心</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>可扩展架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highextend/base.html" class="sidebar-link">可扩展架构的基本思想和模式</a></li><li><a href="/framework/high/highextend/layered-framework.html" class="sidebar-link">传统的可扩展架构模式：分层架构和SOA</a></li><li><a href="/framework/high/highextend/micro-kernel.html" class="sidebar-link">微内核架构</a></li><li><a href="/framework/high/highextend/microservices-1.html" class="sidebar-link">深入理解微服务架构：银弹 or 焦油坑</a></li><li><a href="/framework/high/highextend/microservices-2.html" class="sidebar-link">微服务 —— 服务粒度与拆分方法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>高安全架构设计</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/framework/high/highsafe/encryption-tech.html" class="sidebar-link">信息加密技术</a></li><li><a href="/framework/high/highsafe/attack-mode.html" class="sidebar-link">常见的攻击方式与防火墙</a></li><li><a href="/framework/high/highsafe/garbage-filter.html" class="sidebar-link">信息过滤与反垃圾</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>熔断、限流、降级、排队、资源隔离理解</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">熔断、限流、降级、排队、资源隔离理解</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/7</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/framework/high/highavailable/conception.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><h2 id="_1-限流"><a href="#_1-限流" class="header-anchor">#</a> 1 限流</h2> <p><em>限流是针对服务请求数量的一种自我保护机制，当请求数量超出服务的处理能力时，会自动丢弃新来的请求</em></p> <p><em>为什么要限流：</em> <em>任何一个服务的处理能力都是有极限的，假定服务A的处理能力为QPS = 100，当QPS &lt; 100时服务A可以提供正常的服务。当QPS &gt; 100时，由于请求量增大，会出现争抢服务资源的情况（数据库连接、CPU、内存等），导致服务A处理缓慢；当QPS继续增大时，可能会造成服务A响应更加缓慢甚至奔溃。如果不进行限流控制，服务A始终会面临着被大流量冲击的风险。做好系统请求流量的评估，制定合理的限流策略，是我们进行系统高可用保护的第一步</em></p> <p><em>有两种方式：</em></p> <ol><li><em>请求，可以以用户为维度，对于一个URL（例如：wms/goods/section/export）,每个用户1分钟内只能访问5次，否则就报错（计数器法、也是固定时间窗口法）</em></li> <li><em>对于RPC调用，例如：a，b都需要调用c服务，c服务可以释放令牌，拿到令牌的才可以访问</em></li></ol> <h3 id="_1-1-滑动窗口"><a href="#_1-1-滑动窗口" class="header-anchor">#</a> 1.1 滑动窗口</h3> <h4 id="_1-1-1-固定时间窗口-又称计数器法"><a href="#_1-1-1-固定时间窗口-又称计数器法" class="header-anchor">#</a> 1.1.1 固定时间窗口（又称计数器法）</h4> <p><em>步骤如下：</em></p> <ol><li><em>先确定一个起始时间点，一般就是系统启动的时间</em></li> <li><em>从起始时间点开始，根据我们的需求，设置一个最大值M，开始接受请求并从0开始为请求计数</em></li> <li><em>在时间段T内，请求计数超过M时，拒绝所有剩下的请求</em></li> <li><em>超过时间段T后，重置计数</em></li></ol> <p><em>问题：假设我们的时间段T是1秒，请求最大值是10，在第一秒内，请求数量分布是第500毫秒时有1个请求，第800毫秒时有9个请求，如图所示：</em> <img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1627547953043-e78f99b3-1209-4729-b28f-800b0bedcd07.png#clientId=u323bdee4-3946-4&amp;from=paste&amp;id=ude9d1f77&amp;name=image.png&amp;originHeight=155&amp;originWidth=656&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=16037&amp;status=done&amp;style=none&amp;taskId=u45178085-e0a5-4e41-87ac-8c9adf2503e&amp;title=" alt="image.png"> <em>这是对于第一秒而言，这个请求分布是合理的
+此时第二秒的第200毫秒（即两秒中的第1200毫秒）内，又来了10个请求，如图所示：</em> <img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1627548001367-361ace58-0207-48d5-adfd-c8c7ebc245af.png#clientId=u323bdee4-3946-4&amp;from=paste&amp;height=149&amp;id=u32f1383d&amp;name=image.png&amp;originHeight=149&amp;originWidth=673&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=13396&amp;status=done&amp;style=none&amp;taskId=ud2aeb279-7639-4961-8ae6-bdbf3772567&amp;title=&amp;width=673" alt="image.png"> <em>单独看第二秒依然是合理的，但是两个时间段连在一起的时候，就出现了问题，如图所示：</em> <img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1627548026633-f77ee9d2-bbb2-421d-99fc-7825ee7f2ac3.png#clientId=u323bdee4-3946-4&amp;from=paste&amp;height=112&amp;id=u4382621a&amp;name=image.png&amp;originHeight=112&amp;originWidth=848&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=15644&amp;status=done&amp;style=none&amp;taskId=ub9dcacdf-9243-4588-9b60-23271193f3d&amp;title=&amp;width=848" alt="image.png"> <em>临界问题：</em> <em>从500毫秒到1200毫秒，短短700毫秒的时间内后端服务器就接收了20个请求，这显然违背了一开始我们希望1秒最多10个的初衷。这种远远大于预期流量的流量加到后端服务器头上，是会造成不可预料的后果的。因此，人们改进了固定窗口的算法，将其改为检查任何一个时间段都不超过请求数量阈值的时间窗口算法：滑动时间窗口算法</em></p> <h4 id="_1-1-2-滑动时间窗口"><a href="#_1-1-2-滑动时间窗口" class="header-anchor">#</a> 1.1.2 滑动时间窗口</h4> <p><em>它将单位时间周期分为n个小周期，分别记录每个小周期内接口的访问次数，并且根据时间滑动删除过期的小周期</em> <em>假设单位时间是1s，滑动窗口算法把它划分为2个小周期，也就是滑动窗口（单位时间）被划分为2个小格子。每格表示0.5s。每过0.5s，时间窗口就会往右滑动一格，如图：</em> <img src="https://cdn.nlark.com/yuque/0/2021/jpeg/375413/1627557177182-a3539e04-d3a1-4696-85a4-5e64bbbcfb6a.jpeg" alt=""></p> <p><em>我们来看下滑动窗口是如何解决临界问题的？</em> <em>假设我们1s内的限流阀值还是5个请求，比如0.9s（窗口范围0.5s~1s）的时候来了5个请求，落在黄色格子里。1.3s（窗口范围1s～2s）这个点，又来5个请求，落在紫色格子里。这个窗口范围的请求已经超过限定的5了，已触发限流啦，实际上，紫色格子的请求都被拒绝了</em></p> <p><em>缺点：</em></p> <ol><li><em>滑动窗口每移动一个格子，就淘汰一个格子里的请求数量，格子越大淘汰的请求数量越多，就可以接收的请求越多，不够平滑；例如：0.1s有5个请求，那么0.1s~0.5s内都不能接受请求；分的格子越多越平滑，但是管理起来越麻烦，而且不确定到底要划分几个格子</em></li></ol> <h3 id="_1-2-令牌桶"><a href="#_1-2-令牌桶" class="header-anchor">#</a> 1.2 令牌桶</h3> <p><em>令牌桶（token bucket）算法，指的是设计一个容器（即“桶”），由某个组件持续运行往该容器中添加令牌（token），令牌可以是简单的数字、字符或组合，也可以仅仅是一个计数，然后每个请求进入系统时，需要从桶中领取一个令牌，所有请求都必须有令牌才能进入后端系统。当令牌桶空时，拒绝请求；当令牌桶满时，不再往其中添加新的令牌，架构图如下：</em> <img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1627545766365-93545bac-8e57-4fc3-84ac-0bf83de123a3.png#clientId=u12e47552-e70b-4&amp;from=paste&amp;height=451&amp;id=u0e14c01a&amp;name=image.png&amp;originHeight=451&amp;originWidth=717&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=60805&amp;status=done&amp;style=none&amp;taskId=u2b862fcd-7d8c-4b53-a404-bb6bfce8b06&amp;title=&amp;width=717" alt="image.png"> <em>实现逻辑：</em></p> <ol><li><em>假设是T秒内允许N个请求，那么令牌桶算法则会使令牌添加组件每T秒往令牌桶中添加N个令牌</em></li> <li><em>其次，令牌桶需要有一个最大值M，当令牌添加组件检测到令牌桶中已经有M个令牌时，剩余的令牌会被丢弃。反映到限流系统中，可以认为是当前系统允许的瞬时最大流量，但不是持续最大流量。例如令牌桶中的令牌最大数量是100个，每秒钟会往其中添加10个新令牌，当令牌满的时候，突然出现100 TPS的流量，这时候是可以承受的，但是假如连续两秒的100 TPS流量就不行，因为令牌添加速度是一秒10个，添加速度跟不上使用速度</em></li></ol> <p><em>缺点/也是优点：</em></p> <ol><li><em>（缺点）大量令牌累积会导致“伪限流失效”现象，回导致后端处理请求剧增</em></li> <li><em>（优点）能处理突发的请求</em></li></ol> <h3 id="_1-3-漏桶"><a href="#_1-3-漏桶" class="header-anchor">#</a> 1.3 漏桶</h3> <ol><li><em>是令牌桶的一种改进</em></li> <li><em>将请求看作水流，用一个底下有洞的桶盛装，底下的洞漏出水的速率是恒定的，所有请求进入系统的时候都会先进入这个桶，并慢慢由桶流出交给后台服务。桶有一个固定大小，当水流量超过这个大小的时候，多余的请求都会被丢弃</em></li></ol> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1627547132415-ef2c306b-a24b-403e-8656-f40ae9238da1.png#clientId=ub5e88a1c-6453-4&amp;from=paste&amp;height=638&amp;id=ubb3e62ec&amp;name=image.png&amp;originHeight=638&amp;originWidth=399&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=79069&amp;status=done&amp;style=none&amp;taskId=ucc3c8251-8c6e-4fb0-b5db-f2bb929d2a0&amp;title=&amp;width=399" alt="image.png"> <em>漏桶算法和令牌桶算法在思想上非常接近，它们有如下的相同和不同之处：</em></p> <ol><li><em>令牌桶算法以固定速率补充可以转发的请求数量（令牌），而漏桶算法以固定速率转发请求</em></li> <li><em>令牌桶算法在有爆发式增长的流量时可以一定程度上接受，漏桶算法也是，但当流量爆发时，令牌桶算法会使业务服务器直接承担这种流量，而漏桶算法的业务服务器感受到的是一样的速率变化</em></li></ol> <h2 id="_2-降级"><a href="#_2-降级" class="header-anchor">#</a> 2 降级</h2> <ol><li><em>降级是通过开关配置将某些不重要的业务功能屏蔽掉，以提高服务处理能力。在大促场景中经常会对某些服务进行降级处理，大促结束之后再进行复原</em></li> <li><em>例如缓存服务挂掉之后，降级使用内存作为缓存</em></li></ol> <p><em>为什么要降级：
+在不影响业务核心链路的情况下，屏蔽某些不重要的业务功能，可以节省系统的处理时间，提供系统的响应能力，在服务器资源固定的前提下处理更多的请求</em></p> <h2 id="_3-熔断"><a href="#_3-熔断" class="header-anchor">#</a> 3 熔断</h2> <p><em>在服务的依赖调用中，被调用方出现故障时，出于自我保护的目的，调用方会主动停止调用，并根据业务需要进行相应处理。调用方这种主动停止调用的行为我们称之为熔断</em> <img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1627540449176-0c599c74-05c6-4657-bf0e-52fc6b44df6b.png#clientId=u0328c0e0-9a62-4&amp;from=paste&amp;height=346&amp;id=u20565850&amp;name=image.png&amp;originHeight=346&amp;originWidth=522&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=17254&amp;status=done&amp;style=none&amp;taskId=ua499e834-35cb-4a95-810d-f3e681f28c1&amp;title=&amp;width=522" alt="image.png"> <em>为什么要熔断：（防雪崩）</em> <em>为什么要熔断假定服务A依赖服务B，当服务B处于正常状态，整个调用是健康的，服务A可以得到服务B的正常响应。当服务B出现故障时，比如响应缓慢或者响应超时，如果服务A继续请求服务B，那么服务A的响应时间也会增加，进而导致服务A响应缓慢。如果服务A不进行熔断处理，服务B的故障会传导至服务A，最终导致服务A也不可用</em></p> <h2 id="_4-资源隔离"><a href="#_4-资源隔离" class="header-anchor">#</a> 4 资源隔离</h2> <p><em>在故障的情况下，不会耗尽系统所有的资源</em></p></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/framework/high/highavailable/monitor.html" class="prev">
+          高可用监控
+        </a></span> <span class="next"><a href="/framework/high/highavailable/hystrix-framework.html">
+          保证 - Hystrix架构设计
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/framework/high/highavailable/conception.html#_1-限流" class="sidebar-link reco-side-_1-限流" data-v-b57cc07c>1 限流</a></li><li class="level-3" data-v-b57cc07c><a href="/framework/high/highavailable/conception.html#_1-1-滑动窗口" class="sidebar-link reco-side-_1-1-滑动窗口" data-v-b57cc07c>1.1 滑动窗口</a></li><li class="level-3" data-v-b57cc07c><a href="/framework/high/highavailable/conception.html#_1-2-令牌桶" class="sidebar-link reco-side-_1-2-令牌桶" data-v-b57cc07c>1.2 令牌桶</a></li><li class="level-3" data-v-b57cc07c><a href="/framework/high/highavailable/conception.html#_1-3-漏桶" class="sidebar-link reco-side-_1-3-漏桶" data-v-b57cc07c>1.3 漏桶</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/high/highavailable/conception.html#_2-降级" class="sidebar-link reco-side-_2-降级" data-v-b57cc07c>2 降级</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/high/highavailable/conception.html#_3-熔断" class="sidebar-link reco-side-_3-熔断" data-v-b57cc07c>3 熔断</a></li><li class="level-2" data-v-b57cc07c><a href="/framework/high/highavailable/conception.html#_4-资源隔离" class="sidebar-link reco-side-_4-资源隔离" data-v-b57cc07c>4 资源隔离</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div></div></div>
+    <script src="/assets/js/app.6f65b538.js" defer></script><script src="/assets/js/3.e3636143.js" defer></script><script src="/assets/js/1.0294b526.js" defer></script><script src="/assets/js/21.6f010b66.js" defer></script>
+  </body>
+</html>
