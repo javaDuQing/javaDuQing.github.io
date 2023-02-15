@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Java 基础 | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.a5a0d673.css" as="style"><link rel="preload" href="/assets/js/app.ea692b5c.js" as="script"><link rel="preload" href="/assets/js/3.e3636143.js" as="script"><link rel="preload" href="/assets/js/1.0294b526.js" as="script"><link rel="preload" href="/assets/js/64.5110658a.js" as="script"><link rel="prefetch" href="/assets/js/10.91a0b122.js"><link rel="prefetch" href="/assets/js/11.8150718c.js"><link rel="prefetch" href="/assets/js/12.b18d44fe.js"><link rel="prefetch" href="/assets/js/13.7e0a0274.js"><link rel="prefetch" href="/assets/js/14.7ca871d2.js"><link rel="prefetch" href="/assets/js/15.8690d0d7.js"><link rel="prefetch" href="/assets/js/16.a09ac979.js"><link rel="prefetch" href="/assets/js/17.31e7fb57.js"><link rel="prefetch" href="/assets/js/18.c1d7a6ac.js"><link rel="prefetch" href="/assets/js/19.1493eb21.js"><link rel="prefetch" href="/assets/js/20.9fcb5d17.js"><link rel="prefetch" href="/assets/js/21.41d573ab.js"><link rel="prefetch" href="/assets/js/22.1f91e5b0.js"><link rel="prefetch" href="/assets/js/23.9cdd42c5.js"><link rel="prefetch" href="/assets/js/24.a7910640.js"><link rel="prefetch" href="/assets/js/25.db02de63.js"><link rel="prefetch" href="/assets/js/26.00a557e1.js"><link rel="prefetch" href="/assets/js/27.74c52110.js"><link rel="prefetch" href="/assets/js/28.c87b6f36.js"><link rel="prefetch" href="/assets/js/29.2ccd9390.js"><link rel="prefetch" href="/assets/js/30.06ab9ec8.js"><link rel="prefetch" href="/assets/js/31.bdf76ca9.js"><link rel="prefetch" href="/assets/js/32.0c502e7a.js"><link rel="prefetch" href="/assets/js/33.acbf67b0.js"><link rel="prefetch" href="/assets/js/34.ec47a67f.js"><link rel="prefetch" href="/assets/js/35.98fdd81d.js"><link rel="prefetch" href="/assets/js/36.3b418795.js"><link rel="prefetch" href="/assets/js/37.8303165d.js"><link rel="prefetch" href="/assets/js/38.a0bdd2e9.js"><link rel="prefetch" href="/assets/js/39.a8b796e9.js"><link rel="prefetch" href="/assets/js/4.586f792b.js"><link rel="prefetch" href="/assets/js/40.ad69d279.js"><link rel="prefetch" href="/assets/js/41.ae6461a9.js"><link rel="prefetch" href="/assets/js/42.48b80555.js"><link rel="prefetch" href="/assets/js/43.8f9a0690.js"><link rel="prefetch" href="/assets/js/44.5dd53999.js"><link rel="prefetch" href="/assets/js/45.e83425f3.js"><link rel="prefetch" href="/assets/js/46.d29a6554.js"><link rel="prefetch" href="/assets/js/47.ff939c20.js"><link rel="prefetch" href="/assets/js/48.b49a058a.js"><link rel="prefetch" href="/assets/js/49.3c3cbc0e.js"><link rel="prefetch" href="/assets/js/5.e3629659.js"><link rel="prefetch" href="/assets/js/50.16a248ee.js"><link rel="prefetch" href="/assets/js/51.edaddb35.js"><link rel="prefetch" href="/assets/js/52.83a1eb76.js"><link rel="prefetch" href="/assets/js/53.5bbbb322.js"><link rel="prefetch" href="/assets/js/54.6312e35c.js"><link rel="prefetch" href="/assets/js/55.80ae78ce.js"><link rel="prefetch" href="/assets/js/56.dfea0f34.js"><link rel="prefetch" href="/assets/js/57.ea5c6c91.js"><link rel="prefetch" href="/assets/js/58.05087d78.js"><link rel="prefetch" href="/assets/js/59.9401e05e.js"><link rel="prefetch" href="/assets/js/6.6748e9bb.js"><link rel="prefetch" href="/assets/js/60.5d77cc9f.js"><link rel="prefetch" href="/assets/js/61.5c483d61.js"><link rel="prefetch" href="/assets/js/62.f2dbda1e.js"><link rel="prefetch" href="/assets/js/63.8ae29954.js"><link rel="prefetch" href="/assets/js/65.12ee0c4b.js"><link rel="prefetch" href="/assets/js/66.fc208e3b.js"><link rel="prefetch" href="/assets/js/67.15f9bb5c.js"><link rel="prefetch" href="/assets/js/68.ad0f1f10.js"><link rel="prefetch" href="/assets/js/69.1ddd583b.js"><link rel="prefetch" href="/assets/js/7.3321eee6.js"><link rel="prefetch" href="/assets/js/70.6cd3bd71.js"><link rel="prefetch" href="/assets/js/8.7ae28660.js"><link rel="prefetch" href="/assets/js/9.1eb3d92b.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.a5a0d673.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      ❤ 分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>60</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      ❤ 分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>常见面试题</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/interview/java-base.html" aria-current="page" class="active sidebar-link">Java 基础</a></li><li><a href="/interview/multi-thread.html" class="sidebar-link">多线程</a></li><li><a href="/interview/mysql.html" class="sidebar-link">MySql</a></li><li><a href="/interview/jvm.html" class="sidebar-link">JVM</a></li><li><a href="/interview/SSM.html" class="sidebar-link">企业级框架</a></li><li><a href="/interview/zk.html" class="sidebar-link">Zookeeper</a></li><li><a href="/interview/dubbo-netty.html" class="sidebar-link">Dubbo 和 netty</a></li><li><a href="/interview/redis.html" class="sidebar-link">Redis</a></li><li><a href="/interview/RocketMQ.html" class="sidebar-link">RocketMQ</a></li><li><a href="/interview/hr.html" class="sidebar-link">非技术问题</a></li><li><a href="/interview/Linux.html" class="sidebar-link">Linux</a></li><li><a href="/interview/http tcp.html" class="sidebar-link">Http 和 TCP/IP</a></li><li><a href="/interview/distributed.html" class="sidebar-link">分布式相关</a></li><li><a href="/interview/project.html" class="sidebar-link">项目相关</a></li><li><a href="/interview/es.html" class="sidebar-link">Elasticsearch</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>Java 基础</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">Java 基础</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/15</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/interview/java-base.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><ol><li>动态代理和静态代理有什么区别（百度 1面）</li> <li>线程间的同步用什么方式，使用hashmap时重写哪两个方法，为什么要重写，什么场景下重写（百度 1面）</li> <li>hashMap原理,put和resize过程（有赞 1面）</li> <li>concurrentHashMap分段锁原理，java8和java7实现的区别（有赞 1面）</li> <li>hashMap原理（网易 1面）</li> <li>二叉搜索树和平衡二叉树有什么关系，强平衡二叉树（AVL树）和弱平衡二叉树（红黑树）有什么区别（蚂蚁 1面）</li> <li>HashMap如何解决Hash冲突（蚂蚁 1面）</li> <li>epoll和poll的区别，及其应用场景（蚂蚁 1面）</li> <li>设计模式有哪些大类，及熟悉其中哪些设计模式（蚂蚁 2面）</li> <li>Java类加载器有哪些种类，每种都用来加载什么（字节 2年 2面）</li> <li>双亲委派，String 类是由那个类加载器加载的（字节 2年 2面）</li> <li>代理模式、适配器模式、桥接模式、装饰器模式，本质区别是什么。（美团 1 面）</li> <li>hashmap原理，put和get，为什么是8转红黑树，红黑树节点添加过程，什么时候扩容，为什么是0.75，扩容步骤，为什么分高低位，1.7到1.8有什么优化，hash算法做了哪些优化，头插法有什么问题，为什么线程不安全（阿里 2面）</li> <li>arraylist原理，为什么数组加transient，add和get时间复杂度，扩容原理，和linkedlist区别，原理，分别在什么场景下使用，为什么（阿里 2面）</li> <li>了解哪些设计模式，工厂，策略，装饰者，桥接模式讲讲，单例模式会有什么问题（阿里 2面）</li> <li>对象一定分配在堆上么，JIT，分层编译，逃逸分析（阿里 3面）</li> <li>while(true)里面一直new thread().start()会有什么问题（阿里 3面）</li> <li>new Object[100]对象大小，它的一个对象引用大小，对象头结构（阿里 4面）</li> <li>怎么理解用户态，内核态，为什么要分级别，有几种转换的方式，怎么转换的，转换失败怎么办（阿里 5面） （转换失败怎么办 可能是想问恢复现场）</li> <li>怎么理解异常，它的作用是什么，你们工作中是怎么使用的（阿里 5面）</li> <li>hashmap的底层数据结构，put的过程（小红书 1面 4年）</li> <li>哈希冲突如何解决（小红书 1面 4年）</li> <li>nio,bio,aio（斗鱼 1面）</li> <li>类加载机制、双亲委派机制、如何阻断双亲委派机制（线程上下文类加载器）（蚂蚁 2面）</li> <li>创建对象流程，内存分配方法，如何保存线程安全（蚂蚁 2面）</li> <li>epoll底层原理，水平，边缘（网易 2面）</li> <li>说一下类加载的过程（蚂蚁 1面）</li> <li>双亲委派模型了解吗，过程是怎样的；（蚂蚁 1面）</li> <li>怎么破坏双亲委派模型；你能列举哪些框架破坏了双亲委派模型吗；（蚂蚁 1面）</li> <li>项目中的设计模式的使用（百世物流）</li> <li>多路复用器的实现原理？（美团）</li> <li>epoll 的实现原理？epoll、poll、select 的区别（美团）</li> <li>类的加载过程？什么是双亲委派机制？（字节）</li> <li>BIO、NIO、AIO 的区别？（字节）</li> <li>Java 中反射的基本原理？实际项目中是如何使用反射的？（腾讯）</li> <li>熟悉哪些设计模式？在项目中哪些地方实际使用过？（腾讯）</li> <li>一个对象是如何存储在 JVM 中的？（腾讯）</li> <li>类加载过程，以及方法的执行的过程？（腾讯）</li> <li>epoll 的原理？（腾讯）</li> <li>Java 如何判断一个对象能否被回收？垃圾回收算法有哪些？（阿里）</li> <li>什么是内存模型？（阿里）</li> <li>什么是线程安全？（阿里）</li> <li>对象在内存中的布局？（阿里）</li> <li>对象如何进行深拷贝，除了clone（阿里）</li> <li>为什么实现equals必须先实现hash方法（腾讯）</li> <li>一个对象new出来后的结构，怎么保存的（腾讯）</li> <li>讲一讲类加载的过程（腾讯）</li> <li>new 一个对象的过程发生了什么（毒（得物））</li> <li>jdk1.8的新特性（饿了吗）</li> <li>说一下linux 常见的IO模型。（5种）(光云)</li> <li>epoll的边缘触发 和 水平触发了解吗？(光云)</li> <li>epoll的缺点说一下(光云)</li></ol> <hr> <ol><li></li></ol> <p>|</p> <table><thead><tr><th>优点</th> <th>缺点</th> <th>区别</th></tr></thead> <tbody><tr><td>静态代理</td> <td>1、代理类作为客户端和被代理类之间的中介，起到了保护被代理类的作用</td> <td></td></tr> <tr><td>2、通过接口对代理类和被代理类进行解耦，降低了系统的耦合度</td> <td>只能为给定接口下的实现类做代理，如果接口不一样那么就要重新定义不同的代理类，维护复杂</td> <td>需要提前实现接口编写代理类，在代码运行之前，代理类的.class文件就已经存在</td></tr> <tr><td>动态代理</td> <td>1、代理类在程序运行时由反射自动生成，无需我们手动编写代理类代码，简化编程工作</td> <td></td></tr> <tr><td>2、一个动态代理类InvocationHandler就能代理多个被代理类，较为灵活</td> <td>1、动态代理只能代理实现了接口的类，而不能代理实现抽象类的类</td> <td></td></tr> <tr><td>2、通过反射调用被代理类的方法，效率低</td> <td>不需要提前实现接口编写代理类，在代码运行时，由JVM来动态的创建代理类</td> <td></td></tr></tbody></table> <hr> <ol start="2"><li>线程间同步主要有<strong>互斥量、读写锁、条件变量、自旋锁、屏障</strong>等5种方式</li></ol> <ul><li>互斥量（mutex）：主要用于保护共享数据，确保同一时间只有一个线程访问数据。互斥量从本质上来说是一把锁，在访问共享资源前对互斥量进行加锁，访问完成后释放互斥量（解锁）</li> <li>读写锁（reader-writer lock）：读锁与读锁不互斥，其他互斥</li> <li>自旋锁：自旋锁与互斥量类似，但它不是通过休眠使进程阻塞，而是在获取所之前一直处于忙等（自旋）阻塞状态。自旋锁可用于以下情况：锁被持有的时间短，而且线程并不希望在重新调度上花费太多的成本</li> <li>屏障（barrier）：是用户协调多个线程并行工作的同步机制。屏障允许每个线程等待，直到所有的合作线程都到达某一点，然后从该点继续执行</li> <li>条件变量：相比使用Object的wait()、notify()，使用Condition的await()、signal()这种方式实现线程间协作更加安全和高效</li></ul> <hr> <ol start="3"><li></li></ol> <p>JDK8中HashMap的put实现过程</p> <ol><li>根据key生成hashcode</li> <li>判断当前HashMap对象中的数组是否为空，如果为空则初始化该数组</li> <li>根据逻辑与运算，算出hashcode基于当前数组对应的下标i</li> <li>判断数组的第i个位置的元素是否为空
+<ol><li>如果为空，则将key,value封装为Node对象赋值给tab[i]</li> <li>如果不为空：
+<ol><li>如果put方法传入进来的key等于tab[i].key，那么证明存在相同的key</li> <li>如果tab[i]的类型是TreeNode，则表示数组的第i位置上是一颗红黑树，那么将key和value插入到红黑树中，红黑树在寻找插入的位置过程中也会判断是否有相同的key</li> <li>如果tab[i]的类型不是TreeNode，则表述数组第i位置上是一个链表，那么遍历链表寻找是否存在相同的key，并且在遍历的过程中会对链表中的节点进行计数，当遍历到最后一个节点时，会将key，value封装为Node插入到链表的尾部，同时判断插入新节点之后是否大于等于8，考虑转红黑树</li></ol></li></ol></li> <li>modCount ++</li> <li>HashMap的元素个数size加1</li> <li>如果size大于扩容的阈值，则进行扩容</li></ol> <p>JDK8中HashMap的resize实现过程</p> <ol><li>计算新数组的大小，2倍扩容，创建新的数组</li> <li>遍历老数组，进行元素的转移过程
+<ol><li>如果元素组i位置只有一个元素，[i] &amp; newArr.length = j，直接放到新素组的j位置</li> <li>如果超过一个元素，则要判断当前位置是链表还是红黑树
+<ol><li>如果是链表：因为是2倍扩容，所以当前位置转移到新数组上，只能是相同位置，或者是oldArr.length + i，所以这个做了一个优化，把当前位置的链表分成2个链表，然后一起转移这两个链表</li> <li>如果是红黑树：也是先分成两个链表，如果链表元素数量小于8，则直接转移到新数组中；否则先转成红黑树，然后移动到新数组中</li></ol></li></ol></li></ol> <hr> <ol start="4"><li></li></ol> <ul><li>8中没有分段锁了，而是使用synchronized关键字</li> <li>8中的扩容性能更高，支持多线程同时扩容；实际上7中也支持多线程扩容，是对每个segement的，但是不能多个线程对同一个segment扩容</li> <li>8中的元素个数统计的实现也不一样，8中增加了countCell来帮助计数；7中每个segment中都有一个count，求size的时候把每个segment的count加到一起</li></ul> <hr> <ol start="6"><li></li></ol> <ul><li>红黑树是一个“适度平衡”的二叉搜索树，而非如AVL完全的平衡：红黑树“平衡”的意思并不是说两个子树的叶子节点个数精确一样，而是说两个子树的高度不会差太多（对于AVL树，任何一个节点的两个子树高度差不会超过1；对于红黑树，则是不会相差两倍以上）</li> <li>avl：查找效率高；红黑树：插入删除效率高，查找也不错</li></ul> <hr> <ol start="8"><li>本质：通过一种机制，让单个线程可以监视多个文件描述符，一旦某个描述符就绪，能够通知程序进行相应的读写操作；select、poll、epoll本质上都是同步I/O，都需要在读写事件就绪后自己负责进行读写（从内核态拷贝到用户态），也就是说这个读写过程是阻塞的，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间</li></ol> <ul><li><a href="https://segmentfault.com/a/1190000009724931" target="_blank" rel="noopener noreferrer">文件描述符（File Descriptor）简介<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://imageslr.com/2020/02/27/select-poll-epoll.html" target="_blank" rel="noopener noreferrer">【操作系统】I/O 多路复用，select / poll / epoll 详解<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://zofun.github.io/2020/03/15/select%E3%80%81poll%E3%80%81epoll%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%8C%BA%E5%88%AB/" target="_blank" rel="noopener noreferrer">select、poll、epoll的原理与区别<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul> <h2 id="_8-select-poll-epoll"><a href="#_8-select-poll-epoll" class="header-anchor">#</a> 8 Select Poll epoll</h2> <h3 id="_8-1-fd的概念"><a href="#_8-1-fd的概念" class="header-anchor">#</a> 8.1 fd的概念</h3> <p>Linux 系统中，把一切都看做是文件，当进程打开现有文件或创建新文件时，内核向进程返回一个文件描述符（fd），文件描述符就是内核为了高效管理已被打开的文件所创建的索引，用来指向被打开的文件；一次socket读写也是被当成一个fd</p> <p>系统为每一个进程维护了一个文件描述符表，表示该进程打开文件的记录表，而文件描述符实际上就是这张表的索引。当进程打开（open）或者新建（create）文件时，内核会在该进程的文件列表中新增一个表项，同时返回一个文件描述符 —— 也就是新增表项的下标</p> <p>和fd相关的一共有3张表，分别是file descriptor（进程级的文件描述符表）、file table（系统级的文件描述符表）、inode table（文件系统的i-node表），如下图所示：
+<img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1638166530312-7dd092d9-4240-46bd-bca6-776ce4aa6250.png#clientId=u8c3de66d-8bfe-4&amp;from=paste&amp;height=392&amp;id=u99b3f8de&amp;name=image.png&amp;originHeight=392&amp;originWidth=617&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=109033&amp;status=done&amp;style=none&amp;taskId=u8021a5b3-318b-4fba-a8a3-87becbd0a29&amp;title=&amp;width=617" alt="image.png"></p> <ul><li>在进程A中，文件描述符1和30都指向了同一个打开的文件句柄（#23），这可能是该进程多次对执行打开操作</li> <li>系统级别的文件描述符表：文件状态(读/写等)、文件偏移量（内存中的位置）等等</li> <li>inode表：非文件内容的其他信息，如文件字节数、创建时间、创建人、文件数据存储的实际位置等</li></ul> <h3 id="_8-2-socket-与-fd-的关系"><a href="#_8-2-socket-与-fd-的关系" class="header-anchor">#</a> 8.2 socket 与 fd 的关系</h3> <p>socket 是 Unix 中的术语。socket 可以用于同一台主机的不同进程间的通信，也可以用于不同主机间的通信。一个 socket 包含地址、类型和通信协议等信息，通过 socket() 函数创建：</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">int</span> <span class="token function">socket</span><span class="token punctuation">(</span><span class="token keyword">int</span> domain<span class="token punctuation">,</span> <span class="token keyword">int</span> type<span class="token punctuation">,</span> <span class="token keyword">int</span> protocol<span class="token punctuation">)</span> 
+</code></pre></div><p>返回的就是这个 socket 对应的文件描述符 fd。操作系统将 socket 映射到进程的一个文件描述符上，进程就可以通过读写这个文件描述符来和远程主机通信</p> <p>可以这样理解：socket 是进程间通信规则的高层抽象，而 fd 提供的是底层的具体实现。socket 与 fd 是一一对应的。通过 socket 通信，实际上就是通过文件描述符 fd 读写文件。这也符合 Unix“一切皆文件”的哲学
+后面可以将 socket 和 fd 视为同义词</p> <h3 id="_8-3-fd-set-文件描述符集合"><a href="#_8-3-fd-set-文件描述符集合" class="header-anchor">#</a> 8.3 fd_set 文件描述符集合</h3> <p>参数中的 fd_set 类型表示文件描述符的集合。
+由于文件描述符 fd 是一个从 0 开始的无符号整数，所以可以使用 fd_set 的二进制每一位来表示一个文件描述符。某一位为 1，表示对应的文件描述符已就绪。比如比如设 fd_set 长度为 1 字节，则一个 fd_set 变量最大可以表示 8 个文件描述符。当 select 返回 fd_set = 00010011 时，表示文件描述符 1、2、5 已经就绪。
+fd_set 的使用涉及以下几个 API：</p> <div class="language-java extra-class"><pre class="language-java"><code>#include <span class="token operator">&lt;</span>sys<span class="token operator">/</span>select<span class="token punctuation">.</span>h<span class="token operator">&gt;</span>   
+<span class="token keyword">int</span> <span class="token function">FD_ZERO</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> fd_set <span class="token operator">*</span>fdset<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 将 fd_set 所有位置 0</span>
+<span class="token keyword">int</span> <span class="token function">FD_CLR</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> fd_set <span class="token operator">*</span>fdset<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 将 fd_set 某一位置 0</span>
+<span class="token keyword">int</span> <span class="token function">FD_SET</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> fd_set <span class="token operator">*</span>fd_set<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 将 fd_set 某一位置 1</span>
+<span class="token keyword">int</span> <span class="token function">FD_ISSET</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> fd_set <span class="token operator">*</span>fdset<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 检测 fd_set 某一位是否为 1</span>
+</code></pre></div><h3 id="_8-4-select"><a href="#_8-4-select" class="header-anchor">#</a> 8.4 select</h3> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">int</span> <span class="token function">select</span><span class="token punctuation">(</span><span class="token keyword">int</span> nfds<span class="token punctuation">,</span>
+            fd_set <span class="token operator">*</span>restrict readfds<span class="token punctuation">,</span>
+            fd_set <span class="token operator">*</span>restrict writefds<span class="token punctuation">,</span>
+            fd_set <span class="token operator">*</span>restrict errorfds<span class="token punctuation">,</span>
+            struct timeval <span class="token operator">*</span>restrict timeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1638170483762-e5f45497-e2bb-4ecb-ada1-bbab283039e0.png#clientId=ua424a24a-06cc-4&amp;from=paste&amp;height=174&amp;id=u3c9e0846&amp;name=image.png&amp;originHeight=174&amp;originWidth=680&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=84415&amp;status=done&amp;style=none&amp;taskId=u7e0ba116-bc41-4621-a8ec-7c2c19b9c37&amp;title=&amp;width=680" alt="image.png"> <img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1638168912542-ee31d491-48d5-486e-aa25-41cb33c0845f.png#clientId=uf1b63823-e86b-4&amp;from=paste&amp;height=500&amp;id=u57c0bed7&amp;name=image.png&amp;originHeight=500&amp;originWidth=465&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=127323&amp;status=done&amp;style=none&amp;taskId=uc6a16b0f-7aa7-474d-bc5d-9b7a8297b0d&amp;title=&amp;width=465" alt="image.png"></p> <ol><li>先声明一个 fd_set 类型的变量 readFDs</li> <li>调用 FD_ZERO，将 readFDs 所有位置 0</li> <li>调用 FD_SET，将 readFDs 感兴趣的位置 1，表示要监听这几个文件描述符</li> <li>将 readFDs 传给 select，调用 select</li> <li>select 会将 readFDs 中就绪的位置 1，未就绪的位置 0，返回就绪的文件描述符的数量</li> <li>当 select 返回后，调用 FD_ISSET 检测给定位是否为 1，表示对应文件描述符是否就绪</li> <li>比如进程想监听 1、2、5 这三个文件描述符，就将 readFDs 设置为 00010011，然后调用 select。如果 fd=1、fd=2 就绪，而 fd=5 未就绪，select 会将 readFDs 设置为 00000011 并返回 2。</li></ol> <h4 id="_8-4-1-select的缺点"><a href="#_8-4-1-select的缺点" class="header-anchor">#</a> 8.4.1 select的缺点</h4> <ol><li>同时能够监听的文件描述符数量太少。受限于 fd_set 的大小。一般是 1024，不同的操作系统不相同</li> <li>每次调用select都需要将fds列表传递给内核，有一定的开销，（内核修改fd_set之后，也需要把fd_set从内核态拷贝回用户态）</li> <li>select只返回就绪的数量，不知道是谁。程序需遍历一遍fd_set，才可以得到就绪的socket，轮询的方法</li> <li>只支持水平触发</li></ol> <h3 id="_8-5-poll"><a href="#_8-5-poll" class="header-anchor">#</a> 8.5 poll</h3> <p>poll 和 select 几乎没有区别。poll 在用户态通过数组方式传递文件描述符，在内核会转为链表方式存储，没有最大数量的限制</p> <h3 id="_8-6-epoll"><a href="#_8-6-epoll" class="header-anchor">#</a> 8.6 epoll</h3> <p>epoll 是对 select 和 poll 的改进，避免了“性能开销大”和“文件描述符数量少”两个缺点。
+简而言之，epoll 有以下几个特点：</p> <ol><li>使用红黑树存储文件描述符集合，无大小限制</li> <li>使用队列存储就绪的文件描述符，无需轮询哪个fd就绪了</li> <li>每个文件描述符只需在添加时传入一次</li></ol> <p>epoll 模型使用三个函数：</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token comment">//  建立一個 epoll 对象，并传回它的id</span>
+<span class="token keyword">int</span> <span class="token function">epoll_create</span><span class="token punctuation">(</span><span class="token keyword">int</span> size<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+<span class="token comment">//事件注册函数，将需要监听的事件和需要监听的fd交给epoll对象</span>
+<span class="token keyword">int</span> <span class="token function">epoll_ctl</span><span class="token punctuation">(</span><span class="token keyword">int</span> epfd<span class="token punctuation">,</span> <span class="token keyword">int</span> op<span class="token punctuation">,</span> <span class="token keyword">int</span> fd<span class="token punctuation">,</span> struct epoll_event <span class="token operator">*</span>event<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+<span class="token comment">//等待注册的事件被触发或者timeout发生</span>
+<span class="token keyword">int</span> <span class="token function">epoll_wait</span><span class="token punctuation">(</span><span class="token keyword">int</span> epfd<span class="token punctuation">,</span> struct epoll_event <span class="token operator">*</span>events<span class="token punctuation">,</span> <span class="token keyword">int</span> maxevents<span class="token punctuation">,</span> <span class="token keyword">int</span> timeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h4 id="_8-6-1-epoll-create"><a href="#_8-6-1-epoll-create" class="header-anchor">#</a> 8.6.1 epoll_create</h4> <p>epoll_create 会创建一个 epoll 实例，同时返回一个该实例的文件描述符；当创建好 epoll 句柄后，它会占用一个 fd 值，在 linux 下查看 /proc/进程id/fd/，就能够看到这个 fd
+epoll 实例内部存储：</p> <ul><li>监听列表：所有要监听的文件描述符，使用红黑树</li> <li>就绪列表：所有就绪的文件描述符，使用链表</li></ul> <h4 id="_8-6-2-epoll-ctl"><a href="#_8-6-2-epoll-ctl" class="header-anchor">#</a> 8.6.2 epoll_ctl</h4> <p>epoll_ctl 会将文件描述符 fd 添加到 epoll 实例的监听列表里，同时为 fd 设置一个回调函数，并监听事件 event。当 fd 上发生相应事件时，会调用回调函数，将 fd 添加到 epoll 实例的就绪队列上</p> <h4 id="_8-6-3-epoll-wait"><a href="#_8-6-3-epoll-wait" class="header-anchor">#</a> 8.6.3 epoll_wait</h4> <p>epoll 模型的主要函数，功能相当于 select函数，返回值就绪队列存储的就绪描述符个数</p> <h4 id="_8-6-4-epoll-的优点"><a href="#_8-6-4-epoll-的优点" class="header-anchor">#</a> 8.6.4 epoll 的优点</h4> <ol><li>对于“文件描述符数量少”，select 使用整型数组存储文件描述符集合，而 epoll 使用红黑树存储，数量较大。</li> <li>对于“性能开销大”，epoll_ctl 中为每个文件描述符指定了回调函数，并在就绪时将其加入到就绪列表，因此 epoll 不需要像 select 那样遍历检测每个文件描述符，只需要判断就绪列表是否为空即可。这样，在没有描述符就绪时，epoll 能更早地让出系统资源。相当于时间复杂度从 O(n) 降为 O(1)</li> <li>此外，每次调用 select 时都需要向内核拷贝所有要监听的描述符集合，而 epoll 对于每个描述符，只需要在 epoll_ctl 传递一次，之后 epoll_wait 不需要再次传递。这也大大提高了效率</li> <li>支持边缘触发</li></ol> <h4 id="_8-6-5-水平触发、边缘触发"><a href="#_8-6-5-水平触发、边缘触发" class="header-anchor">#</a> 8.6.5 水平触发、边缘触发</h4> <p>select 只支持水平触发，epoll 支持水平触发和边缘触发</p> <ul><li>水平触发（LT，Level Trigger）：当文件描述符就绪时，会触发通知，如果用户程序没有一次性把数据读/写完，下次还会发出可读/可写信号进行通知</li> <li>边缘触发（ET，Edge Trigger）：仅当描述符从未就绪变为就绪时，通知一次，之后不会再通知</li> <li>区别：边缘触发效率更高，减少了事件被重复触发的次数，函数不会返回大量用户程序可能不需要的文件描述符</li></ul> <hr> <h2 id="_9-设计模式"><a href="#_9-设计模式" class="header-anchor">#</a> 9 设计模式</h2> <p>创建型（单例、工厂、原型模式）、结构型（适配器、代理）、行为型（模版方法、观察者、责任链、策略）</p> <ul><li>创建型：对象的创建、构造</li> <li>结构型：处理实体之间的关系，使得这些实体能够更好地协同工作</li> <li>行为型：对象的行为问题，像模版方法就是定制行为</li></ul> <h3 id="_9-1-单例模式-exceptionhandlercontainer"><a href="#_9-1-单例模式-exceptionhandlercontainer" class="header-anchor">#</a> 9.1 单例模式 — ExceptionHandlerContainer</h3> <p>ExceptionHandlerContainer是异常处理类容器，ExceptionHandlerContainer中存放多个ExceptionHandler</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">ExceptionHandlerContainer</span> <span class="token punctuation">{</span>
+
+    <span class="token comment">/**
+     * handler存储
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ExceptionHandler</span><span class="token punctuation">&gt;</span></span> handlers<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">ExceptionHandlerContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+    <span class="token comment">/**
+     * 单例初始化 - 饿汉模式
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Singleton</span> <span class="token punctuation">{</span>
+        <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">ExceptionHandlerContainer</span> exceptionHandlerContainer<span class="token punctuation">;</span>
+
+        <span class="token keyword">static</span> <span class="token punctuation">{</span>
+            exceptionHandlerContainer<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">ExceptionHandlerContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">ExceptionHandlerContainer</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> exceptionHandlerContainer<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">ExceptionHandlerContainer</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token class-name">Singleton</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ExceptionHandler</span><span class="token punctuation">&gt;</span></span> <span class="token function">getHandlers</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> handlers<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ExceptionHandler</span><span class="token punctuation">&gt;</span></span> <span class="token function">addHandler</span><span class="token punctuation">(</span><span class="token keyword">int</span> index<span class="token punctuation">,</span> <span class="token class-name">ExceptionHandler</span> exceptionHandler<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>handlers<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>index<span class="token punctuation">,</span> exceptionHandler<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> handlers<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">getSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> handlers<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre></div><p>�定义一个ExceptionHandlerListener，把带有 @ErpExceptionHandler 注解全部加到ExceptionHandlerContainer容器中</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token annotation punctuation">@Component</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ExceptionHandlerListener</span> <span class="token keyword">implements</span> <span class="token class-name">ApplicationListener</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ContextRefreshedEvent</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
+
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onApplicationEvent</span><span class="token punctuation">(</span><span class="token class-name">ContextRefreshedEvent</span> event<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">ExceptionHandlerContainer</span> container<span class="token operator">=</span><span class="token class-name">ExceptionHandlerContainer</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> orderList<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">ApplicationContext</span> context<span class="token operator">=</span>event<span class="token punctuation">.</span><span class="token function">getApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> beanNames<span class="token operator">=</span>context<span class="token punctuation">.</span><span class="token function">getBeanNamesForType</span><span class="token punctuation">(</span><span class="token class-name">Object</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> beanName <span class="token operator">:</span> beanNames<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+                <span class="token class-name">ErpExceptionHandler</span> erpExceptionHandler<span class="token operator">=</span>context<span class="token punctuation">.</span><span class="token function">findAnnotationOnBean</span><span class="token punctuation">(</span>beanName<span class="token punctuation">,</span>
+                        <span class="token class-name">ErpExceptionHandler</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//判断该类是否含有ErpExceptionHanler注解</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>erpExceptionHandler <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">int</span> index<span class="token operator">=</span><span class="token function">getIndex</span><span class="token punctuation">(</span>erpExceptionHandler<span class="token punctuation">.</span><span class="token function">order</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> orderList<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">continue</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token class-name">ExceptionHandler</span> handler<span class="token operator">=</span><span class="token punctuation">(</span><span class="token class-name">ExceptionHandler</span><span class="token punctuation">)</span> context<span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span>beanName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//最多只能有30个执行链路</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>container<span class="token punctuation">.</span><span class="token function">getSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">30</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                container<span class="token punctuation">.</span><span class="token function">addHandler</span><span class="token punctuation">(</span>index<span class="token punctuation">,</span> handler<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+</code></pre></div><p>ExceptionHandlerChain用来实现ExceptionHandler的迭代</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token annotation punctuation">@Component</span>
+<span class="token annotation punctuation">@Scope</span><span class="token punctuation">(</span><span class="token string">&quot;prototype&quot;</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ExceptionHandlerChain</span> <span class="token keyword">implements</span> <span class="token class-name">HandlerChain</span> <span class="token punctuation">{</span>
+
+    <span class="token comment">//处理游标</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> cursor<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+
+
+    <span class="token comment">/**
+     * 链路处理
+     * @param e
+     * @param exceptionParams
+     * @return
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">ResultBean</span> <span class="token function">doHandler</span><span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">,</span> <span class="token class-name">ExceptionParams</span> exceptionParams<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ExceptionHandler</span><span class="token punctuation">&gt;</span></span> handlers <span class="token operator">=</span> <span class="token class-name">ExceptionHandlerContainer</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getHandlers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>handlers<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token function">defaultResult</span><span class="token punctuation">(</span>e<span class="token punctuation">,</span> exceptionParams<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>cursor <span class="token operator">&gt;=</span> handlers<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token function">defaultResult</span><span class="token punctuation">(</span>e<span class="token punctuation">,</span> exceptionParams<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+
+        <span class="token class-name">ResultBean</span> resultBean <span class="token operator">=</span> handlers<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>cursor<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">handlerException</span><span class="token punctuation">(</span>e<span class="token punctuation">,</span> exceptionParams<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>resultBean <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            resultBean <span class="token operator">=</span> <span class="token function">defaultResult</span><span class="token punctuation">(</span>e<span class="token punctuation">,</span> exceptionParams<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> resultBean<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">ResultBean</span> <span class="token function">defaultResult</span><span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">,</span> <span class="token class-name">ExceptionParams</span> exceptionParams<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">ResultBean</span> resultBean <span class="token operator">=</span> <span class="token class-name">ResultBean</span><span class="token punctuation">.</span><span class="token function">ofError</span><span class="token punctuation">(</span>exceptionParams<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>e <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">100</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            resultBean<span class="token punctuation">.</span><span class="token function">setMessage</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> resultBean<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>然后再创建一个切面ResponseDataWrapperAspect，拦截erp的所有方法：</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token annotation punctuation">@Component</span>
+<span class="token annotation punctuation">@Aspect</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ResponseDataWrapperAspect</span> <span class="token keyword">extends</span> <span class="token class-name">ErpResultWarpper</span> <span class="token punctuation">{</span>
+
+
+    <span class="token annotation punctuation">@Pointcut</span><span class="token punctuation">(</span><span class="token string">&quot;@annotation(org.springframework.web.bind.annotation.RequestMapping)&quot;</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">aspect</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+
+
+    <span class="token annotation punctuation">@Around</span><span class="token punctuation">(</span><span class="token string">&quot;aspect()&quot;</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">Object</span> <span class="token function">around</span><span class="token punctuation">(</span><span class="token class-name">ProceedingJoinPoint</span> joinPoint<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Throwable</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Object</span> result <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token keyword">long</span> start<span class="token operator">=</span><span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> apiName<span class="token operator">=</span><span class="token function">getApiName</span><span class="token punctuation">(</span>joinPoint<span class="token punctuation">.</span><span class="token function">getArgs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            result <span class="token operator">=</span> joinPoint<span class="token punctuation">.</span><span class="token function">proceed</span><span class="token punctuation">(</span>joinPoint<span class="token punctuation">.</span><span class="token function">getArgs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// 一般响应到页面时，返回的内容一般都是字符串类型</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>result <span class="token keyword">instanceof</span> <span class="token class-name">String</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>result <span class="token keyword">instanceof</span> <span class="token class-name">ResponseDataWrapper</span> <span class="token operator">||</span> result <span class="token keyword">instanceof</span> <span class="token class-name">RouterResponse</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> <span class="token function">getSucResult</span><span class="token punctuation">(</span>apiName<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setqTime</span><span class="token punctuation">(</span><span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span>start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token function">getErrorResult</span><span class="token punctuation">(</span>e<span class="token punctuation">,</span> apiName<span class="token punctuation">,</span> <span class="token class-name">ModuleCodeEnum</span><span class="token punctuation">.</span><span class="token constant">ERP_WMS</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setqTime</span><span class="token punctuation">(</span><span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span>start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="_9-2-工厂模式-waverulefactory"><a href="#_9-2-工厂模式-waverulefactory" class="header-anchor">#</a> 9.2 工厂模式 —— WaveRuleFactory</h3> <p>默认波次规则的创建，会有很多默认的条件需要设置，很多人不知道怎么设置这些参数，封装到了Factory中创建</p> <h3 id="_9-3-建造者模式-queryallocategoodsrecordparams�"><a href="#_9-3-建造者模式-queryallocategoodsrecordparams�" class="header-anchor">#</a> 9.3 建造者模式 —— QueryAllocateGoodsRecordParams�</h3> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">QueryAllocateGoodsRecordParams</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">long</span> serialVersionUID <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">6352503723002322010L</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">Integer</span> allocateNumType<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> workOrderIds<span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * 不在哪个波次里
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">Long</span> notEqualsWaveId<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Long</span> <span class="token function">getWarehouseId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> warehouseId<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setWarehouseId</span><span class="token punctuation">(</span><span class="token class-name">Long</span> warehouseId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>warehouseId <span class="token operator">=</span> warehouseId<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Integer</span> <span class="token function">getStatus</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> status<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setStatus</span><span class="token punctuation">(</span><span class="token class-name">Integer</span> status<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>status <span class="token operator">=</span> status<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Builder</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">private</span> <span class="token class-name">Integer</span> allocateNumType<span class="token punctuation">;</span>
+
+        <span class="token keyword">private</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> statusList<span class="token punctuation">;</span>
+
+        <span class="token keyword">private</span> <span class="token class-name">Long</span> notEqualsWaveId<span class="token punctuation">;</span>
+
+		<span class="token keyword">public</span> <span class="token class-name">Builder</span> <span class="token function">allocateTypes</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> allocateTypes<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+			<span class="token keyword">this</span><span class="token punctuation">.</span>allocateTypes <span class="token operator">=</span> allocateTypes<span class="token punctuation">;</span>
+			<span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+		<span class="token punctuation">}</span>
+
+		<span class="token keyword">public</span> <span class="token class-name">Builder</span> <span class="token function">allocateNumType</span><span class="token punctuation">(</span><span class="token class-name">Integer</span> allocateNumType<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>allocateNumType <span class="token operator">=</span> allocateNumType<span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+		<span class="token keyword">public</span> <span class="token class-name">Builder</span> <span class="token function">statusList</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> statusList<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>statusList <span class="token operator">=</span> statusList<span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">public</span> <span class="token class-name">Builder</span> <span class="token function">notEqualsWaveId</span><span class="token punctuation">(</span><span class="token class-name">Long</span> notEqualsWaveId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>notEqualsWaveId <span class="token operator">=</span> notEqualsWaveId<span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+		<span class="token keyword">public</span> <span class="token class-name">QueryAllocateGoodsRecordParams</span> <span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">QueryAllocateGoodsRecordParams</span> params <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">QueryAllocateGoodsRecordParams</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            params<span class="token punctuation">.</span>statusList <span class="token operator">=</span> statusList<span class="token punctuation">;</span>
+            params<span class="token punctuation">.</span>allocateNumType <span class="token operator">=</span> allocateNumType<span class="token punctuation">;</span>
+            params<span class="token punctuation">.</span>notEqualsWaveId <span class="token operator">=</span> notEqualsWaveId<span class="token punctuation">;</span>
+            <span class="token keyword">return</span> params<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Long</span> <span class="token function">getNotEqualsWaveId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> notEqualsWaveId<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> <span class="token function">getStatusList</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> statusList<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setStatusList</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> statusList<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>statusList <span class="token operator">=</span> statusList<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="_9-4-适配器模式-调拨单复用收货单-采退单的表"><a href="#_9-4-适配器模式-调拨单复用收货单-采退单的表" class="header-anchor">#</a> 9.4 适配器模式 — 调拨单复用收货单/采退单的表</h3> <p>A调用B，但是A的数据B不能直接使用，中间需要一个适配器将A的数据修改成B能使用的
+调用单复用收货单和采退单要进过一个适配器</p> <h3 id="_9-5-代理模式-itemservicedubboproxy"><a href="#_9-5-代理模式-itemservicedubboproxy" class="header-anchor">#</a> 9.5 代理模式 — ItemServiceDubboProxy</h3> <div class="language-java extra-class"><pre class="language-java"><code><span class="token annotation punctuation">@Service</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ItemServiceDubboProxy</span> <span class="token keyword">implements</span> <span class="token class-name">IItemServiceDubboProxy</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token constant">BATCH_SIZE</span> <span class="token operator">=</span> <span class="token number">300</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token constant">BATCH_SIZE_500</span> <span class="token operator">=</span> <span class="token number">500</span><span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token keyword">private</span> <span class="token class-name">IItemServiceDubbo</span> itemServiceDubbo<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token keyword">private</span> <span class="token class-name">ISupplierService</span> supplierService<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">DmjSku</span><span class="token punctuation">&gt;</span></span> <span class="token function">querySkuWithSysSkuId</span><span class="token punctuation">(</span><span class="token class-name">Staff</span> staff<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> sysSkuIds<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">DmjSku</span><span class="token punctuation">&gt;</span></span> skus <span class="token operator">=</span> <span class="token class-name">Lists</span><span class="token punctuation">.</span><span class="token function">newArrayList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>sysSkuIds<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> skus<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> subSkuIds <span class="token operator">:</span> <span class="token class-name">Lists</span><span class="token punctuation">.</span><span class="token function">partition</span><span class="token punctuation">(</span>sysSkuIds<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">distinct</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">BATCH_SIZE</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            skus<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>itemServiceDubbo<span class="token punctuation">.</span><span class="token function">querySkuWithSysSkuId</span><span class="token punctuation">(</span>staff<span class="token punctuation">,</span> subSkuIds<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> skus<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">DmjItem</span><span class="token punctuation">&gt;</span></span> <span class="token function">queryItemWithSysItemId</span><span class="token punctuation">(</span><span class="token class-name">Staff</span> staff<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> sysItemIds<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">DmjItem</span><span class="token punctuation">&gt;</span></span> items <span class="token operator">=</span> <span class="token class-name">Lists</span><span class="token punctuation">.</span><span class="token function">newArrayList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>sysItemIds<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> items<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> subItemIds <span class="token operator">:</span> <span class="token class-name">Lists</span><span class="token punctuation">.</span><span class="token function">partition</span><span class="token punctuation">(</span>sysItemIds<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">distinct</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">BATCH_SIZE_500</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            items<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>itemServiceDubbo<span class="token punctuation">.</span><span class="token function">queryItemWithSysItemId</span><span class="token punctuation">(</span>staff<span class="token punctuation">,</span> subItemIds<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> items<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ItemSupplierBridge</span><span class="token punctuation">&gt;</span></span> <span class="token function">queryItemSuppliers</span><span class="token punctuation">(</span><span class="token class-name">Staff</span> staff<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Pair</span><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> pairs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ItemSupplierBridge</span><span class="token punctuation">&gt;</span></span> supplierBridges <span class="token operator">=</span> <span class="token class-name">Lists</span><span class="token punctuation">.</span><span class="token function">newArrayList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">CollectionUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>pairs<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> supplierBridges<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Pair</span><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> subPairs <span class="token operator">:</span> <span class="token class-name">Lists</span><span class="token punctuation">.</span><span class="token function">partition</span><span class="token punctuation">(</span>pairs<span class="token punctuation">,</span> <span class="token constant">BATCH_SIZE</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> sysItemIds <span class="token operator">=</span> subPairs<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token class-name">Pair</span><span class="token operator">::</span><span class="token function">getKey</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> sysSkuIds <span class="token operator">=</span> subPairs<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token class-name">Pair</span><span class="token operator">::</span><span class="token function">getValue</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            supplierBridges<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>itemServiceDubbo<span class="token punctuation">.</span><span class="token function">queryItemSuppliers</span><span class="token punctuation">(</span>staff<span class="token punctuation">,</span> sysItemIds<span class="token punctuation">,</span> sysSkuIds<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> supplierBridges<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="_9-6-模版模式-pda拣选任务"><a href="#_9-6-模版模式-pda拣选任务" class="header-anchor">#</a> 9.6 模版模式 - pda拣选任务</h3> <h3 id="_9-7-策略-无仓版本-货位锁定版本-暂存区版本配货"><a href="#_9-7-策略-无仓版本-货位锁定版本-暂存区版本配货" class="header-anchor">#</a> 9.7 策略 - 无仓版本/货位锁定版本/暂存区版本配货</h3> <hr> <ol start="12"><li>代理模式、适配器模式、桥接模式、装饰器模式，本质区别是什</li></ol> <ul><li>装饰模式：给小孩化妆，改变小孩，例如A构造一个对象，然后让B帮忙填充一些参数（装饰）</li> <li>代理模式：明星的代理人，不对明星修改，ItemServiceDubboProxy</li> <li>桥接模式：《23中设计模式》-&gt; 2.2.2 桥接模式</li></ul> <hr> <h2 id="_13-hashmap为啥是8、0-75"><a href="#_13-hashmap为啥是8、0-75" class="header-anchor">#</a> 13 HashMap为啥是8、0.75</h2> <h3 id="_13-1-为什么要转红黑树"><a href="#_13-1-为什么要转红黑树" class="header-anchor">#</a> 13.1 为什么要转红黑树</h3> <p>默认初始容量是16，加载因子是0.75，当数组元素数量 &gt; 16 * 0.75 就开始数组扩容了，作者注释中写：
+如果 hashCode 分布良好，也就是 hash 计算的结果离散好的话，那么红黑树这种形式是很少会被用到的，因为各个值都均匀分布，很少出现链表很长的情况。在理想情况下，链表长度符合泊松分布，各个长度的命中概率依次递减，当长度为 8 的时候，概率仅为 0.00000006。这是一个小于千万分之一的概率，通常我们的 Map 里面是不会存储这么多的数据的，所以通常情况下，并不会发生从链表向红黑树的转换</p> <p>但是，HashMap 决定某一个元素落到哪一个桶里，是和这个对象的 hashCode 有关的，JDK 并不能阻止我们用户实现自己的哈希算法，如果我们故意把哈希算法变得不均匀，例如：
+<img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1638339735365-7e605b6b-ff7f-4e6d-b190-79527365937d.png#clientId=ud41b8f47-567b-4&amp;from=paste&amp;height=143&amp;id=u4dcf0119&amp;name=image.png&amp;originHeight=281&amp;originWidth=682&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=52561&amp;status=done&amp;style=none&amp;taskId=u01f29bd2-e551-4dfa-b384-efbad9438d7&amp;title=&amp;width=346" alt="image.png">
+事实上，链表长度超过 8 就转为红黑树的设计，更多的是为了防止用户自己实现了不好的哈希算法时导致链表过长，从而导致查询效率低，而此时转为红黑树更多的是一种保底策略，用来保证极端情况下查询的效率</p> <p>所以通常情况下，不会转为红黑树，如果出现了红黑树的结构，这个时候往往就说明我们的哈希算法出了问题，需要留意是不是我们实现了效果不好的 hashCode 方法</p> <h3 id="_13-2-为什么是8"><a href="#_13-2-为什么是8" class="header-anchor">#</a> 13.2 为什么是8</h3> <p>良好的hash算法情况下，几乎可以这么认为：链表长度不可能达到8；
+如果达到8及以上，HashMap不得不把链表转成红黑树，优先保证查询效率</p> <h3 id="_13-3-为啥是0-75"><a href="#_13-3-为啥是0-75" class="header-anchor">#</a> 13.3 为啥是0.75</h3> <p>JDK1.7上面的注释说：</p> <ul><li>默认负载因子为0.75的时候在时间和空间成本上提供了很好的折衷</li> <li>太高了可以减少空间开销，但是会增加查找复杂度，因为负载因子高会提高冲突的概率，从而增加查找的时间</li> <li>如果负载因子低会较低冲突的概率，但是很浪费空间</li></ul> <hr> <h2 id="_14-arraylist为什么数组加transient"><a href="#_14-arraylist为什么数组加transient" class="header-anchor">#</a> 14 ArrayList为什么数组加transient</h2> <p>transient用来表示一个域不是该对象序行化的一部分，当一个对象被序行化的时候，transient修饰的变量的值是不包括在序行化的表示中的。但是ArrayList又是可序行化的类，elementData是ArrayList具体存放元素的成员，用transient来修饰elementData，岂不是反序列化后的ArrayList丢失了原先的元素？</p> <p>原因在于：ArrayList自己写了序列化和反序列化的方法</p> <ul><li>ArrayList在序列化的时候会调用writeObject，直接将size和element写入ObjectOutputStream；反序列化时调用readObject，从ObjectInputStream获取size和element，再恢复到elementData</li> <li>为什么不直接用elementData来序列化，而采用上诉的方式来实现序列化呢？原因在于elementData是一个缓存数组，它通常会预留一些容量，等容量不足时再扩充容量，那么有些空间可能就没有实际存储元素，采用上诉的方式来实现序列化时，就可以保证只序列化实际存储的那些元素，而不是整个数组</li></ul> <p>add和get时间复杂度：
+add尾部时间负责度o(1)，add(i)时间负责度o(n-i)
+get时间复杂度o(1)</p> <hr> <h4 id=""><a href="#" class="header-anchor">#</a> [</h4> <p>](https://blog.csdn.net/zero__007/article/details/52166306)</p></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><!----> <span class="next"><a href="/interview/multi-thread.html">
+          多线程
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/interview/java-base.html#_8-select-poll-epoll" class="sidebar-link reco-side-_8-select-poll-epoll" data-v-b57cc07c>8 Select Poll epoll</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_8-1-fd的概念" class="sidebar-link reco-side-_8-1-fd的概念" data-v-b57cc07c>8.1 fd的概念</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_8-2-socket-与-fd-的关系" class="sidebar-link reco-side-_8-2-socket-与-fd-的关系" data-v-b57cc07c>8.2 socket 与 fd 的关系</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_8-3-fd-set-文件描述符集合" class="sidebar-link reco-side-_8-3-fd-set-文件描述符集合" data-v-b57cc07c>8.3 fd_set 文件描述符集合</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_8-4-select" class="sidebar-link reco-side-_8-4-select" data-v-b57cc07c>8.4 select</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_8-5-poll" class="sidebar-link reco-side-_8-5-poll" data-v-b57cc07c>8.5 poll</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_8-6-epoll" class="sidebar-link reco-side-_8-6-epoll" data-v-b57cc07c>8.6 epoll</a></li><li class="level-2" data-v-b57cc07c><a href="/interview/java-base.html#_9-设计模式" class="sidebar-link reco-side-_9-设计模式" data-v-b57cc07c>9 设计模式</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_9-1-单例模式-exceptionhandlercontainer" class="sidebar-link reco-side-_9-1-单例模式-exceptionhandlercontainer" data-v-b57cc07c>9.1 单例模式 — ExceptionHandlerContainer</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_9-2-工厂模式-waverulefactory" class="sidebar-link reco-side-_9-2-工厂模式-waverulefactory" data-v-b57cc07c>9.2 工厂模式 —— WaveRuleFactory</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_9-3-建造者模式-queryallocategoodsrecordparams�" class="sidebar-link reco-side-_9-3-建造者模式-queryallocategoodsrecordparams�" data-v-b57cc07c>9.3 建造者模式 —— QueryAllocateGoodsRecordParams�</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_9-4-适配器模式-调拨单复用收货单-采退单的表" class="sidebar-link reco-side-_9-4-适配器模式-调拨单复用收货单-采退单的表" data-v-b57cc07c>9.4 适配器模式 — 调拨单复用收货单/采退单的表</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_9-5-代理模式-itemservicedubboproxy" class="sidebar-link reco-side-_9-5-代理模式-itemservicedubboproxy" data-v-b57cc07c>9.5 代理模式 — ItemServiceDubboProxy</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_9-6-模版模式-pda拣选任务" class="sidebar-link reco-side-_9-6-模版模式-pda拣选任务" data-v-b57cc07c>9.6 模版模式 - pda拣选任务</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_9-7-策略-无仓版本-货位锁定版本-暂存区版本配货" class="sidebar-link reco-side-_9-7-策略-无仓版本-货位锁定版本-暂存区版本配货" data-v-b57cc07c>9.7 策略 - 无仓版本/货位锁定版本/暂存区版本配货</a></li><li class="level-2" data-v-b57cc07c><a href="/interview/java-base.html#_13-hashmap为啥是8、0-75" class="sidebar-link reco-side-_13-hashmap为啥是8、0-75" data-v-b57cc07c>13 HashMap为啥是8、0.75</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_13-1-为什么要转红黑树" class="sidebar-link reco-side-_13-1-为什么要转红黑树" data-v-b57cc07c>13.1 为什么要转红黑树</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_13-2-为什么是8" class="sidebar-link reco-side-_13-2-为什么是8" data-v-b57cc07c>13.2 为什么是8</a></li><li class="level-3" data-v-b57cc07c><a href="/interview/java-base.html#_13-3-为啥是0-75" class="sidebar-link reco-side-_13-3-为啥是0-75" data-v-b57cc07c>13.3 为啥是0.75</a></li><li class="level-2" data-v-b57cc07c><a href="/interview/java-base.html#_14-arraylist为什么数组加transient" class="sidebar-link reco-side-_14-arraylist为什么数组加transient" data-v-b57cc07c>14 ArrayList为什么数组加transient</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div></div></div>
+    <script src="/assets/js/app.ea692b5c.js" defer></script><script src="/assets/js/3.e3636143.js" defer></script><script src="/assets/js/1.0294b526.js" defer></script><script src="/assets/js/64.5110658a.js" defer></script>
+  </body>
+</html>
