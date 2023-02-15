@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>分布式锁 | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.a5a0d673.css" as="style"><link rel="preload" href="/assets/js/app.3fa2311f.js" as="script"><link rel="preload" href="/assets/js/3.e3636143.js" as="script"><link rel="preload" href="/assets/js/1.0294b526.js" as="script"><link rel="preload" href="/assets/js/13.1c31f7dd.js" as="script"><link rel="prefetch" href="/assets/js/10.bf860e6a.js"><link rel="prefetch" href="/assets/js/11.d5ef3c5c.js"><link rel="prefetch" href="/assets/js/12.f8c9895e.js"><link rel="prefetch" href="/assets/js/14.70bd2d96.js"><link rel="prefetch" href="/assets/js/15.65821a82.js"><link rel="prefetch" href="/assets/js/16.a09ac979.js"><link rel="prefetch" href="/assets/js/17.874d986c.js"><link rel="prefetch" href="/assets/js/18.c1d7a6ac.js"><link rel="prefetch" href="/assets/js/19.1493eb21.js"><link rel="prefetch" href="/assets/js/20.9fcb5d17.js"><link rel="prefetch" href="/assets/js/21.41d573ab.js"><link rel="prefetch" href="/assets/js/22.fb5bc6de.js"><link rel="prefetch" href="/assets/js/23.be1e253f.js"><link rel="prefetch" href="/assets/js/24.b5f5de69.js"><link rel="prefetch" href="/assets/js/25.db02de63.js"><link rel="prefetch" href="/assets/js/26.7e66a8f5.js"><link rel="prefetch" href="/assets/js/27.4f28fe17.js"><link rel="prefetch" href="/assets/js/28.7921c71e.js"><link rel="prefetch" href="/assets/js/29.2ccd9390.js"><link rel="prefetch" href="/assets/js/30.7d48b79f.js"><link rel="prefetch" href="/assets/js/31.aca67c84.js"><link rel="prefetch" href="/assets/js/32.56d62a8e.js"><link rel="prefetch" href="/assets/js/33.d86ad79c.js"><link rel="prefetch" href="/assets/js/34.cee5901c.js"><link rel="prefetch" href="/assets/js/35.dcbfd14e.js"><link rel="prefetch" href="/assets/js/36.3b418795.js"><link rel="prefetch" href="/assets/js/37.8303165d.js"><link rel="prefetch" href="/assets/js/38.a0bdd2e9.js"><link rel="prefetch" href="/assets/js/39.a8b796e9.js"><link rel="prefetch" href="/assets/js/4.586f792b.js"><link rel="prefetch" href="/assets/js/40.ad69d279.js"><link rel="prefetch" href="/assets/js/41.65e294d4.js"><link rel="prefetch" href="/assets/js/42.b99dd2f5.js"><link rel="prefetch" href="/assets/js/43.ac7ef6cc.js"><link rel="prefetch" href="/assets/js/44.27c86a2f.js"><link rel="prefetch" href="/assets/js/45.1f5afc86.js"><link rel="prefetch" href="/assets/js/46.dbd9933f.js"><link rel="prefetch" href="/assets/js/47.54794c2f.js"><link rel="prefetch" href="/assets/js/48.0f04f12a.js"><link rel="prefetch" href="/assets/js/49.cb816aa3.js"><link rel="prefetch" href="/assets/js/5.e3629659.js"><link rel="prefetch" href="/assets/js/50.51aae552.js"><link rel="prefetch" href="/assets/js/51.adf59716.js"><link rel="prefetch" href="/assets/js/52.ea974ada.js"><link rel="prefetch" href="/assets/js/53.281fa689.js"><link rel="prefetch" href="/assets/js/54.72cc1179.js"><link rel="prefetch" href="/assets/js/55.7bd9e4b2.js"><link rel="prefetch" href="/assets/js/6.6748e9bb.js"><link rel="prefetch" href="/assets/js/7.3321eee6.js"><link rel="prefetch" href="/assets/js/8.7ae28660.js"><link rel="prefetch" href="/assets/js/9.846be9aa.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.a5a0d673.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      ❤ 分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>45</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  面试
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      ❤ 分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>分布式基础</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/distributed-base.html" class="sidebar-link">理论知识</a></li><li><a href="/distributed/consistence-classification.html" class="sidebar-link">一致性的分类</a></li><li><a href="/distributed/Consensus-alg.html" class="sidebar-link">共识算法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>共识算法（一致性算法）</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/2-stage-commit.html" class="sidebar-link">2(3)阶段提交算法</a></li><li><a href="/distributed/paxos-alg.html" class="sidebar-link">Paxos 算法</a></li><li><a href="/distributed/Multi-Paxos.html" class="sidebar-link">Multi Paxos 算法</a></li><li><a href="/distributed/Gossip.html" class="sidebar-link">Gossip 协议</a></li><li><a href="/distributed/Raft.html" class="sidebar-link">Raft 算法</a></li><li><a href="/distributed/Zab.html" class="sidebar-link">Zab 算法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>分布式解决方案</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/Distributed-lock.html" aria-current="page" class="active sidebar-link">分布式锁</a></li><li><a href="/distributed/paxos-alg.html" class="sidebar-link">分布式事务</a></li><li><a href="/distributed/Multi-Paxos.html" class="sidebar-link">分布式缓存</a></li><li><a href="/distributed/Gossip.html" class="sidebar-link">全局唯一ID</a></li><li><a href="/distributed/Raft.html" class="sidebar-link">分布式session</a></li><li><a href="/distributed/Raft.html" class="sidebar-link">幂等实现方案</a></li><li><a href="/distributed/Raft.html" class="sidebar-link">高性能负载均衡及算法</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>分布式锁</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">分布式锁</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/14</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/distributed/Distributed-lock.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><h2 id="mysql-分布式锁"><a href="#mysql-分布式锁" class="header-anchor">#</a> MySQL 分布式锁</h2> <h3 id="基于-insert-唯一索引"><a href="#基于-insert-唯一索引" class="header-anchor">#</a> 基于（insert）唯一索引</h3> <p>关键点：</p> <ol><li>加锁的超时时间</li> <li>业务出错，锁的释放是通过事务回滚</li> <li>锁的去重</li> <li>锁的排序，减少死锁的概率</li> <li>锁的可重入，通过 thread_local 实现</li></ol> <h4 id="总体实现"><a href="#总体实现" class="header-anchor">#</a> 总体实现</h4> <div class="language-java extra-class"><pre class="language-java"><code><span class="token annotation punctuation">@Override</span>
+<span class="token annotation punctuation">@Transactional</span>
+<span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">T</span> <span class="token function">lock</span><span class="token punctuation">(</span><span class="token class-name">ERPLock</span> lock<span class="token punctuation">,</span> <span class="token class-name">ILockCallback</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> callback<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">lock</span><span class="token punctuation">(</span>
+        <span class="token comment">// 锁的key</span>
+        lock<span class="token punctuation">,</span> 
+        <span class="token comment">// 业务方法</span>
+        callback<span class="token punctuation">,</span> 
+        <span class="token comment">// 等待锁超时时间，默认50s</span>
+        lockConfig<span class="token punctuation">.</span><span class="token function">getLockTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
+        <span class="token comment">// 时间单位：秒</span>
+        <span class="token class-name">ELockConstant</span><span class="token punctuation">.</span><span class="token constant">DEFAULT_TIMEUNIT</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-</span> 调用下面的<span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-</span>
+
+<span class="token annotation punctuation">@Override</span>
+<span class="token annotation punctuation">@Transactional</span>
+<span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">T</span> <span class="token function">locks</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ERPLock</span><span class="token punctuation">&gt;</span></span> locks<span class="token punctuation">,</span> <span class="token class-name">ILockCallback</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> callback<span class="token punctuation">,</span> 
+                   <span class="token class-name">Long</span> timeout<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span> unit<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> dbKey <span class="token operator">=</span> locks<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDbKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 对锁进行去重</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ERPLock</span><span class="token punctuation">&gt;</span></span> addLocks <span class="token operator">=</span> <span class="token function">getAddLocks</span><span class="token punctuation">(</span><span class="token function">getUniqKey</span><span class="token punctuation">(</span>locks<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 对锁进行排序，减少死锁</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>addLocks<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span>addLocks<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">// 加锁 + 执行业务 + 释放锁</span>
+        <span class="token keyword">return</span> lockProxyBuiness<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span>dbKey<span class="token punctuation">,</span> addLocks<span class="token punctuation">,</span> callback<span class="token punctuation">,</span> timeout<span class="token punctuation">,</span> unit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">LockException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token comment">//说明加锁失败</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">&quot;加锁失败&quot;</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">RuntimeException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token comment">//说明业务有错</span>
+        callback<span class="token punctuation">.</span><span class="token function">rollback</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">&quot;操作失败&quot;</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> e<span class="token punctuation">;</span><span class="token comment">//异常直接抛出</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token comment">//说明业务有错</span>
+        callback<span class="token punctuation">.</span><span class="token function">rollback</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">&quot;操作失败&quot;</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">LockException</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//封装一遍异常</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 这里不是删除erp_lock，是删除thread_local中的</span>
+        <span class="token comment">// 这里有个注意的点，唯一码finally中释放锁没有删除数据库中的记录，而是在执行完业务操作之后删除，因为有事务，执行业务出错之后，事务回滚，锁也会回滚掉</span>
+        <span class="token function">unlocks</span><span class="token punctuation">(</span>locks<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token annotation punctuation">@Transactional</span>
+<span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">T</span> <span class="token function">lock</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RouterKey</span> <span class="token keyword">int</span> dbno<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ERPLock</span><span class="token punctuation">&gt;</span></span> locks<span class="token punctuation">,</span> <span class="token class-name">ILockCallback</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> callback<span class="token punctuation">,</span> 
+                  <span class="token class-name">Long</span> timeout<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span> unit<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">long</span> start <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">long</span> took<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> lockSize <span class="token operator">=</span> locks <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token number">0</span> <span class="token operator">:</span> locks<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>lockSize <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>timeout <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> timeout <span class="token operator">&lt;=</span> <span class="token number">0</span> 
+            <span class="token operator">||</span> timeout <span class="token operator">&gt;=</span> <span class="token class-name">ELockConstant</span><span class="token punctuation">.</span><span class="token constant">DEFAULT_TIMEOUT</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">lock</span><span class="token punctuation">(</span>locks<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment">// 加锁有超时时间</span>
+            <span class="token function">lock</span><span class="token punctuation">(</span>locks<span class="token punctuation">,</span> timeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        took <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> start<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>took <span class="token operator">&gt;=</span> <span class="token number">3000</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>&quot;加锁耗时过长，locks<span class="token punctuation">.</span>size<span class="token operator">=</span><span class="token operator">%</span>s，
+                                      took<span class="token operator">:</span><span class="token operator">%</span>s ms&quot;<span class="token punctuation">,</span> lockSize<span class="token punctuation">,</span> took<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    start <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 执行业务代码                                </span>
+    <span class="token class-name">T</span> result <span class="token operator">=</span> callback<span class="token punctuation">.</span><span class="token function">callback</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    took <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> start<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>took <span class="token operator">&gt;=</span> <span class="token number">3000</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>&quot;加锁后业务执行时间过长，
+                                  locks<span class="token punctuation">.</span>size<span class="token operator">=</span><span class="token operator">%</span>s，took<span class="token operator">:</span><span class="token operator">%</span>s ms&quot;<span class="token punctuation">,</span> lockSize<span class="token punctuation">,</span> took<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        start <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 释放锁</span>
+        lockDao<span class="token punctuation">.</span><span class="token function">batchDelete</span><span class="token punctuation">(</span>locks<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        took <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> start<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>took <span class="token operator">&gt;=</span> <span class="token number">3000</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>&quot;加锁后释放锁时间过长，locks<span class="token punctuation">.</span>size<span class="token operator">=</span><span class="token operator">%</span>s，
+                                      took<span class="token operator">:</span><span class="token operator">%</span>s ms&quot;<span class="token punctuation">,</span> lockSize<span class="token punctuation">,</span> took<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">&quot;mysql释放锁失败locks=&quot;</span> <span class="token operator">+</span> locks<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="获取与释放锁"><a href="#获取与释放锁" class="header-anchor">#</a> 获取与释放锁</h4> <div class="language-java extra-class"><pre class="language-java"><code># <span class="token class-name"><span class="token namespace">com<span class="token punctuation">.</span>raycloud<span class="token punctuation">.</span>dmj<span class="token punctuation">.</span>services<span class="token punctuation">.</span>inner<span class="token punctuation">.</span></span>LockMysqlService</span>#lock
+<span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">lock</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ERPLock</span><span class="token punctuation">&gt;</span></span> locks<span class="token punctuation">,</span> <span class="token class-name">Long</span> timeout<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">Integer</span> dbNo <span class="token operator">=</span> locks<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDbKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    	<span class="token comment">// 设置当前会话的innodb_lock_wait_timeout</span>
+        lockDao<span class="token punctuation">.</span><span class="token function">setSessionLockFf</span><span class="token punctuation">(</span>dbNo<span class="token punctuation">,</span> timeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 插入一条记录到erp_lock，key是唯一索引</span>
+        lockDao<span class="token punctuation">.</span><span class="token function">batchInsert</span><span class="token punctuation">(</span>locks<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">&quot;mysql加锁失败locks=&quot;</span> <span class="token operator">+</span> locks<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//异常一定要抛出</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">LockException</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+        lockDao<span class="token punctuation">.</span><span class="token function">setSessionDefaultLockWaitTimeout</span><span class="token punctuation">(</span>dbNo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 释放锁，删除记录</span>
+lockDao<span class="token punctuation">.</span><span class="token function">batchDelete</span><span class="token punctuation">(</span>locks<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h4 id="存在的问题"><a href="#存在的问题" class="header-anchor">#</a> 存在的问题</h4> <ul><li>锁只能是非阻塞的，因为数据的insert操作，一旦插入失败就会直接报错。没有获得锁的线程并不会进入排队队列，要想再次获得锁就要再次触发获得锁操作（搞一个while循环，直到insert成功再返回成功）</li> <li>锁是不可重入的，同一个线程在没有释放锁之前无法再次获得该锁。因为数据中数据已经存在了</li> <li>并发量大的时候请求量大，获取锁的间隔如果较小会给系统和数据库造成压力</li> <li>锁和数据库在一起，要挂就一起都挂了</li></ul> <h3 id="基于排他锁-for-update"><a href="#基于排他锁-for-update" class="header-anchor">#</a> 基于排他锁（for update）</h3> <div class="language-java extra-class"><pre class="language-java"><code><span class="token constant">CREATE</span> <span class="token constant">TABLE</span> `methodLock` <span class="token punctuation">(</span>
+    `id` <span class="token constant">INT</span> <span class="token punctuation">(</span> <span class="token number">11</span> <span class="token punctuation">)</span> <span class="token constant">NOT</span> <span class="token constant">NULL</span> <span class="token constant">AUTO_INCREMENT</span> <span class="token constant">COMMENT</span> <span class="token char">'主键'</span><span class="token punctuation">,</span>
+    `method_name` <span class="token constant">VARCHAR</span> <span class="token punctuation">(</span> <span class="token number">64</span> <span class="token punctuation">)</span> <span class="token constant">NOT</span> <span class="token constant">NULL</span> <span class="token constant">DEFAULT</span> '' <span class="token constant">COMMENT</span> <span class="token char">'锁定的方法名'</span><span class="token punctuation">,</span>
+    `desc` <span class="token constant">VARCHAR</span> <span class="token punctuation">(</span> <span class="token number">1024</span> <span class="token punctuation">)</span> <span class="token constant">NOT</span> <span class="token constant">NULL</span> <span class="token constant">DEFAULT</span> <span class="token char">'备注信息'</span><span class="token punctuation">,</span>
+    `update_time` <span class="token constant">TIMESTAMP</span> <span class="token constant">NOT</span> <span class="token constant">NULL</span> <span class="token constant">DEFAULT</span> <span class="token constant">CURRENT_TIMESTAMP</span> 
+    	<span class="token constant">ON</span> <span class="token constant">UPDATE</span> <span class="token constant">CURRENT_TIMESTAMP</span> <span class="token constant">COMMENT</span> '保存数据时间，自动生成'<span class="token punctuation">,</span>
+    <span class="token class-name">PRIMARY</span> <span class="token constant">KEY</span> <span class="token punctuation">(</span> `id` <span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token constant">UNIQUE</span> <span class="token constant">KEY</span> `uidx_method_name` <span class="token punctuation">(</span> `method_name ` <span class="token punctuation">)</span> <span class="token class-name">USING</span> <span class="token constant">BTREE</span> 
+<span class="token punctuation">)</span> <span class="token constant">ENGINE</span> <span class="token operator">=</span> <span class="token constant">INNODB</span> <span class="token class-name">DEFAULT</span> <span class="token constant">CHARSET</span> <span class="token operator">=</span> utf8 <span class="token constant">COMMENT</span> <span class="token operator">=</span> <span class="token char">'锁定中的方法'</span><span class="token punctuation">;</span>
+</code></pre></div><div class="language-java extra-class"><pre class="language-java"><code><span class="token comment">/**
+ * 加锁
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 开启事务</span>
+    connection<span class="token punctuation">.</span><span class="token function">setAutoCommit</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 循环阻塞，等待获取锁</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 执行获取锁的sql</span>
+        result <span class="token operator">=</span> select <span class="token operator">*</span> from methodLock where method_name <span class="token operator">=</span> xxx <span class="token keyword">for</span> update<span class="token punctuation">;</span>
+        <span class="token comment">// 结果非空，加锁成功</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>result <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 加锁失败</span>
+    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">/**
+ * 解锁
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 提交事务，解锁</span>
+    connection<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>例子二：</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token comment">//0.开始事务</span>
+begin<span class="token punctuation">;</span><span class="token operator">/</span>begin work<span class="token punctuation">;</span><span class="token operator">/</span>start transaction<span class="token punctuation">;</span> <span class="token punctuation">(</span>三者选一就可以<span class="token punctuation">)</span>
+<span class="token comment">//1.查询出商品信息</span>
+select status from t_goods where id<span class="token operator">=</span><span class="token number">1</span> <span class="token keyword">for</span> update<span class="token punctuation">;</span>
+<span class="token comment">//2.根据商品信息生成订单</span>
+insert into t_orders <span class="token punctuation">(</span>id<span class="token punctuation">,</span>goods_id<span class="token punctuation">)</span> values <span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//3.修改商品status为2</span>
+update t_goods set status<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">;</span>
+<span class="token comment">//4.提交事务</span>
+commit<span class="token punctuation">;</span><span class="token operator">/</span>commit work<span class="token punctuation">;</span>
+</code></pre></div><p>问题和第一种方式类似</p> <h3 id="基于乐观锁-版本号"><a href="#基于乐观锁-版本号" class="header-anchor">#</a> 基于乐观锁（版本号）</h3> <p>适用于并发比较小</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token number">1.</span>查询出商品信息
+select <span class="token punctuation">(</span>status<span class="token punctuation">,</span>status<span class="token punctuation">,</span>version<span class="token punctuation">)</span> from t_goods where id<span class="token operator">=</span>#<span class="token punctuation">{</span>id<span class="token punctuation">}</span>
+<span class="token number">2.</span>根据商品信息生成订单
+<span class="token number">3.</span>修改商品status为<span class="token number">2</span>
+update t_goods 
+set status<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">,</span>version<span class="token operator">=</span>version<span class="token operator">+</span><span class="token number">1</span>
+where id<span class="token operator">=</span>#<span class="token punctuation">{</span>id<span class="token punctuation">}</span> and version<span class="token operator">=</span>#<span class="token punctuation">{</span>version<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="redis-分布式锁"><a href="#redis-分布式锁" class="header-anchor">#</a> Redis 分布式锁</h2> <h3 id="加锁"><a href="#加锁" class="header-anchor">#</a> 加锁</h3> <p><strong>set NX PX + 重试 + 重试间隔</strong></p> <p>向 Redis 发起如下命令: SET productId:lock 0xx9p03001 NX PX 30000 其中，&quot;productId&quot;由自己定义，可以是与本次业务有关的id，&quot;0xx9p03001&quot;是一串随机值，必须保证全局唯一，“NX&quot;指的是当且仅当key(也就是案例中的&quot;productId:lock”)在Redis中不存在时，返回执行成功，否则执行失败。&quot;PX 30000&quot;指的是在30秒后，key将被自动删除。执行命令后返回成功，表明服务成功的获得了锁。</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">lock</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token keyword">long</span> expire<span class="token punctuation">,</span> <span class="token keyword">int</span> retryTimes<span class="token punctuation">,</span> <span class="token keyword">long</span> retryDuration<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// use JedisCommands instead of setIfAbsense</span>
+    <span class="token keyword">boolean</span> result <span class="token operator">=</span> <span class="token function">setRedis</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> expire<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// retry if needed</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token operator">!</span>result<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> retryTimes<span class="token operator">--</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            log<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">&quot;lock failed, retrying...&quot;</span> <span class="token operator">+</span> retryTimes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span>retryDuration<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// use JedisCommands instead of setIfAbsense</span>
+        result <span class="token operator">=</span> <span class="token function">setRedis</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> expire<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">setRedis</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token keyword">long</span> expire<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token class-name">RedisCallback</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> redisCallback <span class="token operator">=</span> connection <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+            <span class="token class-name">JedisCommands</span> commands <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">JedisCommands</span><span class="token punctuation">)</span> connection<span class="token punctuation">.</span><span class="token function">getNativeConnection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">String</span> uuid <span class="token operator">=</span> <span class="token class-name">SnowIDUtil</span><span class="token punctuation">.</span><span class="token function">uniqueStr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            lockFlag<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>uuid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> commands<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> uuid<span class="token punctuation">,</span> <span class="token constant">NX</span><span class="token punctuation">,</span> <span class="token constant">PX</span><span class="token punctuation">,</span> expire<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 看这里</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> result <span class="token operator">=</span> redisTemplate<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span>redisCallback<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token operator">!</span><span class="token class-name">StringUtil</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">&quot;set redis occurred an exception&quot;</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="解锁"><a href="#解锁" class="header-anchor">#</a> 解锁</h3> <p>解锁：采用lua脚本，<em><strong>保证操作的原子性</strong></em></p> <p>在删除key之前，一定要判断服务A持有的value与Redis内存储的value是否一致。如果贸然使用服务A持有的key来删除锁，则会误将服务B的锁释放掉。</p> <div class="custom-block warning"><p class="title"></p><p>在加锁的时候 key 是具体业务，例如 key = 波次 Id；
+value 是全局唯一 Id</p> <p>在解锁时，需要判断 value 是否一致</p></div><div class="language-lua extra-class"><pre class="language-lua"><code><span class="token keyword">if</span> redis<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token string">&quot;get&quot;</span><span class="token punctuation">,</span> KEYS<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">==</span>ARGV<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">then</span>
+	<span class="token keyword">return</span> redis<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token string">&quot;del&quot;</span><span class="token punctuation">,</span> KEYS<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token keyword">else</span>
+	<span class="token keyword">return</span> <span class="token number">0</span>
+<span class="token keyword">end</span>
+</code></pre></div><h3 id="问题1-误解除锁"><a href="#问题1-误解除锁" class="header-anchor">#</a> 问题1：误解除锁</h3> <p>如果线程A成功获取到了锁，并且设置了过期时间30秒，但线程A执行时间超过了30秒，锁过期自动释放，此时线程B获取到了锁；随后A执行完成，线程A使用DEL命令来释放锁，但此时线程B加的锁还没有执行完成，线程 A 实际释放的线程B加的锁：</p> <img width="500" height="413" align="bottom" src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612178009320-7a61dfea-0e84-498e-80f2-d9b17d54e847.png#align=left&amp;display=inline&amp;height=579&amp;name=image.png&amp;originHeight=1158&amp;originWidth=1172&amp;size=92682&amp;status=done&amp;style=none&amp;width=586"> <p>解决方案：通过在value中设置当前线程加锁的标识（全局唯一Id），在删除之前验证key对应的value判断锁是否是当前线程持；验证key，然后再删除是两步不具有原子性，删除要使用lua脚本</p> <h3 id="问题2-超时解锁导致并发"><a href="#问题2-超时解锁导致并发" class="header-anchor">#</a> 问题2：超时解锁导致并发</h3> <p>如果线程A成功获取锁并设置过期时间30秒，但线程A执行时间超过了30秒，锁过期自动释放，此时线程B获取到了锁，线程A和线程B并发执行，解决方案：</p> <ol><li>将过期时间设置足够长，确保代码逻辑在锁释放之前能够执行完成</li> <li>在获取到锁之后，另外开一个定时任务，在过期时间的1/3重新设置超时时间（Redisson使用）</li></ol> <h3 id="问题3-锁重入问题"><a href="#问题3-锁重入问题" class="header-anchor">#</a> 问题3：锁重入问题</h3> <p>可通过对锁进行重入计数，加锁时加1，解锁时减1，当计数归0时释放锁；这就需要使用lua脚本了</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token comment">// 如果 lock_key 不存在</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>redis<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token char">'exists'</span><span class="token punctuation">,</span> <span class="token constant">KEYS</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+then
+    <span class="token comment">// 设置 lock_key 线程标识 1 进行加锁</span>
+    redis<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token char">'hset'</span><span class="token punctuation">,</span> <span class="token constant">KEYS</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token constant">ARGV</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 设置过期时间</span>
+    redis<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>'pexpire'<span class="token punctuation">,</span> <span class="token constant">KEYS</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token constant">ARGV</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> nil<span class="token punctuation">;</span>
+    end<span class="token punctuation">;</span>
+<span class="token comment">// 如果 lock_key 存在且线程标识是当前欲加锁的线程标识</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>redis<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>'hexists'<span class="token punctuation">,</span> <span class="token constant">KEYS</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token constant">ARGV</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span>
+    <span class="token comment">// 自增</span>
+    then redis<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>'hincrby'<span class="token punctuation">,</span> <span class="token constant">KEYS</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token constant">ARGV</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 重置过期时间</span>
+    redis<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>'pexpire'<span class="token punctuation">,</span> <span class="token constant">KEYS</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token constant">ARGV</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> nil<span class="token punctuation">;</span>
+    end<span class="token punctuation">;</span>
+<span class="token comment">// 如果加锁失败，返回锁剩余时间</span>
+<span class="token keyword">return</span> redis<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token char">'pttl'</span><span class="token punctuation">,</span> <span class="token constant">KEYS</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 这里使用hash是因为要存储key,线程唯一标志,加锁次数</span>
+</code></pre></div><h3 id="问题4-获取锁失败重试"><a href="#问题4-获取锁失败重试" class="header-anchor">#</a> 问题4：获取锁失败重试</h3> <ol><li>客户端轮询，当未获取到锁时，等待一段时间重新获取锁，直到成功获取锁或等待超时。这种方式比较消耗服务器资源，当并发量比较大时，会影响服务器的效率</li> <li>另一种方式是使用 Redis 的发布订阅功能，当获取锁失败时，订阅锁释放消息</li></ol> <img width="500" height="413" align="bottom" src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612178927959-eea91579-729c-4279-8546-9e8807102a20.png#align=left&amp;display=inline&amp;height=515&amp;name=image.png&amp;originHeight=1030&amp;originWidth=1178&amp;size=106071&amp;status=done&amp;style=none&amp;width=589"> <h3 id="集群问题1-主从切换问题"><a href="#集群问题1-主从切换问题" class="header-anchor">#</a> 集群问题1：主从切换问题</h3> <p>当客户端A成功在master节点上加锁，指令还未同步到slave节点，此时主节点挂掉，从节点提升为主节点，新的主节点没有锁的数据，客户端B加锁时就会成功</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612179082634-0cc36815-fc59-4517-8dfb-0492980fb6db.png#align=left&amp;display=inline&amp;height=374&amp;name=image.png&amp;originHeight=499&amp;originWidth=708&amp;size=66699&amp;status=done&amp;style=none&amp;width=531" alt="image.png"></p> <h3 id="集群问题2-集群脑裂问题"><a href="#集群问题2-集群脑裂问题" class="header-anchor">#</a> 集群问题2：集群脑裂问题</h3> <p>集群脑裂指因为网络问题，导致Redis 某个master节点跟slave节点和sentinel集群处于不同的网络分区，因为sentinel集群无法感知到master的存在，所以将slave节点提升为master节点，此时存在两个不同的master节点；当不同的客户端连接不同的 master 节点时，两个客户端可以同时拥有同一把锁：
+<img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612179333405-5789203a-5c51-4d16-b02f-40f772e5b234.png#align=left&amp;display=inline&amp;height=605&amp;name=image.png&amp;originHeight=605&amp;originWidth=1128&amp;size=133340&amp;status=done&amp;style=none&amp;width=1128" alt="image.png"></p> <h3 id="集群问题解决方案"><a href="#集群问题解决方案" class="header-anchor">#</a> 集群问题解决方案</h3> <ul><li>使用 zookeeper 分布式锁</li> <li>redlock（RedLock算法本身有争议）</li> <li>redis 解决脑裂问题，增加如下配置：</li></ul> <div class="language-java extra-class"><pre class="language-java"><code># 连接到master的最少slave数
+# 配置超过半数就可以了
+# 例如：master <span class="token operator">+</span> slave一共有<span class="token number">6</span>台，这个参数配置成<span class="token number">3</span>
+min<span class="token operator">-</span>slaves<span class="token operator">-</span><span class="token keyword">to</span><span class="token operator">-</span>write <span class="token number">3</span>
+</code></pre></div><h2 id="zookeeper-分布式锁"><a href="#zookeeper-分布式锁" class="header-anchor">#</a> zookeeper 分布式锁</h2> <h3 id="利用的zookeeper特性"><a href="#利用的zookeeper特性" class="header-anchor">#</a> 利用的zookeeper特性</h3> <ul><li>在同一时刻，不能有多个客户端创建同一个节点，顺序一致性</li> <li>临时节点只在session生命周期存在，session一结束会自动销毁</li> <li>watcher机制，在代表锁资源的节点被删除，即可以触发watcher解除阻塞重新去获取锁</li></ul> <h3 id="基于临时节点方案"><a href="#基于临时节点方案" class="header-anchor">#</a> 基于临时节点方案</h3> <h4 id="原理与流程"><a href="#原理与流程" class="header-anchor">#</a> 原理与流程</h4> <p>实现较为简单，逻辑就是谁创建成功该节点，谁就持有锁，创建失败的自己进行阻塞，A线程先持有锁，B线程获取失败就会阻塞，同时对/lockPath设置监听，A线程执行完操作后删除节点，触发监听器，B线程此时解除阻塞，重新去获取锁
+<img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612797830447-4b620db6-3cd6-4962-9d0b-5b5fe775ed86.png#align=left&amp;display=inline&amp;height=290&amp;name=image.png&amp;originHeight=580&amp;originWidth=1218&amp;size=110893&amp;status=done&amp;style=none&amp;width=609" alt="image.png"></p> <h4 id="代码实现"><a href="#代码实现" class="header-anchor">#</a> 代码实现</h4> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Lock</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * 获取锁
+     */</span>
+    <span class="token keyword">void</span> <span class="token function">getLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * 释放锁
+     */</span>
+    <span class="token keyword">void</span> <span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">AbstractTemplateLock</span> <span class="token keyword">implements</span> <span class="token class-name">Lock</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">getLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">tryLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">&quot;获取锁成功&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment">//等待</span>
+            <span class="token function">waitLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//事件监听 如果节点被删除则可以重新获取</span>
+            <span class="token comment">//重新获取</span>
+            <span class="token function">getLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">protected</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">waitLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">protected</span> <span class="token keyword">abstract</span> <span class="token keyword">boolean</span> <span class="token function">tryLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">protected</span> <span class="token keyword">abstract</span> <span class="token keyword">void</span> <span class="token function">releaseLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">releaseLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ZkTemplateLock</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractTemplateLock</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">String</span> zkServers <span class="token operator">=</span> <span class="token string">&quot;127.0.0.1:2181&quot;</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> sessionTimeout <span class="token operator">=</span> <span class="token number">8000</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> connectionTimeout <span class="token operator">=</span> <span class="token number">5000</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">String</span> lockPath <span class="token operator">=</span> <span class="token string">&quot;/lockPath&quot;</span><span class="token punctuation">;</span>
+
+
+    <span class="token keyword">private</span> <span class="token class-name">ZkClient</span> client<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">ZkTemplateLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ZkClient</span><span class="token punctuation">(</span>zkServers<span class="token punctuation">,</span> sessionTimeout<span class="token punctuation">,</span> connectionTimeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">&quot;zk client 连接成功:{}&quot;</span><span class="token punctuation">,</span>zkServers<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">waitLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">CountDownLatch</span> latch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountDownLatch</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">IZkDataListener</span> listener <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IZkDataListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleDataDeleted</span><span class="token punctuation">(</span><span class="token class-name">String</span> dataPath<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span>
+                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;监听到节点被删除&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                latch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleDataChange</span><span class="token punctuation">(</span><span class="token class-name">String</span> dataPath<span class="token punctuation">,</span> <span class="token class-name">Object</span> data<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token comment">//完成 watcher 注册</span>
+        client<span class="token punctuation">.</span><span class="token function">subscribeDataChanges</span><span class="token punctuation">(</span>lockPath<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//阻塞自己</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>client<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span>lockPath<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                latch<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//取消watcher注册</span>
+        client<span class="token punctuation">.</span><span class="token function">unsubscribeDataChanges</span><span class="token punctuation">(</span>lockPath<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">boolean</span> <span class="token function">tryLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            client<span class="token punctuation">.</span><span class="token function">createEphemeral</span><span class="token punctuation">(</span>lockPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token string">&quot;获取到锁&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            log<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">&quot;创建失败&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">releaseLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       client<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>lockPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="羊群效应-惊群效应"><a href="#羊群效应-惊群效应" class="header-anchor">#</a> 羊群效应（惊群效应）</h4> <p>每次去竞争锁，都只会有一个线程拿到锁，当线程数庞大时会发生“羊群效应”，zookeeper节点可能会运行缓慢甚至宕机。这是因为其他线程没获取到锁时都会监听/lock节点，当A线程释放完毕，海量的线程都同时停止阻塞，去争抢锁，这种操作十分耗费资源，且性能大打折扣</p> <h3 id="基于临时顺序节点方案"><a href="#基于临时顺序节点方案" class="header-anchor">#</a> 基于临时顺序节点方案</h3> <h4 id="原理与流程-2"><a href="#原理与流程-2" class="header-anchor">#</a> 原理与流程</h4> <p>临时顺序节点与临时节点不同的是产生的节点是有序的，我们可以利用这一特点，只让当前线程监听上一序号的线程，每次获取锁的时候判断自己的序号是否为最小，最小即获取到锁，执行完毕就删除当前节点
+<img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612797920998-b8ad8a9d-7a77-49ae-9bc0-6aea73434b58.png#align=left&amp;display=inline&amp;height=605&amp;name=image.png&amp;originHeight=1210&amp;originWidth=1698&amp;size=256769&amp;status=done&amp;style=none&amp;width=849" alt="image.png"></p> <h4 id="代码实现-2"><a href="#代码实现-2" class="header-anchor">#</a> 代码实现</h4> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ZkSequenTemplateLock</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractTemplateLock</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">String</span> zkServers <span class="token operator">=</span> <span class="token string">&quot;127.0.0.1:2181&quot;</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> sessionTimeout <span class="token operator">=</span> <span class="token number">8000</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> connectionTimeout <span class="token operator">=</span> <span class="token number">5000</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">String</span> lockPath <span class="token operator">=</span> <span class="token string">&quot;/lockPath&quot;</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> beforePath<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> currentPath<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">ZkClient</span> client<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">ZkSequenTemplateLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ZkClient</span><span class="token punctuation">(</span>zkServers<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>client<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span>lockPath<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            client<span class="token punctuation">.</span><span class="token function">createPersistent</span><span class="token punctuation">(</span>lockPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">}</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">&quot;zk client 连接成功:{}&quot;</span><span class="token punctuation">,</span>zkServers<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">waitLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">CountDownLatch</span> latch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountDownLatch</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">IZkDataListener</span> listener <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IZkDataListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleDataDeleted</span><span class="token punctuation">(</span><span class="token class-name">String</span> dataPath<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span>
+                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;监听到节点被删除&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                latch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleDataChange</span><span class="token punctuation">(</span><span class="token class-name">String</span> dataPath<span class="token punctuation">,</span> <span class="token class-name">Object</span> data<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token comment">//给排在前面的节点增加数据删除的watcher，本质是启动另一个线程去监听上一个节点</span>
+        client<span class="token punctuation">.</span><span class="token function">subscribeDataChanges</span><span class="token punctuation">(</span>beforePath<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//阻塞自己</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>client<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span>beforePath<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;阻塞&quot;</span><span class="token operator">+</span>currentPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                latch<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">//取消watcher注册</span>
+        client<span class="token punctuation">.</span><span class="token function">unsubscribeDataChanges</span><span class="token punctuation">(</span>beforePath<span class="token punctuation">,</span> listener<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">boolean</span> <span class="token function">tryLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>currentPath <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">//创建一个临时顺序节点</span>
+            currentPath <span class="token operator">=</span> client<span class="token punctuation">.</span><span class="token function">createEphemeralSequential</span><span class="token punctuation">(</span>lockPath <span class="token operator">+</span> <span class="token string">&quot;/&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;lock-data&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;current:&quot;</span> <span class="token operator">+</span> currentPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">//获得所有的子节点并排序。临时节点名称为自增长的字符串</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> childrens <span class="token operator">=</span> client<span class="token punctuation">.</span><span class="token function">getChildren</span><span class="token punctuation">(</span>lockPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//排序list，按自然顺序排序</span>
+        <span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span>childrens<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>currentPath<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>lockPath <span class="token operator">+</span> <span class="token string">&quot;/&quot;</span> <span class="token operator">+</span> childrens<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment">//如果当前节点不是排第一，则获取前面一个节点信息，赋值给beforePath</span>
+            <span class="token keyword">int</span> curIndex <span class="token operator">=</span> childrens<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>currentPath<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span>lockPath<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            beforePath <span class="token operator">=</span> lockPath <span class="token operator">+</span> <span class="token string">&quot;/&quot;</span> <span class="token operator">+</span> childrens<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>curIndex <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;beforePath&quot;</span><span class="token operator">+</span>beforePath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">releaseLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;delete:&quot;</span> <span class="token operator">+</span> currentPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        client<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>currentPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="与redis分布式锁的比较"><a href="#与redis分布式锁的比较" class="header-anchor">#</a> 与Redis分布式锁的比较</h3> <p><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676429664521-5066e469-250f-4016-807e-921f65028168.png#averageHue=%23f0e49f&amp;clientId=ub7294f06-6ba9-4&amp;from=paste&amp;height=417&amp;id=u0fccd0b0&amp;name=image.png&amp;originHeight=834&amp;originWidth=1502&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=492980&amp;status=done&amp;style=none&amp;taskId=u759bbaf7-898d-4b43-af65-d2901a83ec4&amp;title=&amp;width=751" alt="image.png"></p></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/distributed/Zab.html" class="prev">
+          Zab 算法
+        </a></span> <span class="next"><a href="/distributed/paxos-alg.html">
+          分布式事务
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#mysql-分布式锁" class="sidebar-link reco-side-mysql-分布式锁" data-v-b57cc07c>MySQL 分布式锁</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#基于-insert-唯一索引" class="sidebar-link reco-side-基于-insert-唯一索引" data-v-b57cc07c>基于（insert）唯一索引</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#基于排他锁-for-update" class="sidebar-link reco-side-基于排他锁-for-update" data-v-b57cc07c>基于排他锁（for update）</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#基于乐观锁-版本号" class="sidebar-link reco-side-基于乐观锁-版本号" data-v-b57cc07c>基于乐观锁（版本号）</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#redis-分布式锁" class="sidebar-link reco-side-redis-分布式锁" data-v-b57cc07c>Redis 分布式锁</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#加锁" class="sidebar-link reco-side-加锁" data-v-b57cc07c>加锁</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#解锁" class="sidebar-link reco-side-解锁" data-v-b57cc07c>解锁</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#问题1-误解除锁" class="sidebar-link reco-side-问题1-误解除锁" data-v-b57cc07c>问题1：误解除锁</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#问题2-超时解锁导致并发" class="sidebar-link reco-side-问题2-超时解锁导致并发" data-v-b57cc07c>问题2：超时解锁导致并发</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#问题3-锁重入问题" class="sidebar-link reco-side-问题3-锁重入问题" data-v-b57cc07c>问题3：锁重入问题</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#问题4-获取锁失败重试" class="sidebar-link reco-side-问题4-获取锁失败重试" data-v-b57cc07c>问题4：获取锁失败重试</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#集群问题1-主从切换问题" class="sidebar-link reco-side-集群问题1-主从切换问题" data-v-b57cc07c>集群问题1：主从切换问题</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#集群问题2-集群脑裂问题" class="sidebar-link reco-side-集群问题2-集群脑裂问题" data-v-b57cc07c>集群问题2：集群脑裂问题</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#集群问题解决方案" class="sidebar-link reco-side-集群问题解决方案" data-v-b57cc07c>集群问题解决方案</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#zookeeper-分布式锁" class="sidebar-link reco-side-zookeeper-分布式锁" data-v-b57cc07c>zookeeper 分布式锁</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#利用的zookeeper特性" class="sidebar-link reco-side-利用的zookeeper特性" data-v-b57cc07c>利用的zookeeper特性</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#基于临时节点方案" class="sidebar-link reco-side-基于临时节点方案" data-v-b57cc07c>基于临时节点方案</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#基于临时顺序节点方案" class="sidebar-link reco-side-基于临时顺序节点方案" data-v-b57cc07c>基于临时顺序节点方案</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-lock.html#与redis分布式锁的比较" class="sidebar-link reco-side-与redis分布式锁的比较" data-v-b57cc07c>与Redis分布式锁的比较</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div></div></div>
+    <script src="/assets/js/app.3fa2311f.js" defer></script><script src="/assets/js/3.e3636143.js" defer></script><script src="/assets/js/1.0294b526.js" defer></script><script src="/assets/js/13.1c31f7dd.js" defer></script>
+  </body>
+</html>
