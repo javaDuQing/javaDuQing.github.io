@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>分布式事务 | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.112c01f0.css" as="style"><link rel="preload" href="/assets/js/app.6a809ed8.js" as="script"><link rel="preload" href="/assets/js/3.055d3e19.js" as="script"><link rel="preload" href="/assets/js/1.e976497e.js" as="script"><link rel="preload" href="/assets/js/14.6916dcc8.js" as="script"><link rel="prefetch" href="/assets/js/10.130f488d.js"><link rel="prefetch" href="/assets/js/11.1a68a985.js"><link rel="prefetch" href="/assets/js/12.44572433.js"><link rel="prefetch" href="/assets/js/13.742c1b9e.js"><link rel="prefetch" href="/assets/js/15.b0704adf.js"><link rel="prefetch" href="/assets/js/16.6140bdb1.js"><link rel="prefetch" href="/assets/js/17.11a6dcb1.js"><link rel="prefetch" href="/assets/js/18.06640435.js"><link rel="prefetch" href="/assets/js/19.1ffbf4a3.js"><link rel="prefetch" href="/assets/js/20.f0cfaff3.js"><link rel="prefetch" href="/assets/js/21.09f84f67.js"><link rel="prefetch" href="/assets/js/22.d52e481b.js"><link rel="prefetch" href="/assets/js/23.277062d9.js"><link rel="prefetch" href="/assets/js/24.155de5e7.js"><link rel="prefetch" href="/assets/js/25.fc5b2472.js"><link rel="prefetch" href="/assets/js/26.85d6df15.js"><link rel="prefetch" href="/assets/js/27.22227709.js"><link rel="prefetch" href="/assets/js/28.524796b7.js"><link rel="prefetch" href="/assets/js/29.49c7b074.js"><link rel="prefetch" href="/assets/js/30.9cc3b254.js"><link rel="prefetch" href="/assets/js/31.2e3a6e14.js"><link rel="prefetch" href="/assets/js/32.6024d1db.js"><link rel="prefetch" href="/assets/js/33.10ef918b.js"><link rel="prefetch" href="/assets/js/34.cdb54101.js"><link rel="prefetch" href="/assets/js/35.727073ae.js"><link rel="prefetch" href="/assets/js/36.7b53ea90.js"><link rel="prefetch" href="/assets/js/37.cfd6ccae.js"><link rel="prefetch" href="/assets/js/38.1b5e138e.js"><link rel="prefetch" href="/assets/js/39.d7dc2d01.js"><link rel="prefetch" href="/assets/js/4.af96fb9f.js"><link rel="prefetch" href="/assets/js/40.d448ae63.js"><link rel="prefetch" href="/assets/js/41.7dc4533a.js"><link rel="prefetch" href="/assets/js/42.a6a7fa4f.js"><link rel="prefetch" href="/assets/js/43.405f1189.js"><link rel="prefetch" href="/assets/js/44.fdd9ede7.js"><link rel="prefetch" href="/assets/js/45.e7e50d68.js"><link rel="prefetch" href="/assets/js/46.14e12745.js"><link rel="prefetch" href="/assets/js/47.e9aa68d6.js"><link rel="prefetch" href="/assets/js/48.4d9cbeca.js"><link rel="prefetch" href="/assets/js/49.52fa6ba9.js"><link rel="prefetch" href="/assets/js/5.2cb7b5e8.js"><link rel="prefetch" href="/assets/js/50.2c8830fe.js"><link rel="prefetch" href="/assets/js/51.7619b35a.js"><link rel="prefetch" href="/assets/js/52.edefddd9.js"><link rel="prefetch" href="/assets/js/53.99c194ac.js"><link rel="prefetch" href="/assets/js/54.2cf4247d.js"><link rel="prefetch" href="/assets/js/55.edb63faa.js"><link rel="prefetch" href="/assets/js/56.a37b726d.js"><link rel="prefetch" href="/assets/js/57.abffcfb6.js"><link rel="prefetch" href="/assets/js/58.b41648af.js"><link rel="prefetch" href="/assets/js/59.c1df5e44.js"><link rel="prefetch" href="/assets/js/6.2eb56668.js"><link rel="prefetch" href="/assets/js/60.63c9a185.js"><link rel="prefetch" href="/assets/js/61.0a91a88e.js"><link rel="prefetch" href="/assets/js/62.122cb082.js"><link rel="prefetch" href="/assets/js/63.e87b0910.js"><link rel="prefetch" href="/assets/js/64.14c1850d.js"><link rel="prefetch" href="/assets/js/65.ae695384.js"><link rel="prefetch" href="/assets/js/66.ec274faa.js"><link rel="prefetch" href="/assets/js/67.cdd52208.js"><link rel="prefetch" href="/assets/js/68.8edae870.js"><link rel="prefetch" href="/assets/js/69.417e4067.js"><link rel="prefetch" href="/assets/js/7.c5c6188d.js"><link rel="prefetch" href="/assets/js/70.2b3280d6.js"><link rel="prefetch" href="/assets/js/71.92026c14.js"><link rel="prefetch" href="/assets/js/8.c08cf1ce.js"><link rel="prefetch" href="/assets/js/9.56865d2d.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.112c01f0.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式事务实现 —— TCC-Transaction 与 Seata
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>61</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-category"></i>
+  中间件
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式事务实现 —— TCC-Transaction 与 Seata
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>分布式基础</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/distributed-base.html" class="sidebar-link">理论知识</a></li><li><a href="/distributed/consistence-classification.html" class="sidebar-link">一致性的分类</a></li><li><a href="/distributed/Consensus-alg.html" class="sidebar-link">共识算法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>共识算法（一致性算法）</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/2-stage-commit.html" class="sidebar-link">2(3)阶段提交算法</a></li><li><a href="/distributed/paxos-alg.html" class="sidebar-link">Paxos 算法</a></li><li><a href="/distributed/Multi-Paxos.html" class="sidebar-link">Multi Paxos 算法</a></li><li><a href="/distributed/Gossip.html" class="sidebar-link">Gossip 协议</a></li><li><a href="/distributed/Raft.html" class="sidebar-link">Raft 算法</a></li><li><a href="/distributed/Zab.html" class="sidebar-link">Zab 算法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>分布式解决方案</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/Distributed-lock.html" class="sidebar-link">分布式锁</a></li><li><a href="/distributed/Distributed-transaction.html" aria-current="page" class="active sidebar-link">分布式事务</a></li><li><a href="/distributed/Multi-Paxos.html" class="sidebar-link">分布式缓存</a></li><li><a href="/distributed/Gossip.html" class="sidebar-link">全局唯一ID</a></li><li><a href="/distributed/Raft.html" class="sidebar-link">分布式session</a></li><li><a href="/distributed/Raft.html" class="sidebar-link">幂等实现方案</a></li><li><a href="/distributed/Raft.html" class="sidebar-link">高性能负载均衡及算法</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>分布式事务</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">分布式事务</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/13</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/distributed/Distributed-transaction.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><ul><li>分布式理论的 CP -&gt; 刚性事务（遵循 ACID，对数据要求强一致性）</li> <li>分布式理论的 AP + BASE -&gt; 柔性事务（遵循 BASE，允许一定时间内不同节点的数据不一致，但要求最终一致）</li></ul> <h2 id="分布式事务体系"><a href="#分布式事务体系" class="header-anchor">#</a> 分布式事务体系</h2> <p><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676462111777-82cc06f7-d60a-44db-bfcb-8a1bb7b173b1.png#averageHue=%23faf5ef&amp;clientId=ua251f530-58bd-4&amp;from=paste&amp;height=321&amp;id=u05630468&amp;name=image.png&amp;originHeight=642&amp;originWidth=1334&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=105947&amp;status=done&amp;style=none&amp;taskId=u636b22d9-2a69-4644-9456-766d8619163&amp;title=&amp;width=667" alt="image.png"></p> <p><strong>刚性事务</strong>：分布式理论的 CP，遵循 ACID，对数据要求强一致性。</p> <ul><li><strong>XA协议</strong> 是一个基于数据库层面的分布式事务协议，其分为两部分：<strong>事务管理器（Transaction Manager）和本地资源管理器（Resource Manager）</strong>。事务管理器作为一个全局的调度者，负责对各个本地资源管理器统一号令提交或者回滚。主流的诸如 Oracle、MySQL 等数据库均已实现了 XA 接口。
+<ul><li><strong>二阶提交协议（2PC）</strong>: 根据 XA 协议衍生出来而来; 引入一个作为协调者的组件来统一掌控所有参与者的操作结果并最终指示这些节点是否要把操作结果进行真正的提交; 参与者将操作成败通知协调者，再由协调者根据所有参与者的反馈情报决定各参与者是否要提交操作还是中止操作。所谓的两个阶段是指：第一阶段：准备阶段 (投票阶段) 和第二阶段：提交阶段（执行阶段）</li> <li><strong>三阶提交协议（3PC）</strong>: 是对两段提交（2PC）的一种升级优化，<strong>3PC 在 2PC 的第一阶段和第二阶段中插入一个准备阶段</strong>。保证了在最后提交阶段之前，各参与者节点的状态都一致。同时在协调者和参与者中都引入超时机制，当参与者各种原因未收到协调者的 commit 请求后，会对本地事务进行 commit，不会一直阻塞等待，解决了 2PC 的单点故障问题，但 3PC 还是没能从根本上解决数据一致性的问题。</li></ul></li> <li><strong>Java事务规范</strong> <ul><li><strong>JTA</strong>：Java 事务 API（Java Transaction API）是一个 Java 企业版的应用程序接口，在 Java 环境中，允许完成跨越多个 XA 资源的分布式事务。</li> <li><strong>JTS</strong>：Java 事务服务（Java Transaction Service）是 J2EE 平台提供了分布式事务服务的具体实现规范，j2ee 服务器提供商根据 JTS 规范实现事务并提供 JTA 接口。</li></ul></li></ul> <p><strong>柔性事务</strong>：分布式理论的 AP，遵循 BASE，允许一定时间内不同节点的数据不一致，但要求最终一致。</p> <ul><li><strong>基于业务层</strong> <ul><li><strong>TCC</strong>: TCC（Try-Confirm-Cancel）又被称补偿事务，TCC 与 2PC 的思想很相似，事务处理流程也很相似，但 2PC 是应用于在 DB 层面，TCC 则可以理解为在应用层面的 2PC，是需要我们编写业务逻辑来实现。</li> <li><strong>SAGA</strong>：Saga 是由一系列的本地事务构成。每一个本地事务在更新完数据库之后，会发布一条消息或者一个事件来触发 Saga 中的下一个本地事务的执行。如果一个本地事务因为某些业务规则无法满足而失败，Saga 会执行在这个失败的事务之前成功提交的所有事务的补偿操作。Saga 的实现有很多种方式，其中最流行的两种方式是：基于事件的方式和基于命令的方式。</li></ul></li> <li><strong>最终一致性</strong> <ul><li><strong>消息表</strong>：本地消息表的方案最初是由 eBay 提出，核心思路是将分布式事务拆分成本地事务进行处理。</li> <li><strong>消息队列</strong>：基于 MQ 的分布式事务方案其实是对本地消息表的封装，将本地消息表基于 MQ 内部，其他方面的协议基本与本地消息表一致。</li> <li><strong>最大努力通知</strong>：最大努力通知也称为定期校对，是对MQ事务方案的进一步优化。它在事务主动方增加了消息校对的接口，如果事务被动方没有接收到消息，此时可以调用事务主动方提供的消息校对的接口主动获取。</li></ul></li></ul> <h2 id="_2pc-3pc"><a href="#_2pc-3pc" class="header-anchor">#</a> 2PC 3PC</h2> <p><a href="/distributed/2-stage-commit.html">请看这里</a></p> <h2 id="tcc"><a href="#tcc" class="header-anchor">#</a> TCC</h2> <div class="custom-block warning"><p class="title"></p><p>TCC（Try-Confirm-Cancel）又被称补偿事务，TCC 与 2PC 的思想很相似，事务处理流程也很相似，但<strong>2PC 是应用于在 DB 层面，TCC 则可以理解为在应用层面的 2PC，是需要我们编写业务逻辑来实现</strong>。</p></div><p>TCC 它的核心思想是：针对每个操作都要注册一个与其对应的确认（Try）和补偿（Cancel）。</p> <p>还拿下单扣库存解释下它的三个操作：</p> <ul><li>Try 阶段主要是对业务系统做检测及资源预留</li> <li>Confirm 阶段主要是对业务系统做确认提交</li> <li>Cancel 阶段主要是在业务执行错误，需要回滚的状态下执行的业务取消，预留资源释放。</li></ul> <p>举个例子，假入 Bob 要向 Smith 转账，思路大概是：我们有一个本地方法，里面依次调用 1、首先在 Try 阶段，要先调用远程接口把 Smith 和 Bob 的钱给冻结起来。 2、在 Confirm 阶段，执行远程调用的转账的操作，转账成功进行解冻。 3、如果第2步执行成功，那么转账成功，如果第二步执行失败，则调用远程冻结接口对应的解冻方法 (Cancel)。
+<img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676462693807-7b4c5652-1a76-4925-a703-12b8611cb4df.png#averageHue=%231fc123&amp;clientId=ua251f530-58bd-4&amp;from=paste&amp;height=414&amp;id=u25f9e95c&amp;name=image.png&amp;originHeight=827&amp;originWidth=1280&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=143486&amp;status=done&amp;style=none&amp;taskId=u4f7a4400-2b8a-404f-b2c6-a8763e0b376&amp;title=&amp;width=640" alt="image.png"></p> <h3 id="tcc-三大问题"><a href="#tcc-三大问题" class="header-anchor">#</a> TCC 三大问题</h3> <ul><li>空回滚</li></ul> <p>当一个分支事务所在的服务发生宕机或者网络异常导致调用失败，并未执行 try 方法，当恢复后事务执行回滚操作就会调用此分支事务的 cancel 方法,如果 cancel 方法不能处理此种情况就会出现空回滚。</p> <p>是否出现空回滚，我们需要需要判断是否执行了 try 方法，如果执行了就没有空回滚。解决方法就是当主业务发起事务时，生成一个全局事务记录，并生成一个全局唯一 ID，贯穿整个事务，再创建一张分支事务记录表，用于记录分支事务，try 执行时将全局事务 ID 和分支事务 ID 存入分支事务表中，表示执行了 try 阶段，当 cancel 执行时，先判断表中是否有该全局事务 ID 的数据，如果有则回滚，否则不做任何操作。比如 seata 的 AT模式中就有分支事务表。</p> <ul><li>幂等问题</li></ul> <p>由于服务宕机或者网络问题，方法的调用可能出现超时，为了保证事务正常执行我们往往会加入重试的机制，因此就需要保证 confirm 和 cancel 阶段操作的幂等性。</p> <p>我们可以在分支事务记录表中增加事务执行状态，每次执行 confirm 和 cancel 方法时都查询该事务的执行状态，以此判断事务的幂等性。</p> <ul><li>悬挂问题</li></ul> <p>TCC 中，在调用 try 之前会先注册分支事务，注册分支事务之后，调用出现超时，此时 try 请求还未到达对应的服务，因为调用超时了，所以会执行 cancel 调用，此时 cancel 已经执行完了，然而这个时候 try 请求到达了，这个时候执行了 try 之后就没有后续的操作了，就会导致资源挂起，无法释放。</p> <p>执行 try 方法时我们可以判断 confirm 或者 cancel 方法是否执行，如果执行了那么就不执行 try 阶段。同样借助分支事务表中事务的执行状态。如果已经执行了 confirm 或者 cance l那么 try 就执行。</p> <h2 id="saga-事务-长事务解决方案"><a href="#saga-事务-长事务解决方案" class="header-anchor">#</a> Saga 事务（长事务解决方案）</h2> <p>Saga 是由一系列的本地事务构成。每一个本地事务在更新完数据库之后，会发布一条消息或者一个事件来触发Saga 中的下一个本地事务的执行。如果一个本地事务因为某些业务规则无法满足而失败，Saga 会执行在这个失败的事务之前成功提交的所有事务的补偿操作。
+Saga 的实现有很多种方式，其中最流行的两种方式是：</p> <ul><li><strong>基于事件的方式</strong>。这种方式没有协调中心，整个模式的工作方式就像舞蹈一样，各个舞蹈演员按照预先编排的动作和走位各自表演，最终形成一只舞蹈。处于当前 Saga 下的各个服务，会产生某类事件，或者监听其它服务产生的事件并决定是否需要针对监听到的事件做出响应。</li> <li><strong>基于命令的方式</strong>。这种方式的工作形式就像一只乐队，由一个指挥家（协调中心）来协调大家的工作。协调中心来告诉 Saga 的参与方应该执行哪一个本地事务。</li></ul> <p>假设一个完整的订单流程包含了如下几个服务：</p> <ol><li>Order Service：订单服务</li> <li>Payment Service：支付服务</li> <li>Stock Service：库存服务</li> <li>Delivery Service：物流服务</li></ol> <p><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676464520276-7399ed9c-e7b6-4918-9b1f-1939c00307fc.png#averageHue=%23fcfcfb&amp;clientId=u15e6aded-3b44-4&amp;from=paste&amp;height=314&amp;id=uc284fda7&amp;name=image.png&amp;originHeight=627&amp;originWidth=1024&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=106132&amp;status=done&amp;style=none&amp;taskId=u47d0da91-1721-42e1-a418-f9eb5492391&amp;title=&amp;width=512" alt="image.png"></p> <h3 id="基于事件的方式"><a href="#基于事件的方式" class="header-anchor">#</a> 基于事件的方式</h3> <p>在基于事件的方式中，第一个服务执行完本地事务之后，会产生一个事件。其它服务会监听这个事件，触发该服务本地事务的执行，并产生新的事件。</p> <p>采用基于事件的saga模式的订单处理流程如下：
+<img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676464639816-84e04760-511d-4a46-a5d5-8d86925f33dc.png#averageHue=%23fafafa&amp;clientId=udf6c8132-4122-4&amp;from=paste&amp;height=498&amp;id=u311d9c62&amp;name=image.png&amp;originHeight=996&amp;originWidth=936&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=216863&amp;status=done&amp;style=none&amp;taskId=u9c3eb8a1-aca9-441b-bcde-b8b39331d98&amp;title=&amp;width=468" alt="image.png"></p> <ul><li>订单服务创建一笔新订单，将订单状态设置为&quot;待处理&quot;，产生事件ORDER_CREATED_EVENT。</li> <li>支付服务监听ORDER_CREATED_EVENT，完成扣款并产生事件BILLED_ORDER_EVENT。</li> <li>库存服务监听BILLED_ORDER_EVENT，完成库存扣减和备货，产生事件ORDER_PREPARED_EVENT。</li> <li>物流服务监听ORDER_PREPARED_EVENT，完成商品配送，产生事件ORDER_DELIVERED_EVENT。</li> <li>订单服务监听ORDER_DELIVERED_EVENT，将订单状态更新为&quot;完成&quot;。</li></ul> <p>在这个流程中，订单服务很可能还会监听BILLED_ORDER_EVENT，ORDER_PREPARED_EVENT来完成订单状态的实时更新。将订单状态分别更新为&quot;已经支付&quot;和&quot;已经出库&quot;等状态来及时反映订单的最新状态。</p> <h4 id="该模式下分布式事务的回滚"><a href="#该模式下分布式事务的回滚" class="header-anchor">#</a> <strong>该模式下分布式事务的回滚</strong></h4> <p>为了在异常情况下回滚整个分布式事务，我们需要为相关服务提供补偿操作接口。</p> <p>假设库存服务由于库存不足没能正确完成备货，我们可以按照下面的流程来回滚整个 Saga 事务：
+<img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676464797551-dcc3b9c4-d92e-41b5-abce-4b03807301e1.png#averageHue=%23fafafa&amp;clientId=udf6c8132-4122-4&amp;from=paste&amp;height=368&amp;id=u0977fb7b&amp;name=image.png&amp;originHeight=736&amp;originWidth=1074&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=184686&amp;status=done&amp;style=none&amp;taskId=u81b42400-bccb-43d0-bf8a-1ef82b3dbdb&amp;title=&amp;width=537" alt="image.png"></p> <ol><li>库存服务产生事件PRODUCT_OUT_OF_STOCK_EVENT。</li> <li>订单服务和支付服务都会监听该事件并做出响应：</li> <li>支付服务完成退款。</li> <li>订单服务将订单状态设置为&quot;失败&quot;。</li></ol> <h4 id="基于事件方式的优缺点"><a href="#基于事件方式的优缺点" class="header-anchor">#</a> 基于事件方式的优缺点</h4> <p><strong>优点</strong>：简单且容易理解。各参与方相互之间无直接沟通，完全解耦。这种方式比较适合整个分布式事务只有 2-4个步骤的情形。</p> <p><strong>缺点</strong>：这种方式如果涉及比较多的业务参与方，则比较容易失控。各业务参与方可随意监听对方的消息，以至于最后没人知道到底有哪些系统在监听哪些消息。更悲催的是，这个模式还可能产生环形监听，也就是两个业务方相互监听对方所产生的事件。</p> <p>接下来，我们将介绍如何使用命令的方式来克服上面提到的缺点</p> <h3 id="基于命令的方式"><a href="#基于命令的方式" class="header-anchor">#</a> 基于命令的方式</h3> <p>在基于命令的方式中，我们会定义一个新的服务，这个服务扮演的角色就和一支交响乐乐队的指挥一样，告诉各个业务参与方，在什么时候做什么事情。我们管这个新服务叫做协调中心。协调中心通过命令/回复的方式来和Saga中其它服务进行交互。</p> <p>我们继续以之前的订单流程来举例。下图中的 Order Saga Orchestrator 就是新引入的协调中心。
+<img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676464969101-e8390032-9b27-4366-a995-a41ec88eef71.png#averageHue=%23fafaf9&amp;clientId=udf6c8132-4122-4&amp;from=paste&amp;height=398&amp;id=u1fced40c&amp;name=image.png&amp;originHeight=796&amp;originWidth=1300&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=313600&amp;status=done&amp;style=none&amp;taskId=u3318e898-764b-4604-996d-d7f08ca10e7&amp;title=&amp;width=650" alt="image.png"></p> <ul><li>订单服务创建一笔新订单，将订单状态设置为&quot;待处理&quot;，然后让 Order Saga Orchestrator（OSO）开启创建订单事务。</li> <li>OSO 发送一个&quot;支付命令&quot;给支付服务，支付服务完成扣款并回复&quot;支付完成&quot;消息。</li> <li>OSO 发送一个&quot;备货命令&quot;给库存服务，库存服务完成库存扣减和备货，并回复&quot;出库&quot;消息。</li> <li>OSO 发送一个&quot;配送命令&quot;给物流服务，物流服务完成配送，并回复&quot;配送完成&quot;消息。</li> <li>OSO 向订单服务发送&quot;订单结束命令&quot;给订单服务，订单服务将订单状态设置为&quot;完成&quot;。</li> <li>OSO 清楚一个订单处理 Saga 的具体流程，并在出现异常时向相关服务发送补偿命令来回滚整个分布式事务。</li></ul> <h4 id="该模式下分布式事务的回滚-2"><a href="#该模式下分布式事务的回滚-2" class="header-anchor">#</a> <strong>该模式下分布式事务的回滚</strong></h4> <p><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676465054105-06ff1430-6b9f-4f71-9860-069f744d9a6e.png#averageHue=%23fbfbfa&amp;clientId=udf6c8132-4122-4&amp;from=paste&amp;height=414&amp;id=u3bd8cec5&amp;name=image.png&amp;originHeight=828&amp;originWidth=1300&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=335488&amp;status=done&amp;style=none&amp;taskId=uf73ee14b-63cb-4d6d-af0a-538e424e76e&amp;title=&amp;width=650" alt="image.png"></p> <ul><li>库存服务回复 OSO 一个&quot;库存不足&quot;消息。</li> <li>OSO 意识到该分布式事务失败了，触发回滚流程：</li> <li>OSO 发送&quot;退款命令&quot;给支付服务，支付服务完成退款并回复&quot;退款成功&quot;消息。</li> <li>OSO 向订单服务发送&quot;将订单状态改为失败命令&quot;，订单服务将订单状态更新为&quot;失败&quot;。</li></ul> <h4 id="基于命令方式的优缺点"><a href="#基于命令方式的优缺点" class="header-anchor">#</a> <strong>基于命令方式的优缺点</strong></h4> <p>优点：</p> <ol><li>避免了业务方之间的环形依赖。</li> <li>将分布式事务的管理交由协调中心管理，协调中心对整个逻辑非常清楚。</li> <li>减少了业务参与方的复杂度。这些业务参与方不再需要监听不同的消息，只是需要响应命令并回复消息。</li> <li>测试更容易（分布式事务逻辑存在于协调中心，而不是分散在各业务方）。</li> <li>回滚也更容易。</li></ol> <p>缺点：</p> <ol><li>一个可能的缺点就是需要维护协调中心，而这个协调中心并不属于任何业务方。</li></ol> <h2 id="本地消息表"><a href="#本地消息表" class="header-anchor">#</a> 本地消息表</h2> <p>通过在事务主动发起方额外新建事务消息表，事务发起方处理业务和记录事务消息在本地事务中完成，轮询事务消息表的数据发送事务消息，事务被动方基于消息中间件消费事务消息表中的事务。</p> <p>整体的流程如下图：
+<img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676465416860-9754464d-a1cd-43a3-b864-2f0c22f249d7.png#averageHue=%23d3d1cf&amp;clientId=udf6c8132-4122-4&amp;from=paste&amp;height=195&amp;id=uf0c42db8&amp;name=image.png&amp;originHeight=390&amp;originWidth=1080&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=62023&amp;status=done&amp;style=none&amp;taskId=ub232f0f0-b640-4903-9b5b-93f7d96a1e0&amp;title=&amp;width=540" alt="image.png">
+上图中整体的处理步骤如下：</p> <ol><li>事务主动方在同一个本地事务中处理业务和写消息表操作</li> <li>事务主动方通过消息中间件，通知事务被动方处理事务通知事务待消息。消息中间件可以基于 Kafka、RocketMQ 消息队列，事务主动方主动写消息到消息队列，事务消费方消费并处理消息队列中的消息。</li> <li>事务被动方通过消息中间件，通知事务主动方事务已处理的消息。</li> <li>事务主动方接收中间件的消息，更新消息表的状态为已处理。</li></ol> <p>一些必要的容错处理如下：</p> <ul><li>当 1，2 处理出错，由于还在事务主动方的本地事务中，直接回滚即可</li> <li>当3 处 理出错，由于事务主动方本地保存了消息，只需要轮询消息重新通过消息中间件发送，事务被动方重新读取消息处理业务即可。</li> <li>如果是业务上处理失败，事务被动方可以发消息给事务主动方回滚事务</li> <li>如果事务被动方已经消费了消息，事务主动方需要回滚事务的话，需要发消息通知事务主动方进行回滚事务。</li></ul> <p><strong>优点</strong></p> <ul><li>从应用设计开发的角度实现了消息数据的可靠性，消息数据的可靠性不依赖于消息中间件，弱化了对 MQ 中间件特性的依赖。</li> <li>方案轻量，容易实现。</li> <li></li></ul> <p><strong>缺点</strong></p> <ul><li>与具体的业务场景绑定，耦合性强，不可公用。</li> <li>消息数据与业务数据同库，占用业务系统资源。</li> <li>业务系统在使用关系型数据库的情况下，消息服务性能会受到关系型数据库并发性能的局限。</li></ul> <h2 id="事务消息-可靠消息事务"><a href="#事务消息-可靠消息事务" class="header-anchor">#</a> 事务消息（可靠消息事务）</h2> <div class="custom-block warning"><p class="title"></p><p>基于 MQ 的分布式事务方案其实是对本地消息表的封装，将本地消息表基于 MQ 内部，其他方面的协议基本与本地消息表一致。</p></div><p>事务消息方案整体流程和本地消息表的流程很相似，如下图：
+<img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676465679908-e9031401-7019-4d1e-93f7-62b9efc407b1.png#averageHue=%23d3d2cf&amp;clientId=udf6c8132-4122-4&amp;from=paste&amp;height=196&amp;id=u4536c118&amp;name=image.png&amp;originHeight=391&amp;originWidth=1080&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=60592&amp;status=done&amp;style=none&amp;taskId=u902d024c-f14e-4cc2-81fc-9026d233cf2&amp;title=&amp;width=540" alt="image.png">
+从上图可以看出和本地消息表方案唯一不同就是将本地消息表存在了MQ内部，而不是业务数据库中。
+那么MQ内部的处理尤为重要，下面主要基于 RocketMQ 4.3 之后的版本介绍 MQ 的分布式事务方案。</p> <p>在本地消息表方案中，保证事务主动方发写业务表数据和写消息表数据的一致性是基于数据库事务，RocketMQ 的事务消息相对于普通 MQ提供了 2PC 的提交接口，方案如下：</p> <h3 id="正常情况-事务主动方发消息"><a href="#正常情况-事务主动方发消息" class="header-anchor">#</a> 正常情况：事务主动方发消息</h3> <p><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676465724222-a16c001b-ff82-4a98-b9e5-9b1d234084a9.png#averageHue=%23484848&amp;clientId=udf6c8132-4122-4&amp;from=paste&amp;height=95&amp;id=ue7e415b7&amp;name=image.png&amp;originHeight=190&amp;originWidth=974&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=26106&amp;status=done&amp;style=none&amp;taskId=u59d3af4c-0909-43a0-af3b-d0ec7b8831d&amp;title=&amp;width=487" alt="image.png">
+这种情况下，事务主动方服务正常，没有发生故障，发消息流程如下：</p> <ul><li>发送方向 MQ 服务端(MQ Server)发送 half 消息。</li> <li>MQ Server 将消息持久化成功之后，向发送方 ack 确认消息已经发送成功。</li> <li>发送方开始执行本地事务逻辑。</li> <li>发送方根据本地事务执行结果向 MQ Server 提交二次确认（commit 或是 rollback）。</li> <li>MQ Server 收到 commit 状态则将半消息标记为可投递，订阅方最终将收到该消息；MQ Server 收到 rollback 状态则删除半消息，订阅方将不会接受该消息。</li></ul> <h3 id="异常情况-事务主动方消息恢复"><a href="#异常情况-事务主动方消息恢复" class="header-anchor">#</a> 异常情况：事务主动方消息恢复</h3> <p><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676465814944-ba5e9596-4172-48b2-8b92-0414f3b1d12c.png#averageHue=%23545454&amp;clientId=udf6c8132-4122-4&amp;from=paste&amp;height=124&amp;id=u4e413f1c&amp;name=image.png&amp;originHeight=248&amp;originWidth=1009&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=34315&amp;status=done&amp;style=none&amp;taskId=uc2e85586-ee9a-4daf-b80c-267420c6e76&amp;title=&amp;width=504.5" alt="image.png">
+在断网或者应用重启等异常情况下，图中 4 提交的二次确认超时未到达 MQ Server，此时处理逻辑如下：</p> <ul><li>MQ Server 对该消息发起消息回查。</li> <li>发送方收到消息回查后，需要检查对应消息的本地事务执行的最终结果。</li> <li>发送方根据检查得到的本地事务的最终状态再次提交二次确认。</li> <li>MQ Server 基于 commit/rollback 对消息进行投递或者删除。</li></ul> <p><strong>优点</strong>
+相比本地消息表方案，MQ 事务方案优点是：</p> <ul><li>消息数据独立存储 ，降低业务系统与消息系统之间的耦合。</li> <li>吞吐量大于使用本地消息表方案。</li></ul> <p><strong>缺点</strong></p> <ul><li>一次消息发送需要两次网络请求(half 消息 + commit/rollback 消息) 。</li> <li>业务处理服务需要实现消息状态回查接口。</li></ul> <h2 id="最大努力通知"><a href="#最大努力通知" class="header-anchor">#</a> 最大努力通知</h2> <div class="custom-block warning"><p class="title"></p><p>最大努力通知也称为定期校对，是对事务消息方案的进一步优化。它在事务主动方增加了消息校对的接口，如果事务被动方没有接收到消息，此时可以调用事务主动方提供的消息校对的接口主动获取。</p></div><p>最大努力通知的整体流程如下图：
+<img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1676466100233-ab58e0c8-54aa-4d12-aed7-d565c7cb0d54.png#averageHue=%23403d3a&amp;clientId=udf6c8132-4122-4&amp;from=paste&amp;height=207&amp;id=u050643aa&amp;name=image.png&amp;originHeight=414&amp;originWidth=1080&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=74029&amp;status=done&amp;style=none&amp;taskId=uae73cb63-d5b8-47ca-a634-477619d0841&amp;title=&amp;width=540" alt="image.png">
+在可靠消息事务中，事务主动方需要将消息发送出去，并且消息接收方成功接收，这种可靠性发送是由事务主动方保证的；</p> <p>但是最大努力通知，事务主动方尽最大努力（重试，轮询....）将事务发送给事务接收方，但是仍然存在消息接收不到，此时需要事务被动方主动调用事务主动方的消息校对接口查询业务消息并消费，这种通知的可靠性是由事务被动方保证的。</p> <p>最大努力通知适用于业务通知类型，例如微信交易的结果，就是通过最大努力通知方式通知各个商户，既有回调通知，也有交易查询接口。</p> <h2 id="参考"><a href="#参考" class="header-anchor">#</a> 参考</h2> <ol><li><a href="https://www.pdai.tech/md/arch/arch-z-transection.html" target="_blank" rel="noopener noreferrer">https://www.pdai.tech/md/arch/arch-z-transection.html<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://seata.io/zh-cn/blog/tcc-mode-design-principle.html" target="_blank" rel="noopener noreferrer">https://seata.io/zh-cn/blog/tcc-mode-design-principle.html<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://github.com/wuhuachuan712/my_data_rebuild/issues/23" target="_blank" rel="noopener noreferrer">https://github.com/wuhuachuan712/my_data_rebuild/issues/23<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://benym.cn/archives/327/" target="_blank" rel="noopener noreferrer">https://benym.cn/archives/327/<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://cloud.tencent.com/developer/article/1551891" target="_blank" rel="noopener noreferrer">https://cloud.tencent.com/developer/article/1551891<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://segmentfault.com/a/1190000040934074" target="_blank" rel="noopener noreferrer">https://segmentfault.com/a/1190000040934074<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ol></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/distributed/Distributed-lock.html" class="prev">
+          分布式锁
+        </a></span> <span class="next"><a href="/distributed/Multi-Paxos.html">
+          分布式缓存
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#分布式事务体系" class="sidebar-link reco-side-分布式事务体系" data-v-b57cc07c>分布式事务体系</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#_2pc-3pc" class="sidebar-link reco-side-_2pc-3pc" data-v-b57cc07c>2PC 3PC</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#tcc" class="sidebar-link reco-side-tcc" data-v-b57cc07c>TCC</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#tcc-三大问题" class="sidebar-link reco-side-tcc-三大问题" data-v-b57cc07c>TCC 三大问题</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#saga-事务-长事务解决方案" class="sidebar-link reco-side-saga-事务-长事务解决方案" data-v-b57cc07c>Saga 事务（长事务解决方案）</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#基于事件的方式" class="sidebar-link reco-side-基于事件的方式" data-v-b57cc07c>基于事件的方式</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#基于命令的方式" class="sidebar-link reco-side-基于命令的方式" data-v-b57cc07c>基于命令的方式</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#本地消息表" class="sidebar-link reco-side-本地消息表" data-v-b57cc07c>本地消息表</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#事务消息-可靠消息事务" class="sidebar-link reco-side-事务消息-可靠消息事务" data-v-b57cc07c>事务消息（可靠消息事务）</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#正常情况-事务主动方发消息" class="sidebar-link reco-side-正常情况-事务主动方发消息" data-v-b57cc07c>正常情况：事务主动方发消息</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#异常情况-事务主动方消息恢复" class="sidebar-link reco-side-异常情况-事务主动方消息恢复" data-v-b57cc07c>异常情况：事务主动方消息恢复</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#最大努力通知" class="sidebar-link reco-side-最大努力通知" data-v-b57cc07c>最大努力通知</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/Distributed-transaction.html#参考" class="sidebar-link reco-side-参考" data-v-b57cc07c>参考</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----></div></div>
+    <script src="/assets/js/app.6a809ed8.js" defer></script><script src="/assets/js/3.055d3e19.js" defer></script><script src="/assets/js/1.e976497e.js" defer></script><script src="/assets/js/14.6916dcc8.js" defer></script>
+  </body>
+</html>
