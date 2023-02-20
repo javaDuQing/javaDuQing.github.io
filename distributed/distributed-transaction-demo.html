@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>分布式事务实现 —— Seata | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.112c01f0.css" as="style"><link rel="preload" href="/assets/js/app.d34fbf84.js" as="script"><link rel="preload" href="/assets/js/3.055d3e19.js" as="script"><link rel="preload" href="/assets/js/1.e976497e.js" as="script"><link rel="preload" href="/assets/js/26.adb50bbf.js" as="script"><link rel="prefetch" href="/assets/js/10.6a7508d8.js"><link rel="prefetch" href="/assets/js/11.30415e0a.js"><link rel="prefetch" href="/assets/js/12.b18d44fe.js"><link rel="prefetch" href="/assets/js/13.742c1b9e.js"><link rel="prefetch" href="/assets/js/14.83c7aac6.js"><link rel="prefetch" href="/assets/js/15.0128f91c.js"><link rel="prefetch" href="/assets/js/16.d1f21703.js"><link rel="prefetch" href="/assets/js/17.e4a16b6a.js"><link rel="prefetch" href="/assets/js/18.6fcceb7d.js"><link rel="prefetch" href="/assets/js/19.02949eeb.js"><link rel="prefetch" href="/assets/js/20.f7bad9ca.js"><link rel="prefetch" href="/assets/js/21.f0eae6fd.js"><link rel="prefetch" href="/assets/js/22.649a47e5.js"><link rel="prefetch" href="/assets/js/23.7b732644.js"><link rel="prefetch" href="/assets/js/24.02e208fb.js"><link rel="prefetch" href="/assets/js/25.17c49680.js"><link rel="prefetch" href="/assets/js/27.8ea96446.js"><link rel="prefetch" href="/assets/js/28.43ba3ec9.js"><link rel="prefetch" href="/assets/js/29.5b31d07c.js"><link rel="prefetch" href="/assets/js/30.707df57d.js"><link rel="prefetch" href="/assets/js/31.8f994fef.js"><link rel="prefetch" href="/assets/js/32.f49d38ef.js"><link rel="prefetch" href="/assets/js/33.c9e4248b.js"><link rel="prefetch" href="/assets/js/34.fbc48c1b.js"><link rel="prefetch" href="/assets/js/35.c7b22f89.js"><link rel="prefetch" href="/assets/js/36.710a3375.js"><link rel="prefetch" href="/assets/js/37.e7b41ea7.js"><link rel="prefetch" href="/assets/js/38.306e64b8.js"><link rel="prefetch" href="/assets/js/39.eda64916.js"><link rel="prefetch" href="/assets/js/4.af96fb9f.js"><link rel="prefetch" href="/assets/js/40.ab273f23.js"><link rel="prefetch" href="/assets/js/41.d03bef8f.js"><link rel="prefetch" href="/assets/js/42.9d822a51.js"><link rel="prefetch" href="/assets/js/43.58cce2d2.js"><link rel="prefetch" href="/assets/js/44.9bbdfd3f.js"><link rel="prefetch" href="/assets/js/45.fcb0570a.js"><link rel="prefetch" href="/assets/js/46.48e305c8.js"><link rel="prefetch" href="/assets/js/47.a7576d62.js"><link rel="prefetch" href="/assets/js/48.3bf9f402.js"><link rel="prefetch" href="/assets/js/49.1102717e.js"><link rel="prefetch" href="/assets/js/5.2cb7b5e8.js"><link rel="prefetch" href="/assets/js/50.02875a30.js"><link rel="prefetch" href="/assets/js/51.a286bb50.js"><link rel="prefetch" href="/assets/js/52.f722926a.js"><link rel="prefetch" href="/assets/js/53.96074f10.js"><link rel="prefetch" href="/assets/js/54.97c5d38b.js"><link rel="prefetch" href="/assets/js/55.b25f7a2d.js"><link rel="prefetch" href="/assets/js/56.5433ea3c.js"><link rel="prefetch" href="/assets/js/57.0164697f.js"><link rel="prefetch" href="/assets/js/58.1e048a47.js"><link rel="prefetch" href="/assets/js/59.6f775b55.js"><link rel="prefetch" href="/assets/js/6.2eb56668.js"><link rel="prefetch" href="/assets/js/60.8ed74875.js"><link rel="prefetch" href="/assets/js/61.1f2379fe.js"><link rel="prefetch" href="/assets/js/62.73539166.js"><link rel="prefetch" href="/assets/js/63.71fff4fa.js"><link rel="prefetch" href="/assets/js/64.2dc1860f.js"><link rel="prefetch" href="/assets/js/65.eab4a2a4.js"><link rel="prefetch" href="/assets/js/66.caa4eb6b.js"><link rel="prefetch" href="/assets/js/67.197afb83.js"><link rel="prefetch" href="/assets/js/68.c664773a.js"><link rel="prefetch" href="/assets/js/69.e026fafd.js"><link rel="prefetch" href="/assets/js/7.c5c6188d.js"><link rel="prefetch" href="/assets/js/70.8155e46c.js"><link rel="prefetch" href="/assets/js/71.1a9b332b.js"><link rel="prefetch" href="/assets/js/72.79e344ef.js"><link rel="prefetch" href="/assets/js/73.085217ba.js"><link rel="prefetch" href="/assets/js/74.84ded5b4.js"><link rel="prefetch" href="/assets/js/75.ba60f901.js"><link rel="prefetch" href="/assets/js/76.b02454cf.js"><link rel="prefetch" href="/assets/js/77.cd5f7123.js"><link rel="prefetch" href="/assets/js/78.be1b3c8b.js"><link rel="prefetch" href="/assets/js/8.c08cf1ce.js"><link rel="prefetch" href="/assets/js/9.6041937f.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.112c01f0.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  RocketMq
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>68</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  RocketMq
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>分布式基础</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/distributed-base.html" class="sidebar-link">理论知识</a></li><li><a href="/distributed/consistence-classification.html" class="sidebar-link">一致性的分类</a></li><li><a href="/distributed/Consensus-alg.html" class="sidebar-link">共识算法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>共识算法（一致性算法）</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/2-stage-commit.html" class="sidebar-link">2(3)阶段提交算法</a></li><li><a href="/distributed/paxos-alg.html" class="sidebar-link">Paxos 算法</a></li><li><a href="/distributed/Multi-Paxos.html" class="sidebar-link">Multi Paxos 算法</a></li><li><a href="/distributed/Gossip.html" class="sidebar-link">Gossip 协议</a></li><li><a href="/distributed/Raft.html" class="sidebar-link">Raft 算法</a></li><li><a href="/distributed/Zab.html" class="sidebar-link">Zab 算法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>分布式解决方案</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/Distributed-lock.html" class="sidebar-link">分布式锁</a></li><li><a href="/distributed/Distributed-transaction.html" class="sidebar-link">分布式事务</a></li><li><a href="/distributed/distributed-transaction-demo.html" aria-current="page" class="active sidebar-link">分布式事务实现 —— Seata</a></li><li><a href="/distributed/distributed-cache.html" class="sidebar-link">分布式缓存一致性</a></li><li><a href="/distributed/distributed-id.html" class="sidebar-link">全局唯一ID</a></li><li><a href="/distributed/distributed-session.html" class="sidebar-link">分布式session</a></li><li><a href="/distributed/distributed-mideng.html" class="sidebar-link">幂等实现方案</a></li><li><a href="/distributed/distributed-select.html" class="sidebar-link">高性能负载均衡及算法</a></li><li><a href="/distributed/multi-database.html" class="sidebar-link">分库分表方案</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>分布式事务实现 —— Seata</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">分布式事务实现 —— Seata</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/16</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/distributed/distributed-transaction-demo.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><p><a href="https://seata.io/zh-cn/docs/user/quickstart.html" target="_blank" rel="noopener noreferrer">官方示例<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <h2 id="快速开始"><a href="#快速开始" class="header-anchor">#</a> 快速开始</h2> <h3 id="业务场景"><a href="#业务场景" class="header-anchor">#</a> 业务场景</h3> <h4 id="用例"><a href="#用例" class="header-anchor">#</a> 用例</h4> <p>用户购买商品的业务逻辑。整个业务逻辑由3个微服务提供支持：</p> <ul><li>仓储服务：对给定的商品扣除仓储数量</li> <li>订单服务：根据采购需求创建订单</li> <li>帐户服务：从用户帐户中扣除余额</li></ul> <h4 id="架构图"><a href="#架构图" class="header-anchor">#</a> 架构图</h4> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1618233335700-1e053100-61be-4c9b-a34e-ef3b1236aa5d.png#align=left&amp;display=inline&amp;height=940&amp;name=image.png&amp;originHeight=940&amp;originWidth=1732&amp;size=77218&amp;status=done&amp;style=none&amp;width=1732" alt="image.png"></p> <h4 id="仓储服务"><a href="#仓储服务" class="header-anchor">#</a> 仓储服务</h4> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">StorageService</span> <span class="token punctuation">{</span>
+
+    <span class="token comment">/**
+     * 扣除存储数量
+     */</span>
+    <span class="token keyword">void</span> <span class="token function">deduct</span><span class="token punctuation">(</span><span class="token class-name">String</span> commodityCode<span class="token punctuation">,</span> <span class="token keyword">int</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="订单服务"><a href="#订单服务" class="header-anchor">#</a> 订单服务</h4> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">OrderService</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * 创建订单
+     */</span>
+    <span class="token class-name">Order</span> <span class="token function">create</span><span class="token punctuation">(</span><span class="token class-name">String</span> userId<span class="token punctuation">,</span> <span class="token class-name">String</span> commodityCode<span class="token punctuation">,</span> <span class="token keyword">int</span> orderCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="帐户服务"><a href="#帐户服务" class="header-anchor">#</a> 帐户服务</h4> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">AccountService</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * 从用户账户中借出
+     */</span>
+    <span class="token keyword">void</span> <span class="token function">debit</span><span class="token punctuation">(</span><span class="token class-name">String</span> userId<span class="token punctuation">,</span> <span class="token keyword">int</span> money<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="主要业务逻辑"><a href="#主要业务逻辑" class="header-anchor">#</a> 主要业务逻辑</h4> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BusinessServiceImpl</span> <span class="token keyword">implements</span> <span class="token class-name">BusinessService</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token class-name">StorageService</span> storageService<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">OrderService</span> orderService<span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * 用户购买
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">purchase</span><span class="token punctuation">(</span><span class="token class-name">String</span> userId<span class="token punctuation">,</span> <span class="token class-name">String</span> commodityCode<span class="token punctuation">,</span> <span class="token keyword">int</span> orderCount<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        storageService<span class="token punctuation">.</span><span class="token function">deduct</span><span class="token punctuation">(</span>commodityCode<span class="token punctuation">,</span> orderCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        orderService<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>userId<span class="token punctuation">,</span> commodityCode<span class="token punctuation">,</span> orderCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">OrderServiceImpl</span> <span class="token keyword">implements</span> <span class="token class-name">OrderService</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token class-name">OrderDAO</span> orderDAO<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">AccountService</span> accountService<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token class-name">Order</span> <span class="token function">create</span><span class="token punctuation">(</span><span class="token class-name">String</span> userId<span class="token punctuation">,</span> <span class="token class-name">String</span> commodityCode<span class="token punctuation">,</span> <span class="token keyword">int</span> orderCount<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">int</span> orderMoney <span class="token operator">=</span> <span class="token function">calculate</span><span class="token punctuation">(</span>commodityCode<span class="token punctuation">,</span> orderCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        accountService<span class="token punctuation">.</span><span class="token function">debit</span><span class="token punctuation">(</span>userId<span class="token punctuation">,</span> orderMoney<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Order</span> order <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Order</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        order<span class="token punctuation">.</span>userId <span class="token operator">=</span> userId<span class="token punctuation">;</span>
+        order<span class="token punctuation">.</span>commodityCode <span class="token operator">=</span> commodityCode<span class="token punctuation">;</span>
+        order<span class="token punctuation">.</span>count <span class="token operator">=</span> orderCount<span class="token punctuation">;</span>
+        order<span class="token punctuation">.</span>money <span class="token operator">=</span> orderMoney<span class="token punctuation">;</span>
+        <span class="token comment">// INSERT INTO orders ...</span>
+        <span class="token keyword">return</span> orderDAO<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span>order<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="seata-的分布式交易解决方案"><a href="#seata-的分布式交易解决方案" class="header-anchor">#</a> SEATA 的分布式交易解决方案</h3> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1618233513405-c5be216c-8f20-40fd-966d-294c51b8f90a.png#align=left&amp;display=inline&amp;height=473&amp;name=image.png&amp;originHeight=473&amp;originWidth=868&amp;size=59723&amp;status=done&amp;style=none&amp;width=868" alt="image.png">
+我们只需要使用一个 @GlobalTransactional 注解在业务方法上：</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token annotation punctuation">@GlobalTransactional</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">purchase</span><span class="token punctuation">(</span><span class="token class-name">String</span> userId<span class="token punctuation">,</span> <span class="token class-name">String</span> commodityCode<span class="token punctuation">,</span> <span class="token keyword">int</span> orderCount<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="具体示例"><a href="#具体示例" class="header-anchor">#</a> 具体示例</h2> <h3 id="客户端"><a href="#客户端" class="header-anchor">#</a> 客户端</h3> <h4 id="建立数据库"><a href="#建立数据库" class="header-anchor">#</a> 建立数据库</h4> <p>要求：具有InnoDB引擎的MySQL。
+<strong>注意：</strong> 实际上，在示例用例中，这3个服务应该有3个数据库。 但是，为了简单起见，我们只能创建一个数据库</p> <ol><li>dubbo-account-service.xml</li> <li>dubbo-order-service.xml</li> <li>dubbo-storage-service.xml</li></ol> <div class="language-xml extra-class"><pre class="language-xml"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>url<span class="token punctuation">&quot;</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>jdbc:mysql://x.x.x.x:3306/xxx<span class="token punctuation">&quot;</span></span> <span class="token punctuation">/&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>username<span class="token punctuation">&quot;</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>xxx<span class="token punctuation">&quot;</span></span> <span class="token punctuation">/&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>password<span class="token punctuation">&quot;</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>xxx<span class="token punctuation">&quot;</span></span> <span class="token punctuation">/&gt;</span></span>
+</code></pre></div><h4 id="创建-undo-log-表"><a href="#创建-undo-log-表" class="header-anchor">#</a> 创建 UNDO_LOG 表</h4> <p>SEATA AT 模式需要 UNDO_LOG 表</p> <div class="language-sql extra-class"><pre class="language-sql"><code><span class="token comment">-- 注意此处0.3.0+ 增加唯一索引 ux_undo_log</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token identifier"><span class="token punctuation">`</span>undo_log<span class="token punctuation">`</span></span> <span class="token punctuation">(</span>
+  <span class="token identifier"><span class="token punctuation">`</span>id<span class="token punctuation">`</span></span> <span class="token keyword">bigint</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>branch_id<span class="token punctuation">`</span></span> <span class="token keyword">bigint</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>xid<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>context<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>rollback_info<span class="token punctuation">`</span></span> <span class="token keyword">longblob</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>log_status<span class="token punctuation">`</span></span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>log_created<span class="token punctuation">`</span></span> <span class="token keyword">datetime</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>log_modified<span class="token punctuation">`</span></span> <span class="token keyword">datetime</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>ext<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>id<span class="token punctuation">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">UNIQUE</span> <span class="token keyword">KEY</span> <span class="token identifier"><span class="token punctuation">`</span>ux_undo_log<span class="token punctuation">`</span></span> <span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>xid<span class="token punctuation">`</span></span><span class="token punctuation">,</span><span class="token identifier"><span class="token punctuation">`</span>branch_id<span class="token punctuation">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">InnoDB</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token operator">=</span><span class="token number">1</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span><span class="token operator">=</span>utf8<span class="token punctuation">;</span>
+</code></pre></div><h4 id="为示例业务创建表"><a href="#为示例业务创建表" class="header-anchor">#</a> 为示例业务创建表</h4> <div class="language-sql extra-class"><pre class="language-sql"><code><span class="token keyword">DROP</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> <span class="token identifier"><span class="token punctuation">`</span>storage_tbl<span class="token punctuation">`</span></span><span class="token punctuation">;</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token identifier"><span class="token punctuation">`</span>storage_tbl<span class="token punctuation">`</span></span> <span class="token punctuation">(</span>
+  <span class="token identifier"><span class="token punctuation">`</span>id<span class="token punctuation">`</span></span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>commodity_code<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>count<span class="token punctuation">`</span></span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>id<span class="token punctuation">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">UNIQUE</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>commodity_code<span class="token punctuation">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">InnoDB</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span><span class="token operator">=</span>utf8<span class="token punctuation">;</span>
+
+<span class="token keyword">DROP</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> <span class="token identifier"><span class="token punctuation">`</span>order_tbl<span class="token punctuation">`</span></span><span class="token punctuation">;</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token identifier"><span class="token punctuation">`</span>order_tbl<span class="token punctuation">`</span></span> <span class="token punctuation">(</span>
+  <span class="token identifier"><span class="token punctuation">`</span>id<span class="token punctuation">`</span></span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>user_id<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>commodity_code<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>count<span class="token punctuation">`</span></span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>money<span class="token punctuation">`</span></span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>id<span class="token punctuation">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">InnoDB</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span><span class="token operator">=</span>utf8<span class="token punctuation">;</span>
+
+<span class="token keyword">DROP</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token keyword">EXISTS</span> <span class="token identifier"><span class="token punctuation">`</span>account_tbl<span class="token punctuation">`</span></span><span class="token punctuation">;</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token identifier"><span class="token punctuation">`</span>account_tbl<span class="token punctuation">`</span></span> <span class="token punctuation">(</span>
+  <span class="token identifier"><span class="token punctuation">`</span>id<span class="token punctuation">`</span></span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>user_id<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">255</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>money<span class="token punctuation">`</span></span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>id<span class="token punctuation">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">InnoDB</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span><span class="token operator">=</span>utf8<span class="token punctuation">;</span>
+</code></pre></div><h3 id="服务端"><a href="#服务端" class="header-anchor">#</a> 服务端</h3> <p>从 <a href="https://github.com/seata/seata/releases" target="_blank" rel="noopener noreferrer">https://github.com/seata/seata/releases<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>，下载服务器软件包，将其解压缩</p> <h4 id="服务端配置"><a href="#服务端配置" class="header-anchor">#</a> 服务端配置</h4> <p>修改配置文件：seata/conf/file.conf，mode改成“db”模式：</p> <div class="language-json extra-class"><pre class="language-json"><code>store <span class="token punctuation">{</span>
+  #store修改点<span class="token number">5</span>个  其他不要动
+  ## store mode<span class="token operator">:</span> file、db
+  #db储存   修改单<span class="token number">1</span>
+  mode = <span class="token string">&quot;db&quot;</span>
+  
+  ## file store
+  <span class="token comment">/**file {
+    dir = &quot;sessionStore&quot;
+    max-branch-session-size = 16384
+    # globe session size , if exceeded throws exceptions
+    max-global-session-size = 512
+    # file buffer size , if exceeded allocate new buffer
+    file-write-buffer-cache-size = 16384
+    # when recover batch read size
+    session.reload.read_size = 100
+    # async, sync
+    flush-disk-mode = async
+  }**/</span>
+  
+  ## database store
+  db <span class="token punctuation">{</span>
+        #修改点<span class="token number">2</span>
+        datasource = <span class="token string">&quot;druid&quot;</span>
+        ## mysql/oracle/h2/oceanbase etc.
+        db-type = <span class="token string">&quot;mysql&quot;</span>
+        driver-class-name = <span class="token string">&quot;com.mysql.jdbc.Driver&quot;</span>
+        #修改点<span class="token number">3</span>   上面创建数据库的路径地址
+        url = <span class="token string">&quot;jdbc:mysql://127.0.0.1:3306/seata&quot;</span>   
+        #修改单<span class="token number">4</span>
+        user = <span class="token string">&quot;root&quot;</span>
+        #修改点<span class="token number">5</span>
+        password = <span class="token string">&quot;123456&quot;</span>
+        min-conn = <span class="token number">1</span>
+        max-conn = <span class="token number">3</span>
+        global.table = <span class="token string">&quot;global_table&quot;</span>
+        branch.table = <span class="token string">&quot;branch_table&quot;</span>
+        lock-table = <span class="token string">&quot;lock_table&quot;</span>
+        query-limit = <span class="token number">100</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>使用db模式存储事务日志，所以，我们要创建三张表：global_table，branch_table，lock_table</p> <div class="language-sql extra-class"><pre class="language-sql"><code><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token identifier"><span class="token punctuation">`</span>global_table<span class="token punctuation">`</span></span> <span class="token punctuation">(</span>
+  <span class="token identifier"><span class="token punctuation">`</span>xid<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>transaction_id<span class="token punctuation">`</span></span> <span class="token keyword">bigint</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>status<span class="token punctuation">`</span></span> <span class="token keyword">tinyint</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>application_id<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">64</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>transaction_service_group<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">64</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>transaction_name<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">64</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>timeout<span class="token punctuation">`</span></span> <span class="token keyword">int</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>begin_time<span class="token punctuation">`</span></span> <span class="token keyword">bigint</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>application_data<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">2000</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>gmt_create<span class="token punctuation">`</span></span> <span class="token keyword">datetime</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>gmt_modified<span class="token punctuation">`</span></span> <span class="token keyword">datetime</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>xid<span class="token punctuation">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">KEY</span> <span class="token identifier"><span class="token punctuation">`</span>idx_gmt_modified_status<span class="token punctuation">`</span></span> <span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>gmt_modified<span class="token punctuation">`</span></span><span class="token punctuation">,</span><span class="token identifier"><span class="token punctuation">`</span>status<span class="token punctuation">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">KEY</span> <span class="token identifier"><span class="token punctuation">`</span>idx_transaction_id<span class="token punctuation">`</span></span> <span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>transaction_id<span class="token punctuation">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">InnoDB</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span><span class="token operator">=</span>utf8mb4<span class="token punctuation">;</span>
+
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token identifier"><span class="token punctuation">`</span>branch_table<span class="token punctuation">`</span></span> <span class="token punctuation">(</span>
+  <span class="token identifier"><span class="token punctuation">`</span>branch_id<span class="token punctuation">`</span></span> <span class="token keyword">bigint</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>xid<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>transaction_id<span class="token punctuation">`</span></span> <span class="token keyword">bigint</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>resource_group_id<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>resource_id<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>lock_key<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>branch_type<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>status<span class="token punctuation">`</span></span> <span class="token keyword">tinyint</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>client_id<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">64</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>application_data<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">2000</span><span class="token punctuation">)</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>gmt_create<span class="token punctuation">`</span></span> <span class="token keyword">datetime</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>gmt_modified<span class="token punctuation">`</span></span> <span class="token keyword">datetime</span> <span class="token keyword">DEFAULT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>branch_id<span class="token punctuation">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">KEY</span> <span class="token identifier"><span class="token punctuation">`</span>idx_xid<span class="token punctuation">`</span></span> <span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>xid<span class="token punctuation">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">InnoDB</span> <span class="token keyword">DEFAULT</span> <span class="token keyword">CHARSET</span><span class="token operator">=</span>utf8mb4<span class="token punctuation">;</span>
+
+<span class="token keyword">create</span> <span class="token keyword">table</span> <span class="token identifier"><span class="token punctuation">`</span>lock_table<span class="token punctuation">`</span></span> <span class="token punctuation">(</span>
+  <span class="token identifier"><span class="token punctuation">`</span>row_key<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span> <span class="token operator">not</span> <span class="token boolean">null</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>xid<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">96</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>transaction_id<span class="token punctuation">`</span></span> long <span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>branch_id<span class="token punctuation">`</span></span> long<span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>resource_id<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">)</span> <span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>table_name<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span> <span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>pk<span class="token punctuation">`</span></span> <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span> <span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>gmt_create<span class="token punctuation">`</span></span> <span class="token keyword">datetime</span> <span class="token punctuation">,</span>
+  <span class="token identifier"><span class="token punctuation">`</span>gmt_modified<span class="token punctuation">`</span></span> <span class="token keyword">datetime</span><span class="token punctuation">,</span>
+  <span class="token keyword">primary</span> <span class="token keyword">key</span><span class="token punctuation">(</span><span class="token identifier"><span class="token punctuation">`</span>row_key<span class="token punctuation">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h4 id="启动seata服务端"><a href="#启动seata服务端" class="header-anchor">#</a> 启动Seata服务端</h4> <p>seata-server.sh</p> <h2 id="配置注册中心与配置中心"><a href="#配置注册中心与配置中心" class="header-anchor">#</a> 配置注册中心与配置中心</h2> <div class="language-json extra-class"><pre class="language-json"><code># 注册中心配置
+registry <span class="token punctuation">{</span>
+	  # file nacos eureka redis zk consul etcd3 sofa
+  	type = <span class="token string">&quot;nacos&quot;</span>
+  
+  	nacos <span class="token punctuation">{</span>
+			application = <span class="token string">&quot;seata-server&quot;</span>
+  		serverAddr = <span class="token string">&quot;localhost&quot;</span>
+  		namespace = <span class="token string">&quot;&quot;</span>
+  		cluster = <span class="token string">&quot;default&quot;</span>
+  		username = <span class="token string">&quot;&quot;</span>
+  		password = <span class="token string">&quot;&quot;</span>
+		<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+# 其他配置
+config <span class="token punctuation">{</span>
+		type = <span class="token string">&quot;nacos&quot;</span>
+  	
+  	nacos <span class="token punctuation">{</span>
+			serverAddr = <span class="token string">&quot;localhost&quot;</span>
+  		namespace = <span class="token string">&quot;&quot;</span>
+  		group = <span class="token string">&quot;SEATA_GROUP&quot;</span>
+  		username = <span class="token string">&quot;&quot;</span>
+  		password = <span class="token string">&quot;&quot;</span>
+		<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>注册中心支持：file、nacos、eureka、redis、zk等等
+其中nacos也可以用做配置中心，当注册中心使用nacos时，可以把file.conf的配置放到nacos中，就不需要file.conf了
+然后将其他全部的配置也导入nacos，例如：</p> <div class="language-json extra-class"><pre class="language-json"><code>store.db.datasource=druid
+store.db.db-type=mysql
+store.db.driver-class-name=com.mysql.jdbc.Driver
+...
+</code></pre></div><h2 id="at-模式"><a href="#at-模式" class="header-anchor">#</a> AT 模式</h2> <div class="language-java extra-class"><pre class="language-java"><code><span class="token annotation punctuation">@GlobalTransactional</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">purchase</span><span class="token punctuation">(</span><span class="token class-name">String</span> userId<span class="token punctuation">,</span> <span class="token class-name">String</span> commodityCode<span class="token punctuation">,</span> <span class="token keyword">int</span> orderCount<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 库存扣减</span>
+    storageService<span class="token punctuation">.</span><span class="token function">deduct</span><span class="token punctuation">(</span>commodityCode<span class="token punctuation">,</span> orderCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 金额扣减</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token comment">// 生成订单</span>
+    orderService<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>userId<span class="token punctuation">,</span> commodityCode<span class="token punctuation">,</span> orderCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="服务端3张表的作用"><a href="#服务端3张表的作用" class="header-anchor">#</a> 服务端3张表的作用</h3> <ul><li>global_table：当执行到有@GlobalTransactional注解的方法时，会向global_table插入一条数据</li> <li>branch_table：库存扣减、金额扣减、生成订单这些参与者，会分别插入一条记录到branch_table</li> <li>lock_table：如果id为1的数据正在参与分布式事务，还没有结束，会存在该表中；别的事务就不能操作这一条数据</li></ul> <h3 id="at和tcc的区别"><a href="#at和tcc的区别" class="header-anchor">#</a> AT和TCC的区别</h3> <p>都是基于两阶段提交，AT模式</p> <ul><li>一阶段 prepare 行为：在本地事务中，一并提交业务数据更新和相应回滚日志记录</li> <li>二阶段 commit 行为：马上成功结束，自动异步批量清理回滚日志</li> <li>二阶段 rollback 行为：通过回滚日志，自动生成补偿操作，完成数据回滚</li></ul> <p>相应的，TCC 模式，不依赖于底层数据资源的事务支持：</p> <ul><li><p>一阶段 prepare 行为：调用自定义的prepare逻辑</p></li> <li><p>二阶段 commit 行为：调用自定义的commit逻辑</p></li> <li><p>二阶段 rollback 行为：调用自定义的rollback逻辑</p> <table><thead><tr><th></th> <th><strong>AT</strong></th> <th><strong>TCC</strong></th></tr></thead> <tbody><tr><td>全局锁</td> <td>需要</td> <td>不需要</td></tr> <tr><td>回滚日志</td> <td>需要</td> <td>不需要</td></tr> <tr><td>commit/cancel阶段代码实现</td> <td>不需要</td> <td>需要</td></tr> <tr><td>是否需要开发者解决悬挂和空回滚问题</td> <td>不需要</td> <td>需要</td></tr> <tr><td>性能</td> <td>低（需要全局锁导致）</td> <td>高（无锁）</td></tr></tbody></table></li></ul> <h3 id="空回滚与事务悬挂"><a href="#空回滚与事务悬挂" class="header-anchor">#</a> 空回滚与事务悬挂</h3> <p>空回滚：pre阶段超时，此时rollback</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/375413/1618367071755-25e64c51-8f2b-40d4-a55b-a7a29564c84c.jpeg#height=391&amp;id=ia1kq&amp;name=%E7%A8%BF%E5%AE%9A%E8%AE%BE%E8%AE%A1-1.jpg&amp;originHeight=391&amp;originWidth=640&amp;originalType=binary&amp;size=54243&amp;status=done&amp;style=none&amp;width=640" alt="稿定设计-1.jpg"></p> <p>事务悬挂：pre延时，rollback执行后，pre到达，然后执行了pre</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/375413/1618367080443-1419ea74-fcc4-4244-9c30-b10dce26268b.jpeg#height=375&amp;id=WlnxQ&amp;name=%E7%A8%BF%E5%AE%9A%E8%AE%BE%E8%AE%A1-2.jpg&amp;originHeight=375&amp;originWidth=640&amp;originalType=binary&amp;size=50042&amp;status=done&amp;style=none&amp;width=640" alt="稿定设计-2.jpg"></p> <h3 id="第一阶段流程"><a href="#第一阶段流程" class="header-anchor">#</a> 第一阶段流程</h3> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1618578198240-d069609f-a444-4b21-aa80-e5a753199940.png#clientId=ufd8d7d6e-4cc7-4&amp;from=paste&amp;height=824&amp;id=u2cd2419f&amp;originHeight=824&amp;originWidth=1454&amp;originalType=binary&amp;size=206810&amp;status=done&amp;style=none&amp;taskId=uaa9029b0-6741-4b18-995b-5e1a1df95e6&amp;width=1454" alt=""></p> <h3 id="第二阶段流程"><a href="#第二阶段流程" class="header-anchor">#</a> 第二阶段流程</h3> <h4 id="提交流程"><a href="#提交流程" class="header-anchor">#</a> 提交流程</h4> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1618642131317-fdfbb861-8b38-4453-88e8-f7b2a20f3b2f.png#clientId=udb2af22a-ed0d-4&amp;from=paste&amp;height=680&amp;id=u420734c3&amp;originHeight=680&amp;originWidth=677&amp;originalType=binary&amp;size=108367&amp;status=done&amp;style=none&amp;taskId=u314ff5a6-e6cc-4986-8aad-679d025c51f&amp;width=677" alt=""></p> <p>向seata服务器发送全局提交请求之后，如果发现有一个TCC类型分支事务，同步提交；
+branchTable表里用branch_type字段区分不同类型的事务</p> <h4 id="回滚流程"><a href="#回滚流程" class="header-anchor">#</a> 回滚流程</h4> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1618638073224-ba5a5772-58fd-48b5-ba01-7cb810aa2631.png#clientId=u493b0210-b259-4&amp;from=paste&amp;height=317&amp;id=u5e0554dd&amp;originHeight=317&amp;originWidth=640&amp;originalType=binary&amp;size=46948&amp;status=done&amp;style=none&amp;taskId=u2d808a9c-f193-43d3-b1e2-fdaac20cd17&amp;width=640" alt=""></p> <p>回滚流程没有异步</p> <h3 id="前置镜像和后置镜像的使用"><a href="#前置镜像和后置镜像的使用" class="header-anchor">#</a> 前置镜像和后置镜像的使用</h3> <ul><li>修改前镜像等于修改后镜像，说明数据没有变更，无须回滚</li> <li>当前镜像等于修改后镜像，则说明当前数据需要进行回滚</li> <li>当前镜像不等于修改后镜像且当前镜像等于修改前镜像，说明数据无变更，无须回滚</li> <li>当前镜像不等于修改后镜像，且不等于修改前镜像，脏数据，这种情况要看用户配置要不要回滚</li></ul> <table><thead><tr><th></th> <th>前置镜像</th> <th>后置镜像</th> <th>反向sql</th></tr></thead> <tbody><tr><td>insert</td> <td>无</td> <td>有</td> <td>delete</td></tr> <tr><td>delete</td> <td>有</td> <td>无</td> <td>insert</td></tr> <tr><td>update</td> <td>有</td> <td>有</td> <td>update</td></tr></tbody></table> <h4 id="undolog"><a href="#undolog" class="header-anchor">#</a> UndoLog</h4> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1618638787685-f46a7080-4597-434e-b93c-f09182a63acb.png#clientId=u27dbf6aa-c12a-4&amp;from=drop&amp;id=u25dfee51&amp;originHeight=365&amp;originWidth=767&amp;originalType=binary&amp;size=202905&amp;status=done&amp;style=none&amp;taskId=ue698f920-db2b-4711-a787-8fba2f68162" alt=""></p> <h4 id="角色"><a href="#角色" class="header-anchor">#</a> 角色</h4> <ul><li>TC (Transaction Coordinator) - 事务协调者：维护全局和分支事务的状态，驱动全局事务提交或回滚</li> <li>TM (Transaction Manager) - 事务管理器：定义全局事务的范围：开始全局事务、提交或回滚全局事务</li> <li>RM (Resource Manager) - 资源管理器：管理分支事务处理的资源，与TC交谈以注册分支事务和报告分支事务的状态，并驱动分支事务提交或回滚</li></ul> <h3 id="事务隔离问题"><a href="#事务隔离问题" class="header-anchor">#</a> 事务隔离问题</h3> <h4 id="写隔离"><a href="#写隔离" class="header-anchor">#</a> 写隔离</h4> <ul><li>一阶段本地事务提交前，需要确保先拿到全局锁（@GlobalLock）</li> <li>拿不到全局锁，不能提交本地事务</li> <li>拿全局锁的尝试被限制在一定范围内（例如次数），超出范围将放弃，并回滚本地事务，释放本地锁</li></ul> <p>@GlobalTransactional 标注的方法执行时，会先判断全局锁lock_table中是否存在，如果存在则失败，如果成功会把要修改数据记录到lock_table中，相当于这个数据的全局锁</p> <p>比如商品增加库存，它不是一个分布式事务，不需要一个全局的事务，就可以在方法上加上@GlobalLock注解，那么在方法执行时就会判断数据是否在lock_table中被锁着</p> <h4 id="读隔离"><a href="#读隔离" class="header-anchor">#</a> 读隔离</h4> <p>Seata（AT 模式）的默认全局隔离级别是<strong>读未提交（Read Uncommitted）</strong>：第一阶段分支事务提交的数据别人都可以看到
+如果应用在特定场景下，必需要求全局的读已提交，目前 Seata 的方式是通过 SELECT FOR UPDATE 语句的代理：SELECT FOR UPDATE语句的执行会申请全局锁，如果全局锁被其他事务持有，查询是被 block 住的，直到全局锁拿到</p> <p><em>出于总体性能上的考虑，Seata 目前的方案并没有对所有 SELECT 语句都进行代理，仅针对 FOR UPDATE 的 SELECT 语句</em></p> <p>实现读已提交的方式：使用 SELECT FOR UPDATE 语句的同时，方法上要加上 @GlobalLock 注解</p> <h2 id="xa-模式"><a href="#xa-模式" class="header-anchor">#</a> XA 模式</h2> <h3 id="传统-xa"><a href="#传统-xa" class="header-anchor">#</a> 传统 XA</h3> <p>XA 是数据库厂商实现的两阶段提交的一个强一致的协议（也就是对 2PC 规范的落地）；换句话说，XA模式也就是基于事务资源（数据库）本身提供的XA规范和协议的支持，它的核心价值：</p> <ul><li>从场景上看，满足全局一致性的需求</li> <li>从应用上看，保持与AT模式一样的业务无侵入</li> <li>基于数据库，对语言无要求
+<table><thead><tr><th><strong>问题</strong></th> <th><strong>解释</strong></th> <th><strong>表现</strong></th></tr></thead> <tbody><tr><td>数据锁定</td> <td>数据在整个事务处理过程结束前，都被锁定，读写都按隔离级别的定义约束起来（不会有AT的读隔离问题）</td> <td>增加单个事务 RT（RequestTime请求耗时） 并发事务数据的锁冲突概率高</td></tr> <tr><td>协议阻塞</td> <td>XA prepare 后，分支事务进入阻塞阶段，收到 XA commit 或 XA rollback 前必须阻塞等待</td> <td>数据库连接长时间占用，可能有些情况会导致数据库连接无法释放</td></tr></tbody></table></li></ul> <h3 id="seata-xa-模式"><a href="#seata-xa-模式" class="header-anchor">#</a> Seata XA 模式</h3> <p><em>该模式的前提是：需要支持 XA 事务的数据库</em> <img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1618644214367-8b743293-7b77-43eb-9bc4-23e39513fd0d.png#clientId=ue880dc9d-e96c-4&amp;from=paste&amp;height=752&amp;id=ua32370c4&amp;originHeight=752&amp;originWidth=1113&amp;originalType=binary&amp;size=68877&amp;status=done&amp;style=none&amp;taskId=u36381ecd-59b7-4e8f-8f34-6c3c2f3e3fe&amp;width=1113" alt="">
+它分成以下两个阶段</p> <ul><li>执行阶段（Execute）：XA start/XA end/XA prepare + 注册分支事务</li> <li>完成阶段（Finish）：XA commit/XA rollback</li></ul> <p>处理流程就非常简单了：</p> <ul><li>TM 向 TC 开启全局事务</li> <li>每个分支事务注册到 TC</li> <li>各个 RM 中的分支事务自己去处理（执行SQL），向 TC 上报事务状态</li> <li>最后 TC 再统一调用 commit 或 rollback 就行了</li></ul> <h2 id="tcc-模式"><a href="#tcc-模式" class="header-anchor">#</a> TCC 模式</h2> <p>主事务和AT模式一样，加@GlobalTransactional注解
+分支事务要加@TwoPhaseBusinessAction，注解被拦截到之后，注册分支事务</p> <div class="language-java extra-class"><pre class="language-java"><code>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">TccAction</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@TwoPhaseBusinessAction</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">&quot;yourTccActionName&quot;</span><span class="token punctuation">,</span> 
+                            commitMethod <span class="token operator">=</span> <span class="token string">&quot;confirm&quot;</span><span class="token punctuation">,</span> 
+                            rollbackMethod <span class="token operator">=</span> <span class="token string">&quot;cancel&quot;</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token keyword">try</span><span class="token punctuation">(</span><span class="token class-name">BusinessActionContext</span> businessActionContext<span class="token punctuation">,</span> <span class="token keyword">int</span> a<span class="token punctuation">,</span> <span class="token keyword">int</span> b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">confirm</span><span class="token punctuation">(</span><span class="token class-name">BusinessActionContext</span> businessActionContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">cancel</span><span class="token punctuation">(</span><span class="token class-name">BusinessActionContext</span> businessActionContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1618645925246-7d3fc795-34b0-4f53-904e-a8f477c5b407.png#clientId=u5503b70a-d340-4&amp;from=paste&amp;height=482&amp;id=ub1883e61&amp;originHeight=482&amp;originWidth=853&amp;originalType=binary&amp;size=34811&amp;status=done&amp;style=none&amp;taskId=uf4d282ec-c0e1-4903-a90a-3f810a1f1d5&amp;width=853" alt=""></p> <h2 id="saga-ˈsɑːɡə-模式"><a href="#saga-ˈsɑːɡə-模式" class="header-anchor">#</a> SAGA [ˈsɑːɡə] 模式</h2> <p><a href="https://seata.io/zh-cn/docs/user/saga.html" target="_blank" rel="noopener noreferrer">官方例子<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/distributed/Distributed-transaction.html" class="prev">
+          分布式事务
+        </a></span> <span class="next"><a href="/distributed/distributed-cache.html">
+          分布式缓存一致性
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#快速开始" class="sidebar-link reco-side-快速开始" data-v-b57cc07c>快速开始</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#业务场景" class="sidebar-link reco-side-业务场景" data-v-b57cc07c>业务场景</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#seata-的分布式交易解决方案" class="sidebar-link reco-side-seata-的分布式交易解决方案" data-v-b57cc07c>SEATA 的分布式交易解决方案</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#具体示例" class="sidebar-link reco-side-具体示例" data-v-b57cc07c>具体示例</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#客户端" class="sidebar-link reco-side-客户端" data-v-b57cc07c>客户端</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#服务端" class="sidebar-link reco-side-服务端" data-v-b57cc07c>服务端</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#配置注册中心与配置中心" class="sidebar-link reco-side-配置注册中心与配置中心" data-v-b57cc07c>配置注册中心与配置中心</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#at-模式" class="sidebar-link reco-side-at-模式" data-v-b57cc07c>AT 模式</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#服务端3张表的作用" class="sidebar-link reco-side-服务端3张表的作用" data-v-b57cc07c>服务端3张表的作用</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#at和tcc的区别" class="sidebar-link reco-side-at和tcc的区别" data-v-b57cc07c>AT和TCC的区别</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#空回滚与事务悬挂" class="sidebar-link reco-side-空回滚与事务悬挂" data-v-b57cc07c>空回滚与事务悬挂</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#第一阶段流程" class="sidebar-link reco-side-第一阶段流程" data-v-b57cc07c>第一阶段流程</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#第二阶段流程" class="sidebar-link reco-side-第二阶段流程" data-v-b57cc07c>第二阶段流程</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#前置镜像和后置镜像的使用" class="sidebar-link reco-side-前置镜像和后置镜像的使用" data-v-b57cc07c>前置镜像和后置镜像的使用</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#事务隔离问题" class="sidebar-link reco-side-事务隔离问题" data-v-b57cc07c>事务隔离问题</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#xa-模式" class="sidebar-link reco-side-xa-模式" data-v-b57cc07c>XA 模式</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#传统-xa" class="sidebar-link reco-side-传统-xa" data-v-b57cc07c>传统 XA</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#seata-xa-模式" class="sidebar-link reco-side-seata-xa-模式" data-v-b57cc07c>Seata XA 模式</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#tcc-模式" class="sidebar-link reco-side-tcc-模式" data-v-b57cc07c>TCC 模式</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-transaction-demo.html#saga-ˈsɑːɡə-模式" class="sidebar-link reco-side-saga-ˈsɑːɡə-模式" data-v-b57cc07c>SAGA [ˈsɑːɡə] 模式</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----></div></div>
+    <script src="/assets/js/app.d34fbf84.js" defer></script><script src="/assets/js/3.055d3e19.js" defer></script><script src="/assets/js/1.e976497e.js" defer></script><script src="/assets/js/26.adb50bbf.js" defer></script>
+  </body>
+</html>

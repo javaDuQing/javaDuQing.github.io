@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>分布式缓存一致性 | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.112c01f0.css" as="style"><link rel="preload" href="/assets/js/app.d34fbf84.js" as="script"><link rel="preload" href="/assets/js/3.055d3e19.js" as="script"><link rel="preload" href="/assets/js/1.e976497e.js" as="script"><link rel="preload" href="/assets/js/21.f0eae6fd.js" as="script"><link rel="prefetch" href="/assets/js/10.6a7508d8.js"><link rel="prefetch" href="/assets/js/11.30415e0a.js"><link rel="prefetch" href="/assets/js/12.b18d44fe.js"><link rel="prefetch" href="/assets/js/13.742c1b9e.js"><link rel="prefetch" href="/assets/js/14.83c7aac6.js"><link rel="prefetch" href="/assets/js/15.0128f91c.js"><link rel="prefetch" href="/assets/js/16.d1f21703.js"><link rel="prefetch" href="/assets/js/17.e4a16b6a.js"><link rel="prefetch" href="/assets/js/18.6fcceb7d.js"><link rel="prefetch" href="/assets/js/19.02949eeb.js"><link rel="prefetch" href="/assets/js/20.f7bad9ca.js"><link rel="prefetch" href="/assets/js/22.649a47e5.js"><link rel="prefetch" href="/assets/js/23.7b732644.js"><link rel="prefetch" href="/assets/js/24.02e208fb.js"><link rel="prefetch" href="/assets/js/25.17c49680.js"><link rel="prefetch" href="/assets/js/26.adb50bbf.js"><link rel="prefetch" href="/assets/js/27.8ea96446.js"><link rel="prefetch" href="/assets/js/28.43ba3ec9.js"><link rel="prefetch" href="/assets/js/29.5b31d07c.js"><link rel="prefetch" href="/assets/js/30.707df57d.js"><link rel="prefetch" href="/assets/js/31.8f994fef.js"><link rel="prefetch" href="/assets/js/32.f49d38ef.js"><link rel="prefetch" href="/assets/js/33.c9e4248b.js"><link rel="prefetch" href="/assets/js/34.fbc48c1b.js"><link rel="prefetch" href="/assets/js/35.c7b22f89.js"><link rel="prefetch" href="/assets/js/36.710a3375.js"><link rel="prefetch" href="/assets/js/37.e7b41ea7.js"><link rel="prefetch" href="/assets/js/38.306e64b8.js"><link rel="prefetch" href="/assets/js/39.eda64916.js"><link rel="prefetch" href="/assets/js/4.af96fb9f.js"><link rel="prefetch" href="/assets/js/40.ab273f23.js"><link rel="prefetch" href="/assets/js/41.d03bef8f.js"><link rel="prefetch" href="/assets/js/42.9d822a51.js"><link rel="prefetch" href="/assets/js/43.58cce2d2.js"><link rel="prefetch" href="/assets/js/44.9bbdfd3f.js"><link rel="prefetch" href="/assets/js/45.fcb0570a.js"><link rel="prefetch" href="/assets/js/46.48e305c8.js"><link rel="prefetch" href="/assets/js/47.a7576d62.js"><link rel="prefetch" href="/assets/js/48.3bf9f402.js"><link rel="prefetch" href="/assets/js/49.1102717e.js"><link rel="prefetch" href="/assets/js/5.2cb7b5e8.js"><link rel="prefetch" href="/assets/js/50.02875a30.js"><link rel="prefetch" href="/assets/js/51.a286bb50.js"><link rel="prefetch" href="/assets/js/52.f722926a.js"><link rel="prefetch" href="/assets/js/53.96074f10.js"><link rel="prefetch" href="/assets/js/54.97c5d38b.js"><link rel="prefetch" href="/assets/js/55.b25f7a2d.js"><link rel="prefetch" href="/assets/js/56.5433ea3c.js"><link rel="prefetch" href="/assets/js/57.0164697f.js"><link rel="prefetch" href="/assets/js/58.1e048a47.js"><link rel="prefetch" href="/assets/js/59.6f775b55.js"><link rel="prefetch" href="/assets/js/6.2eb56668.js"><link rel="prefetch" href="/assets/js/60.8ed74875.js"><link rel="prefetch" href="/assets/js/61.1f2379fe.js"><link rel="prefetch" href="/assets/js/62.73539166.js"><link rel="prefetch" href="/assets/js/63.71fff4fa.js"><link rel="prefetch" href="/assets/js/64.2dc1860f.js"><link rel="prefetch" href="/assets/js/65.eab4a2a4.js"><link rel="prefetch" href="/assets/js/66.caa4eb6b.js"><link rel="prefetch" href="/assets/js/67.197afb83.js"><link rel="prefetch" href="/assets/js/68.c664773a.js"><link rel="prefetch" href="/assets/js/69.e026fafd.js"><link rel="prefetch" href="/assets/js/7.c5c6188d.js"><link rel="prefetch" href="/assets/js/70.8155e46c.js"><link rel="prefetch" href="/assets/js/71.1a9b332b.js"><link rel="prefetch" href="/assets/js/72.79e344ef.js"><link rel="prefetch" href="/assets/js/73.085217ba.js"><link rel="prefetch" href="/assets/js/74.84ded5b4.js"><link rel="prefetch" href="/assets/js/75.ba60f901.js"><link rel="prefetch" href="/assets/js/76.b02454cf.js"><link rel="prefetch" href="/assets/js/77.cd5f7123.js"><link rel="prefetch" href="/assets/js/78.be1b3c8b.js"><link rel="prefetch" href="/assets/js/8.c08cf1ce.js"><link rel="prefetch" href="/assets/js/9.6041937f.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.112c01f0.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  RocketMq
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" class="nav-link"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>68</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  RocketMq
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" class="nav-link"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>分布式基础</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/distributed-base.html" class="sidebar-link">理论知识</a></li><li><a href="/distributed/consistence-classification.html" class="sidebar-link">一致性的分类</a></li><li><a href="/distributed/Consensus-alg.html" class="sidebar-link">共识算法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>共识算法（一致性算法）</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/2-stage-commit.html" class="sidebar-link">2(3)阶段提交算法</a></li><li><a href="/distributed/paxos-alg.html" class="sidebar-link">Paxos 算法</a></li><li><a href="/distributed/Multi-Paxos.html" class="sidebar-link">Multi Paxos 算法</a></li><li><a href="/distributed/Gossip.html" class="sidebar-link">Gossip 协议</a></li><li><a href="/distributed/Raft.html" class="sidebar-link">Raft 算法</a></li><li><a href="/distributed/Zab.html" class="sidebar-link">Zab 算法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>分布式解决方案</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/Distributed-lock.html" class="sidebar-link">分布式锁</a></li><li><a href="/distributed/Distributed-transaction.html" class="sidebar-link">分布式事务</a></li><li><a href="/distributed/distributed-transaction-demo.html" class="sidebar-link">分布式事务实现 —— Seata</a></li><li><a href="/distributed/distributed-cache.html" aria-current="page" class="active sidebar-link">分布式缓存一致性</a></li><li><a href="/distributed/distributed-id.html" class="sidebar-link">全局唯一ID</a></li><li><a href="/distributed/distributed-session.html" class="sidebar-link">分布式session</a></li><li><a href="/distributed/distributed-mideng.html" class="sidebar-link">幂等实现方案</a></li><li><a href="/distributed/distributed-select.html" class="sidebar-link">高性能负载均衡及算法</a></li><li><a href="/distributed/multi-database.html" class="sidebar-link">分库分表方案</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>分布式缓存一致性</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">分布式缓存一致性</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/17</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/distributed/distributed-cache.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><h2 id="_1-更新策略"><a href="#_1-更新策略" class="header-anchor">#</a> 1 更新策略</h2> <h3 id="_1-1-先更新缓存-再更新数据库"><a href="#_1-1-先更新缓存-再更新数据库" class="header-anchor">#</a> 1.1 先更新缓存，再更新数据库</h3> <p>问题：</p> <ul><li><p>更新缓存成功，更新数据库失败；</p></li> <li><p>并发问题</p> <table><thead><tr><th style="text-align:center;">时间</th> <th style="text-align:center;">线程A</th> <th style="text-align:center;">线程B</th> <th style="text-align:center;">数据库</th> <th style="text-align:center;">缓存</th></tr></thead> <tbody><tr><td style="text-align:center;">0</td> <td style="text-align:center;"></td> <td style="text-align:center;"></td> <td style="text-align:center;">v0</td> <td style="text-align:center;">v0</td></tr> <tr><td style="text-align:center;">1</td> <td style="text-align:center;">更新缓存为v1</td> <td style="text-align:center;"></td> <td style="text-align:center;">v0</td> <td style="text-align:center;">v1</td></tr> <tr><td style="text-align:center;">2</td> <td style="text-align:center;"></td> <td style="text-align:center;">更新缓存为v2</td> <td style="text-align:center;">v0</td> <td style="text-align:center;">v2</td></tr> <tr><td style="text-align:center;">3</td> <td style="text-align:center;"></td> <td style="text-align:center;">更新数据库为v2</td> <td style="text-align:center;">v2</td> <td style="text-align:center;">v2</td></tr> <tr><td style="text-align:center;">4</td> <td style="text-align:center;">更新数据库为v1</td> <td style="text-align:center;"></td> <td style="text-align:center;">v1</td> <td style="text-align:center;">v2</td></tr></tbody></table></li></ul> <h3 id="_1-2-先更新数据库-再更新缓存"><a href="#_1-2-先更新数据库-再更新缓存" class="header-anchor">#</a> 1.2 先更新数据库，再更新缓存</h3> <p>问题：</p> <ul><li><p>数据库更新成功，缓存更新失败，在缓存失效之前都有问题</p></li> <li><p>并发问题：</p> <table><thead><tr><th style="text-align:center;">时间</th> <th style="text-align:center;">线程A</th> <th style="text-align:center;">线程B</th> <th style="text-align:center;">数据库</th> <th style="text-align:center;">缓存</th></tr></thead> <tbody><tr><td style="text-align:center;">0</td> <td style="text-align:center;"></td> <td style="text-align:center;"></td> <td style="text-align:center;">v0</td> <td style="text-align:center;">v0</td></tr> <tr><td style="text-align:center;">1</td> <td style="text-align:center;">更新数据库为v1</td> <td style="text-align:center;"></td> <td style="text-align:center;">v1</td> <td style="text-align:center;">v0</td></tr> <tr><td style="text-align:center;">2</td> <td style="text-align:center;"></td> <td style="text-align:center;">更新数据库为v2</td> <td style="text-align:center;">v2</td> <td style="text-align:center;">v0</td></tr> <tr><td style="text-align:center;">3</td> <td style="text-align:center;"></td> <td style="text-align:center;">更新缓存为v2</td> <td style="text-align:center;">v2</td> <td style="text-align:center;">v2</td></tr> <tr><td style="text-align:center;">4</td> <td style="text-align:center;">更新缓存为v1</td> <td style="text-align:center;"></td> <td style="text-align:center;">v2</td> <td style="text-align:center;">v1</td></tr></tbody></table></li></ul> <h2 id="_2-删除策略"><a href="#_2-删除策略" class="header-anchor">#</a> 2 删除策略</h2> <h3 id="_2-1-先删除缓存-再更新数据库"><a href="#_2-1-先删除缓存-再更新数据库" class="header-anchor">#</a> 2.1 先删除缓存，再更新数据库</h3> <p>问题：</p> <ul><li><p>删除缓存成功，更新数据库失败（这不是什么大问题）</p></li> <li><p>并发问题：</p> <table><thead><tr><th style="text-align:center;">时间</th> <th style="text-align:center;">线程A</th> <th style="text-align:center;">线程B</th> <th style="text-align:center;">数据库</th> <th style="text-align:center;">缓存</th></tr></thead> <tbody><tr><td style="text-align:center;">0</td> <td style="text-align:center;">删除缓存v0</td> <td style="text-align:center;"></td> <td style="text-align:center;">v0</td> <td style="text-align:center;"></td></tr> <tr><td style="text-align:center;">1</td> <td style="text-align:center;"></td> <td style="text-align:center;">读取数据库v0</td> <td style="text-align:center;">v0</td> <td style="text-align:center;"></td></tr> <tr><td style="text-align:center;">2</td> <td style="text-align:center;">更新数据库为v1</td> <td style="text-align:center;"></td> <td style="text-align:center;">v1</td> <td style="text-align:center;"></td></tr> <tr><td style="text-align:center;">3</td> <td style="text-align:center;"></td> <td style="text-align:center;">更新缓存v0</td> <td style="text-align:center;">v1</td> <td style="text-align:center;">v0</td></tr> <tr><td style="text-align:center;">4</td> <td style="text-align:center;">删除缓存(延时双删策略)</td> <td style="text-align:center;"></td> <td style="text-align:center;">v1</td> <td style="text-align:center;"></td></tr></tbody></table></li></ul> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">write</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span><span class="token class-name">Object</span> data<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    redis<span class="token punctuation">.</span><span class="token function">delKey</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    db<span class="token punctuation">.</span><span class="token function">updateData</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 这个时间不太好确定</span>
+    <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    redis<span class="token punctuation">.</span><span class="token function">delKey</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>要自行评估自己的项目的读数据业务逻辑的耗时。然后写数据的休眠时间则在读数据业务逻辑的耗时基础上，加几百ms即可；但是如果第二次删除缓存失败，还是会产生脏数据</p> <h3 id="_2-2-先更新数据库-再删除缓存"><a href="#_2-2-先更新数据库-再删除缓存" class="header-anchor">#</a> 2.2 先更新数据库，再删除缓存</h3> <p>问题：</p> <ul><li>更新数据库成功，删除缓存失败，在缓存失效之前都有问题</li> <li>并发问题：
+<table><thead><tr><th style="text-align:center;">时间</th> <th style="text-align:center;">线程A</th> <th style="text-align:center;">线程B</th> <th style="text-align:center;">数据库</th> <th style="text-align:center;">缓存</th></tr></thead> <tbody><tr><td style="text-align:center;">0，缓存刚好失效</td> <td style="text-align:center;"></td> <td style="text-align:center;">读取数据库v0</td> <td style="text-align:center;">v0</td> <td style="text-align:center;"></td></tr> <tr><td style="text-align:center;">1</td> <td style="text-align:center;">更新数据库为v1</td> <td style="text-align:center;"></td> <td style="text-align:center;">v1</td> <td style="text-align:center;"></td></tr> <tr><td style="text-align:center;">2</td> <td style="text-align:center;">删除缓存</td> <td style="text-align:center;"></td> <td style="text-align:center;">v1</td> <td style="text-align:center;"></td></tr> <tr><td style="text-align:center;">3</td> <td style="text-align:center;"></td> <td style="text-align:center;">更新缓存为v0</td> <td style="text-align:center;">v1</td> <td style="text-align:center;">v0</td></tr> <tr><td style="text-align:center;">4</td> <td style="text-align:center;">删除缓存(延时双删策略)</td> <td style="text-align:center;"></td> <td style="text-align:center;">v1</td> <td style="text-align:center;"></td></tr></tbody></table></li></ul> <h2 id="_3-删除缓存失败-采用删除策略"><a href="#_3-删除缓存失败-采用删除策略" class="header-anchor">#</a> 3 删除缓存失败（采用删除策略）</h2> <ul><li>2.1 与 2.2 延迟双删可能删除缓存失败</li> <li>2.2 相对于 2.1 来说发生并发问题的可能性更低，因为刚好读缓存、写数据库、缓存失效三者并发；而且写数据库不太可能比读数据库慢</li></ul> <p>删除策略还有问题，就是缓存击穿问题；可以考虑使用两级缓存来解决不一致问题；一级和二级失效的时间不一样，让读请求永远打不到数据库</p> <h3 id="_3-1-第一种删除重试机制"><a href="#_3-1-第一种删除重试机制" class="header-anchor">#</a> 3.1 第一种删除重试机制</h3> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611504175790-1ccf6400-655c-4cea-a9b1-7d6e41605470.png#align=left&amp;display=inline&amp;height=355&amp;name=64.png&amp;originHeight=710&amp;originWidth=1042&amp;size=262823&amp;status=done&amp;style=none&amp;width=521" alt="64.png"></p> <p>流程如下所示</p> <ul><li>更新数据库数据</li> <li>缓存因为种种问题删除失败</li> <li>将需要删除的key发送至消息队列</li> <li>自己消费消息，获得需要删除的key</li> <li>继续重试删除操作，直到成功</li></ul> <h3 id="_3-2-第二种删除重试机制"><a href="#_3-2-第二种删除重试机制" class="header-anchor">#</a> 3.2 第二种删除重试机制</h3> <p>上面方案有一个缺点，对业务线代码造成大量的侵入。于是有了方案二，在方案二中，启动一个订阅程序去订阅数据库的binlog，获得需要操作的数据。在应用程序中，另起一段程序，获得这个订阅程序传来的信息，进行删除缓存操作</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611504477567-279552ae-e089-4525-b8ab-b8d520357212.png#align=left&amp;display=inline&amp;height=379&amp;name=65.png&amp;originHeight=505&amp;originWidth=743&amp;size=52288&amp;status=done&amp;style=none&amp;width=557" alt="65.png"></p> <p>流程如下图所示：</p> <ul><li>更新数据库数据</li> <li>数据库会将操作信息写入binlog日志当中</li> <li>订阅程序提取出所需要的数据以及key（订阅binlog程序在mysql中有现成的中间件叫canal）</li> <li>另起一段非业务代码，获得该信息</li> <li>尝试删除缓存操作，发现删除失败</li> <li>将这些信息发送至消息队列</li> <li>重新从消息队列中获得该数据，重试操作</li></ul> <h2 id="_4-其他"><a href="#_4-其他" class="header-anchor">#</a> 4 其他</h2> <h3 id="_4-1-cache-aside-pattern"><a href="#_4-1-cache-aside-pattern" class="header-anchor">#</a> 4.1 Cache Aside Pattern</h3> <p>Cache Aside Pattern 是处理缓存一致性问题的一种模式，其实就是 2.2 的策略</p> <h3 id="_4-2-read-write-through-pattern"><a href="#_4-2-read-write-through-pattern" class="header-anchor">#</a> 4.2 Read/Write Through Pattern</h3> <p>将缓存服务作为主要的存储，应用的所有读写请求都是直接与缓存服务打交道，而不管最后端的数据库了，数据库的数据由缓存服务来维护和更新。不过缓存中数据变更的时候是同步去更新数据库的，在应用的眼中只有缓存服务，流程就相当简单了：（LevelDB、RocksDB、TiDB ）</p> <ul><li>读取：应用要读数据和更新数据都直接访问缓存服务</li> <li>更新：缓存服务同步的将数据更新到数据库</li></ul> <h3 id="_4-3-write-behind-caching-pattern"><a href="#_4-3-write-behind-caching-pattern" class="header-anchor">#</a> 4.3 Write Behind Caching Pattern</h3> <p>是Read/Write Through模式的一个变种。区别就是Read/Write Through模式的缓存写数据库的时候是同步的，而Write Behind模式的缓存操作数据库是异步的，流程如下：</p> <ul><li>应用要读数据和更新数据都直接访问缓存服务</li> <li>缓存服务异步的将数据更新到数据库（通过异步任务）</li></ul></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/distributed/distributed-transaction-demo.html" class="prev">
+          分布式事务实现 —— Seata
+        </a></span> <span class="next"><a href="/distributed/distributed-id.html">
+          全局唯一ID
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_1-更新策略" class="sidebar-link reco-side-_1-更新策略" data-v-b57cc07c>1 更新策略</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_1-1-先更新缓存-再更新数据库" class="sidebar-link reco-side-_1-1-先更新缓存-再更新数据库" data-v-b57cc07c>1.1 先更新缓存，再更新数据库</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_1-2-先更新数据库-再更新缓存" class="sidebar-link reco-side-_1-2-先更新数据库-再更新缓存" data-v-b57cc07c>1.2 先更新数据库，再更新缓存</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_2-删除策略" class="sidebar-link reco-side-_2-删除策略" data-v-b57cc07c>2 删除策略</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_2-1-先删除缓存-再更新数据库" class="sidebar-link reco-side-_2-1-先删除缓存-再更新数据库" data-v-b57cc07c>2.1 先删除缓存，再更新数据库</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_2-2-先更新数据库-再删除缓存" class="sidebar-link reco-side-_2-2-先更新数据库-再删除缓存" data-v-b57cc07c>2.2 先更新数据库，再删除缓存</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_3-删除缓存失败-采用删除策略" class="sidebar-link reco-side-_3-删除缓存失败-采用删除策略" data-v-b57cc07c>3 删除缓存失败（采用删除策略）</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_3-1-第一种删除重试机制" class="sidebar-link reco-side-_3-1-第一种删除重试机制" data-v-b57cc07c>3.1 第一种删除重试机制</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_3-2-第二种删除重试机制" class="sidebar-link reco-side-_3-2-第二种删除重试机制" data-v-b57cc07c>3.2 第二种删除重试机制</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_4-其他" class="sidebar-link reco-side-_4-其他" data-v-b57cc07c>4 其他</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_4-1-cache-aside-pattern" class="sidebar-link reco-side-_4-1-cache-aside-pattern" data-v-b57cc07c>4.1 Cache Aside Pattern</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_4-2-read-write-through-pattern" class="sidebar-link reco-side-_4-2-read-write-through-pattern" data-v-b57cc07c>4.2 Read/Write Through Pattern</a></li><li class="level-3" data-v-b57cc07c><a href="/distributed/distributed-cache.html#_4-3-write-behind-caching-pattern" class="sidebar-link reco-side-_4-3-write-behind-caching-pattern" data-v-b57cc07c>4.3 Write Behind Caching Pattern</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----></div></div>
+    <script src="/assets/js/app.d34fbf84.js" defer></script><script src="/assets/js/3.055d3e19.js" defer></script><script src="/assets/js/1.e976497e.js" defer></script><script src="/assets/js/21.f0eae6fd.js" defer></script>
+  </body>
+</html>

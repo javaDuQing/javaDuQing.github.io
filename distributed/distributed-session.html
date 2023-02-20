@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>分布式 session | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.112c01f0.css" as="style"><link rel="preload" href="/assets/js/app.d34fbf84.js" as="script"><link rel="preload" href="/assets/js/3.055d3e19.js" as="script"><link rel="preload" href="/assets/js/1.e976497e.js" as="script"><link rel="preload" href="/assets/js/25.17c49680.js" as="script"><link rel="prefetch" href="/assets/js/10.6a7508d8.js"><link rel="prefetch" href="/assets/js/11.30415e0a.js"><link rel="prefetch" href="/assets/js/12.b18d44fe.js"><link rel="prefetch" href="/assets/js/13.742c1b9e.js"><link rel="prefetch" href="/assets/js/14.83c7aac6.js"><link rel="prefetch" href="/assets/js/15.0128f91c.js"><link rel="prefetch" href="/assets/js/16.d1f21703.js"><link rel="prefetch" href="/assets/js/17.e4a16b6a.js"><link rel="prefetch" href="/assets/js/18.6fcceb7d.js"><link rel="prefetch" href="/assets/js/19.02949eeb.js"><link rel="prefetch" href="/assets/js/20.f7bad9ca.js"><link rel="prefetch" href="/assets/js/21.f0eae6fd.js"><link rel="prefetch" href="/assets/js/22.649a47e5.js"><link rel="prefetch" href="/assets/js/23.7b732644.js"><link rel="prefetch" href="/assets/js/24.02e208fb.js"><link rel="prefetch" href="/assets/js/26.adb50bbf.js"><link rel="prefetch" href="/assets/js/27.8ea96446.js"><link rel="prefetch" href="/assets/js/28.43ba3ec9.js"><link rel="prefetch" href="/assets/js/29.5b31d07c.js"><link rel="prefetch" href="/assets/js/30.707df57d.js"><link rel="prefetch" href="/assets/js/31.8f994fef.js"><link rel="prefetch" href="/assets/js/32.f49d38ef.js"><link rel="prefetch" href="/assets/js/33.c9e4248b.js"><link rel="prefetch" href="/assets/js/34.fbc48c1b.js"><link rel="prefetch" href="/assets/js/35.c7b22f89.js"><link rel="prefetch" href="/assets/js/36.710a3375.js"><link rel="prefetch" href="/assets/js/37.e7b41ea7.js"><link rel="prefetch" href="/assets/js/38.306e64b8.js"><link rel="prefetch" href="/assets/js/39.eda64916.js"><link rel="prefetch" href="/assets/js/4.af96fb9f.js"><link rel="prefetch" href="/assets/js/40.ab273f23.js"><link rel="prefetch" href="/assets/js/41.d03bef8f.js"><link rel="prefetch" href="/assets/js/42.9d822a51.js"><link rel="prefetch" href="/assets/js/43.58cce2d2.js"><link rel="prefetch" href="/assets/js/44.9bbdfd3f.js"><link rel="prefetch" href="/assets/js/45.fcb0570a.js"><link rel="prefetch" href="/assets/js/46.48e305c8.js"><link rel="prefetch" href="/assets/js/47.a7576d62.js"><link rel="prefetch" href="/assets/js/48.3bf9f402.js"><link rel="prefetch" href="/assets/js/49.1102717e.js"><link rel="prefetch" href="/assets/js/5.2cb7b5e8.js"><link rel="prefetch" href="/assets/js/50.02875a30.js"><link rel="prefetch" href="/assets/js/51.a286bb50.js"><link rel="prefetch" href="/assets/js/52.f722926a.js"><link rel="prefetch" href="/assets/js/53.96074f10.js"><link rel="prefetch" href="/assets/js/54.97c5d38b.js"><link rel="prefetch" href="/assets/js/55.b25f7a2d.js"><link rel="prefetch" href="/assets/js/56.5433ea3c.js"><link rel="prefetch" href="/assets/js/57.0164697f.js"><link rel="prefetch" href="/assets/js/58.1e048a47.js"><link rel="prefetch" href="/assets/js/59.6f775b55.js"><link rel="prefetch" href="/assets/js/6.2eb56668.js"><link rel="prefetch" href="/assets/js/60.8ed74875.js"><link rel="prefetch" href="/assets/js/61.1f2379fe.js"><link rel="prefetch" href="/assets/js/62.73539166.js"><link rel="prefetch" href="/assets/js/63.71fff4fa.js"><link rel="prefetch" href="/assets/js/64.2dc1860f.js"><link rel="prefetch" href="/assets/js/65.eab4a2a4.js"><link rel="prefetch" href="/assets/js/66.caa4eb6b.js"><link rel="prefetch" href="/assets/js/67.197afb83.js"><link rel="prefetch" href="/assets/js/68.c664773a.js"><link rel="prefetch" href="/assets/js/69.e026fafd.js"><link rel="prefetch" href="/assets/js/7.c5c6188d.js"><link rel="prefetch" href="/assets/js/70.8155e46c.js"><link rel="prefetch" href="/assets/js/71.1a9b332b.js"><link rel="prefetch" href="/assets/js/72.79e344ef.js"><link rel="prefetch" href="/assets/js/73.085217ba.js"><link rel="prefetch" href="/assets/js/74.84ded5b4.js"><link rel="prefetch" href="/assets/js/75.ba60f901.js"><link rel="prefetch" href="/assets/js/76.b02454cf.js"><link rel="prefetch" href="/assets/js/77.cd5f7123.js"><link rel="prefetch" href="/assets/js/78.be1b3c8b.js"><link rel="prefetch" href="/assets/js/8.c08cf1ce.js"><link rel="prefetch" href="/assets/js/9.6041937f.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.112c01f0.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  RocketMq
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" class="nav-link"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>68</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  RocketMq
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" class="nav-link"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  常用算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  团队管理
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  35岁+
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>分布式基础</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/distributed-base.html" class="sidebar-link">理论知识</a></li><li><a href="/distributed/consistence-classification.html" class="sidebar-link">一致性的分类</a></li><li><a href="/distributed/Consensus-alg.html" class="sidebar-link">共识算法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>共识算法（一致性算法）</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/2-stage-commit.html" class="sidebar-link">2(3)阶段提交算法</a></li><li><a href="/distributed/paxos-alg.html" class="sidebar-link">Paxos 算法</a></li><li><a href="/distributed/Multi-Paxos.html" class="sidebar-link">Multi Paxos 算法</a></li><li><a href="/distributed/Gossip.html" class="sidebar-link">Gossip 协议</a></li><li><a href="/distributed/Raft.html" class="sidebar-link">Raft 算法</a></li><li><a href="/distributed/Zab.html" class="sidebar-link">Zab 算法</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>分布式解决方案</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/distributed/Distributed-lock.html" class="sidebar-link">分布式锁</a></li><li><a href="/distributed/Distributed-transaction.html" class="sidebar-link">分布式事务</a></li><li><a href="/distributed/distributed-transaction-demo.html" class="sidebar-link">分布式事务实现 —— Seata</a></li><li><a href="/distributed/distributed-cache.html" class="sidebar-link">分布式缓存一致性</a></li><li><a href="/distributed/distributed-id.html" class="sidebar-link">全局唯一ID</a></li><li><a href="/distributed/distributed-session.html" aria-current="page" class="active sidebar-link">分布式session</a></li><li><a href="/distributed/distributed-mideng.html" class="sidebar-link">幂等实现方案</a></li><li><a href="/distributed/distributed-select.html" class="sidebar-link">高性能负载均衡及算法</a></li><li><a href="/distributed/multi-database.html" class="sidebar-link">分库分表方案</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>分布式 session</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">分布式 session</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/17</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/distributed/distributed-session.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><p>Web 应用中将多次请求使用的上下文对象称作会话 （ Session ），单机情况下，Session 可由部署在服务器上的Web 容器(如 JBoss )管理。在使用负载均衡的集群环境中，由于负载均衡服务器可能会将请求分发到集群任何一台应用服务器上，所以保证每次请求依然能够正确的获取 Session 比单机时要复杂的多</p> <p>集群环境下，Session管理主要有以下几种手段：</p> <h2 id="session-复制"><a href="#session-复制" class="header-anchor">#</a> Session 复制</h2> <p>Session 复制是早期企业应用系统使用较多的一种服务器集群 Session 管理机制。应用服务器开启 Web 容器的Session 复制功能，在集群中的几台服务器之间同步 Session 对象，使得每台服务器上都保存所有用户的 session 信息，这样任何一台服务器宕机都不会导致 Session 数据丢失，而服务器使用 Session 时，也只需要在本机获取即可</p> <p>这种方案虽然简单，从本机读取 Session 信息也很快速，但只能使用在集群规模比较小的情况下。当集群规模较大时，集群服务器间需要大量的通信进行 Session 复制，占用服务器和网络的大量资源，系统不堪重负。甚至会出现服务器内存不够 Session 使用的情况</p> <p><img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1649819335045-ca8c742a-86e7-4d2d-a75f-cb188d388ac2.png#clientId=ue66e2841-7ebc-4&amp;from=paste&amp;height=421&amp;id=uf63da858&amp;name=image.png&amp;originHeight=421&amp;originWidth=641&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=95132&amp;status=done&amp;style=none&amp;taskId=u0bb69efe-888f-4773-b865-0135adbc8fd&amp;title=&amp;width=641" alt="image.png"></p> <h2 id="session-绑定"><a href="#session-绑定" class="header-anchor">#</a> Session 绑定</h2> <p>Session 绑定可以利用负载均衡的源地址 Hash 算法实现，负载均衡服务器总是将来源于同一 IP 的请求分发到同一台服务器上（也可以根据 Cookie 信息将同一用户的请求总是分发到同一台服务器上，当然这时负载均衡服务器必须工作在HTTP协议层上。这样整个会话期间，所有用户所有请求都在同一服务器上处理，即 Session 绑定在某台特定服务器上，保证 Session 总能在这台服务器上获取。这种方法又被称作会话粘滞）</p> <p><img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1649819475579-7a41edc8-f105-43b0-af0e-7ef38eeeaba9.png#clientId=uc67f2542-12f3-4&amp;from=paste&amp;height=402&amp;id=uc62c1f1f&amp;name=image.png&amp;originHeight=402&amp;originWidth=652&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=94242&amp;status=done&amp;style=none&amp;taskId=ucbf0f698-6c91-4cb6-9e01-68ed6644ff0&amp;title=&amp;width=652" alt="image.png"></p> <p>但是 Session 绑定的方案显然不符合我们对系统高可用的需求，因为一旦某台服务器宕机，那么该服务器上的Session 也就不复存在了，用户请求切换到其他服务器因为没有 Session 而无法完成业务处理</p> <h2 id="利用-cookie-记录-session"><a href="#利用-cookie-记录-session" class="header-anchor">#</a> 利用 Cookie 记录 Session</h2> <p>早期的企业应用系统使用 C/S （客户端/服务器）架构，一种管理 Session 的方式是将 Session 记录在客户端，每次请求服务器时，将 Session 放在请求中发送给服务器，服务器处理完请求后再将修改过的 Session 响应给客户端，网站没有客户端，但是可以利用浏览器支持 Cookie 记录 Session</p> <p><img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1649819621519-5c1f745b-597c-47fe-86d3-b3b15b80e5e9.png#clientId=uc67f2542-12f3-4&amp;from=paste&amp;height=388&amp;id=u06a8dfaa&amp;name=image.png&amp;originHeight=492&amp;originWidth=738&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=119533&amp;status=done&amp;style=none&amp;taskId=uc0bb8929-182a-40de-bc0a-571f7e8b955&amp;title=&amp;width=582" alt="image.png"></p> <p>利用 Cookie 记录 Session 也有一些缺点，比如受 Cookie 大小限制，能记录的信息有限；每次请求响应都需要传输 Cookie，影响性能；如果用户关闭 Cookie，访问就不会正常。但是 Cookie 的简单易用，可用性高，支持应用服务器的线性伸缩，而大部分应用需要记录的 Session 信息又比较小</p> <h2 id="session-服务器"><a href="#session-服务器" class="header-anchor">#</a> Session 服务器</h2> <p>那么没有高可用、伸缩性好、性能也不错、对信息大小有没有限制的服务器集群 Session 管理方案呢？
+答案就是 Session 服务器。利用独立部署的 Session 服务器（集群）统一管理 Session，应用服务器每次读写Session 时，都访问 Session 服务器</p> <p><img src="https://cdn.nlark.com/yuque/0/2022/png/375413/1649819724729-a4557fa0-e3ac-4b6e-9fda-de12f1087f11.png#clientId=uc67f2542-12f3-4&amp;from=paste&amp;height=413&amp;id=u274589bc&amp;name=image.png&amp;originHeight=413&amp;originWidth=790&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=107882&amp;status=done&amp;style=none&amp;taskId=u6eeb5ee8-bab2-468e-9e3f-3e4c797a5f4&amp;title=&amp;width=790" alt="image.png"></p> <p>这种解决方案事实上是将应用服务器的状态分离，分为无状态的应用服务器和有状态的 Session 服务器，然后针对这两种服务器的不同特性分别设计其架构。对有状态的 Session 服务器，一种比较简单的方法是利用分布式缓存、数据库等，这些产品的基础上进行包装，使其符合 Session 的存储和访问要求。如果业务场景对 Session 管理有较高的要求</p></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/distributed/distributed-id.html" class="prev">
+          全局唯一ID
+        </a></span> <span class="next"><a href="/distributed/distributed-mideng.html">
+          幂等实现方案
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-session.html#session-复制" class="sidebar-link reco-side-session-复制" data-v-b57cc07c>Session 复制</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-session.html#session-绑定" class="sidebar-link reco-side-session-绑定" data-v-b57cc07c>Session 绑定</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-session.html#利用-cookie-记录-session" class="sidebar-link reco-side-利用-cookie-记录-session" data-v-b57cc07c>利用 Cookie 记录 Session</a></li><li class="level-2" data-v-b57cc07c><a href="/distributed/distributed-session.html#session-服务器" class="sidebar-link reco-side-session-服务器" data-v-b57cc07c>Session 服务器</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----></div></div>
+    <script src="/assets/js/app.d34fbf84.js" defer></script><script src="/assets/js/3.055d3e19.js" defer></script><script src="/assets/js/1.e976497e.js" defer></script><script src="/assets/js/25.17c49680.js" defer></script>
+  </body>
+</html>
