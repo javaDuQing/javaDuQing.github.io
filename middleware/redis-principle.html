@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Redis 数据结构底层原理 | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.112c01f0.css" as="style"><link rel="preload" href="/assets/js/app.ebc22a7e.js" as="script"><link rel="preload" href="/assets/js/3.055d3e19.js" as="script"><link rel="preload" href="/assets/js/1.e976497e.js" as="script"><link rel="preload" href="/assets/js/83.6c097929.js" as="script"><link rel="prefetch" href="/assets/js/10.130f488d.js"><link rel="prefetch" href="/assets/js/11.b3cf3d1c.js"><link rel="prefetch" href="/assets/js/12.82d05f80.js"><link rel="prefetch" href="/assets/js/13.711ee55a.js"><link rel="prefetch" href="/assets/js/14.e78a33da.js"><link rel="prefetch" href="/assets/js/15.9711c905.js"><link rel="prefetch" href="/assets/js/16.bc820f0d.js"><link rel="prefetch" href="/assets/js/17.a72ef59e.js"><link rel="prefetch" href="/assets/js/18.15b69bd7.js"><link rel="prefetch" href="/assets/js/19.656e8c8b.js"><link rel="prefetch" href="/assets/js/20.6acf7c10.js"><link rel="prefetch" href="/assets/js/21.28ecd056.js"><link rel="prefetch" href="/assets/js/22.f51f09ce.js"><link rel="prefetch" href="/assets/js/23.16196448.js"><link rel="prefetch" href="/assets/js/24.774e0b81.js"><link rel="prefetch" href="/assets/js/25.4f0c3574.js"><link rel="prefetch" href="/assets/js/26.476ac42e.js"><link rel="prefetch" href="/assets/js/27.adb08033.js"><link rel="prefetch" href="/assets/js/28.c66df867.js"><link rel="prefetch" href="/assets/js/29.6f707d72.js"><link rel="prefetch" href="/assets/js/30.9eb4194f.js"><link rel="prefetch" href="/assets/js/31.b1740634.js"><link rel="prefetch" href="/assets/js/32.4e86cbf4.js"><link rel="prefetch" href="/assets/js/33.4d485781.js"><link rel="prefetch" href="/assets/js/34.91d03838.js"><link rel="prefetch" href="/assets/js/35.55e2ad26.js"><link rel="prefetch" href="/assets/js/36.1bede787.js"><link rel="prefetch" href="/assets/js/37.d0f9ca3d.js"><link rel="prefetch" href="/assets/js/38.f445eba6.js"><link rel="prefetch" href="/assets/js/39.07a0da36.js"><link rel="prefetch" href="/assets/js/4.af96fb9f.js"><link rel="prefetch" href="/assets/js/40.2b632790.js"><link rel="prefetch" href="/assets/js/41.3fea5474.js"><link rel="prefetch" href="/assets/js/42.d2289409.js"><link rel="prefetch" href="/assets/js/43.f6bfd24e.js"><link rel="prefetch" href="/assets/js/44.7e258a27.js"><link rel="prefetch" href="/assets/js/45.85116dbe.js"><link rel="prefetch" href="/assets/js/46.5e88dd0c.js"><link rel="prefetch" href="/assets/js/47.d7edbd52.js"><link rel="prefetch" href="/assets/js/48.3549aa87.js"><link rel="prefetch" href="/assets/js/49.42e66eaf.js"><link rel="prefetch" href="/assets/js/5.2cb7b5e8.js"><link rel="prefetch" href="/assets/js/50.48a54609.js"><link rel="prefetch" href="/assets/js/51.828abcb3.js"><link rel="prefetch" href="/assets/js/52.69dc5033.js"><link rel="prefetch" href="/assets/js/53.903b3787.js"><link rel="prefetch" href="/assets/js/54.e0469f30.js"><link rel="prefetch" href="/assets/js/55.f7d098ec.js"><link rel="prefetch" href="/assets/js/56.7b725893.js"><link rel="prefetch" href="/assets/js/57.6003dc74.js"><link rel="prefetch" href="/assets/js/58.cb383c55.js"><link rel="prefetch" href="/assets/js/59.9847b5f8.js"><link rel="prefetch" href="/assets/js/6.2eb56668.js"><link rel="prefetch" href="/assets/js/60.4f4ce018.js"><link rel="prefetch" href="/assets/js/61.4b082158.js"><link rel="prefetch" href="/assets/js/62.1414ca04.js"><link rel="prefetch" href="/assets/js/63.0e9159a8.js"><link rel="prefetch" href="/assets/js/64.ba992a44.js"><link rel="prefetch" href="/assets/js/65.34c94177.js"><link rel="prefetch" href="/assets/js/66.edf3335f.js"><link rel="prefetch" href="/assets/js/67.d4754d7b.js"><link rel="prefetch" href="/assets/js/68.95636628.js"><link rel="prefetch" href="/assets/js/69.823672ef.js"><link rel="prefetch" href="/assets/js/7.c5c6188d.js"><link rel="prefetch" href="/assets/js/70.ba125afe.js"><link rel="prefetch" href="/assets/js/71.336ce76e.js"><link rel="prefetch" href="/assets/js/72.d9f726a7.js"><link rel="prefetch" href="/assets/js/73.055cee2e.js"><link rel="prefetch" href="/assets/js/74.86194036.js"><link rel="prefetch" href="/assets/js/75.e1e486a0.js"><link rel="prefetch" href="/assets/js/76.e7630e5d.js"><link rel="prefetch" href="/assets/js/77.cf2209a2.js"><link rel="prefetch" href="/assets/js/78.e3b29d5f.js"><link rel="prefetch" href="/assets/js/79.51f43ebc.js"><link rel="prefetch" href="/assets/js/8.c08cf1ce.js"><link rel="prefetch" href="/assets/js/80.1a1dcc9a.js"><link rel="prefetch" href="/assets/js/81.f2c6009b.js"><link rel="prefetch" href="/assets/js/82.b384ccf9.js"><link rel="prefetch" href="/assets/js/84.ba5c9d85.js"><link rel="prefetch" href="/assets/js/9.2f614fd5.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.112c01f0.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/middleware/redis-map.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" class="nav-link"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/middleware/redis-others.html" class="nav-link"><i class="undefined"></i>
+  缓存穿透 击穿 雪崩
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  管理
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li><li class="dropdown-item"><h4>作者博文</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/about/about-independent-develop.html" class="nav-link"><i class="undefined"></i>
+  关于独立开发的失败尝试
+</a></li></ul></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>74</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/middleware/redis-map.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" class="nav-link"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/middleware/redis-others.html" class="nav-link"><i class="undefined"></i>
+  缓存穿透 击穿 雪崩
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  管理
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li><li class="dropdown-item"><h4>作者博文</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/about/about-independent-develop.html" class="nav-link"><i class="undefined"></i>
+  关于独立开发的失败尝试
+</a></li></ul></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>企业级架构</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/" aria-current="page" class="sidebar-link">Spring</a></li><li><a href="/" aria-current="page" class="sidebar-link">Spring MVC</a></li><li><a href="/" aria-current="page" class="sidebar-link">Mybatis</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>中间件</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/middleware/redis-map.html" class="sidebar-link">Redis 知识地图</a></li><li><a href="/middleware/redis.html" class="sidebar-link">Redis 入门</a></li><li><a href="/middleware/redis-cluster.html" class="sidebar-link">Redis 集群</a></li><li><a href="/middleware/redis-principle.html" aria-current="page" class="active sidebar-link">Redis 底层数据结构原理</a></li><li><a href="/middleware/redis-others.html" class="sidebar-link">Redis 其他知识点</a></li><li><a href="/" aria-current="page" class="sidebar-link">Zookeeper</a></li><li><a href="/" aria-current="page" class="sidebar-link">RocketMQ</a></li><li><a href="/" aria-current="page" class="sidebar-link">Dubbo</a></li><li><a href="/" aria-current="page" class="sidebar-link">Netty</a></li><li><a href="/" aria-current="page" class="sidebar-link">Kafka</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>Redis 数据结构底层原理</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">Redis 数据结构底层原理</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/22</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/middleware/redis-principle.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611836658535-ed42a756-fefd-4da7-9e79-3761d88ee799.png#height=315&amp;id=xOjcS&amp;name=image.png&amp;originHeight=315&amp;originWidth=325&amp;originalType=binary&amp;ratio=1&amp;size=22725&amp;status=done&amp;style=none&amp;width=325" alt="image.png"></p> <p>内部编码：raw、int、embstr、hashtable、ziplist、linkedlist、inset、skiplist</p> <h2 id="总体数据结构"><a href="#总体数据结构" class="header-anchor">#</a> 总体数据结构</h2> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611840318546-04930414-a962-445d-919d-35fa30a699bb.png#height=940&amp;id=oNYQS&amp;name=72.png&amp;originHeight=940&amp;originWidth=1916&amp;originalType=binary&amp;ratio=1&amp;size=233993&amp;status=done&amp;style=none&amp;width=1916" alt="72.png"></p> <p><em>redisDB结构的expires字典保存了数据库中所有键的过期时间，我们称这个字典为过期字典：</em></p> <ul><li><em>过期字典的键是一个指针，这个指针指向键空间中的某个键对象</em></li> <li><em>过期字典的值是一个long long类型的整数，这个整数保存了键所指向的数据库键的过期时间</em></li></ul> <div class="language-c extra-class"><pre class="language-c"><code><span class="token comment">/* Redis数据库结构体 */</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">redisDb</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 数据库键空间，存放着所有的键值对（键为key，值为相应的类型对象）</span>
+    dict <span class="token operator">*</span>dict<span class="token punctuation">;</span>                 
+    <span class="token comment">// 键的过期时间</span>
+    dict <span class="token operator">*</span>expires<span class="token punctuation">;</span>              
+    <span class="token comment">// 处于阻塞状态的键和相应的client（主要用于List类型的阻塞操作）</span>
+    dict <span class="token operator">*</span>blocking_keys<span class="token punctuation">;</span>       
+    <span class="token comment">// 准备好数据可以解除阻塞状态的键和相应的client</span>
+    dict <span class="token operator">*</span>ready_keys<span class="token punctuation">;</span>           
+    <span class="token comment">// 被watch命令监控的key和相应client</span>
+    dict <span class="token operator">*</span>watched_keys<span class="token punctuation">;</span>         
+    <span class="token comment">// 数据库ID标识</span>
+    <span class="token keyword">int</span> id<span class="token punctuation">;</span>
+    <span class="token comment">// 数据库内所有键的平均TTL（平均过期时间）</span>
+    <span class="token keyword">long</span> <span class="token keyword">long</span> avg_ttl<span class="token punctuation">;</span>         
+<span class="token punctuation">}</span> redisDb<span class="token punctuation">;</span>
+
+<span class="token comment">/** 字典数据结构 **/</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">dict</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 哈希表的类型，不同类型包括不同的哈希函数，比较函数，键值的内存释放函数</span>
+    dictType <span class="token operator">*</span>type<span class="token punctuation">;</span>
+    <span class="token comment">// 存储一些额外的数据，一般用不到</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>privdata<span class="token punctuation">;</span>
+    <span class="token comment">// 两个hashtable，另外一个扩容时用</span>
+    dictht ht<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment">// rehash使用</span>
+    <span class="token keyword">int</span> rehashidx<span class="token punctuation">;</span> <span class="token comment">/* rehashing not in progress if rehashidx == -1 */</span>
+<span class="token punctuation">}</span> dict<span class="token punctuation">;</span>
+
+<span class="token comment">/** hashtable **/</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">dictht</span> <span class="token punctuation">{</span>
+    <span class="token comment">// hashtable</span>
+    dictEntry <span class="token operator">*</span><span class="token operator">*</span>table<span class="token punctuation">;</span>
+    <span class="token comment">// 哈希表的大小</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">long</span> size<span class="token punctuation">;</span>
+    <span class="token comment">// size - 1</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">long</span> sizemask<span class="token punctuation">;</span>
+    <span class="token comment">// 数据长度</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">long</span> used<span class="token punctuation">;</span>
+<span class="token punctuation">}</span> dictht<span class="token punctuation">;</span>
+
+<span class="token comment">// hashtable存放的元素</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">dictEntry</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 指向key的指针，肯定时指向一个SDS</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>key<span class="token punctuation">;</span>
+    <span class="token keyword">union</span> <span class="token punctuation">{</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>val<span class="token punctuation">;</span>
+    <span class="token class-name">uint64_t</span> u64<span class="token punctuation">;</span>
+    <span class="token class-name">int64_t</span> s64<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> v<span class="token punctuation">;</span>
+    <span class="token comment">// hash冲突使用拉链法，指向下一个元素</span>
+    <span class="token keyword">struct</span> <span class="token class-name">dictEntry</span> <span class="token operator">*</span>next<span class="token punctuation">;</span>
+<span class="token punctuation">}</span> dictEntry<span class="token punctuation">;</span>
+
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">redisObject</span> <span class="token punctuation">{</span>
+	<span class="token keyword">unsigned</span> type<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">;</span> <span class="token comment">// 4 bit</span>
+    <span class="token keyword">unsigned</span> encoding<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">;</span> <span class="token comment">// 4 bit</span>
+    <span class="token keyword">unsigned</span> lru<span class="token operator">:</span>LRU_BITS<span class="token punctuation">;</span> <span class="token comment">// 内存淘汰策略 24 bit</span>
+    <span class="token keyword">int</span> refcount<span class="token punctuation">;</span> <span class="token comment">// 引用计算法 4 byte</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>ptr； <span class="token comment">// 指向真正的数据内存空间 8 byte</span>
+    <span class="token comment">// 总空间： 4bit + 4 bit + 24 bit + 4 byte + 8 byte = 16byte</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><em>unsigned lru:LRU_BITS：对象最后一次被访问的时间</em></p> <h2 id="string"><a href="#string" class="header-anchor">#</a> string</h2> <blockquote><p>redis中所有的key都是String类型，redis底层是C语言实现的
+ASCII码：一个英文字母（不分大小写）占一个字节的空间，一个中文汉字占两个字节的空间
+UTF-8编码：一个英文字符等于一个字节，一个中文（含繁体）等于三个字节
+Unicode编码：一个英文等于两个字节，一个中文（含繁体）等于两个字节</p></blockquote> <p>C中字符串的定义：</p> <div class="language-c extra-class"><pre class="language-c"><code><span class="token keyword">char</span><span class="token punctuation">[</span><span class="token punctuation">]</span> data <span class="token operator">=</span> <span class="token char">'guojia'</span>
+<span class="token macro property"><span class="token directive-hash">#</span> <span class="token expression">C语言中，会默认给字符串末尾增加一个</span><span class="token char">'\0'</span><span class="token expression">，一个字节</span></span>
+# 假如有的字符串中就包含<span class="token char">'\0'</span>怎么办？
+</code></pre></div><p><em>redis是通过加了个sds的结构解决\0的问题，很好奇其他中间件如何解决的，每个都需要自己解决，是不是太麻烦了</em></p> <h3 id="二进制安全"><a href="#二进制安全" class="header-anchor">#</a> 二进制安全</h3> <p>为了解决上面的问题，redis重新定义了一个数据结构sdshdr(sds：simple dynamic string)：</p> <div class="language-c extra-class"><pre class="language-c"><code><span class="token comment">// redis 3.0</span>
+<span class="token keyword">struct</span> <span class="token class-name">sdshdr</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 记录buf数组中已使用字节的数量，即SDS所保存字符串的长度</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> len<span class="token punctuation">;</span>
+    <span class="token comment">// 记录buf数据中未使用的字节数量</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> free<span class="token punctuation">;</span>
+    <span class="token comment">// 字节数组，用于保存字符串</span>
+    <span class="token keyword">char</span> buf<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><h3 id="内存预分配"><a href="#内存预分配" class="header-anchor">#</a> 内存预分配</h3> <p>需要修改某个key的value，如果增加的长度超过free，就需要对原数组进行扩容了；redis扩容的规则：</p> <ul><li>（len + addlen）* 2，例如：当前数组长度是6，free=0，要修改成12个字节的新字符串，扩容后长度 = （6 + （12 - 6）） * 2 = 24</li> <li>当value的长度超过1M（即1024个字节），每次扩容都是 + 1M</li></ul> <p>扩容之后的长度要比需要的长度大，称之为内存预分配</p> <h3 id="兼容部分c字符串函数"><a href="#兼容部分c字符串函数" class="header-anchor">#</a> 兼容部分C字符串函数</h3> <p>虽然SDS的API是二进制安全的，但还是像C字符串一样以空字符结尾，目的是为了让保存文本数据的SDS可以重用一部分C字符串的函数</p> <h3 id="c字符串与sds对比"><a href="#c字符串与sds对比" class="header-anchor">#</a> C字符串与SDS对比</h3> <p><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1677066017652-abf5621f-9a26-4652-a922-6a5b794bdc1e.png?x-oss-process=image%2Fresize%2Cw_1466%2Climit_0" alt=""></p> <p>程序中有两个在内存中紧邻着的字符串 s1 和 s2，其中s1保存了字符串“redis”，s2 则保存了字符“MongoDb”；现在将s1 的内容修改为redis cluster，但是又忘了重新为s1 分配足够的空间，这时候就会出现以下问题：原本s2中的内容已经被S1的内容给占领了，s2现在为 cluster，而不是“Mongodb”，这就是缓冲区溢出
+<img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611922178483-37b0ce34-81a2-428a-9786-c172da16b0c9.png#height=77&amp;id=F6V3M&amp;name=image.png&amp;originHeight=154&amp;originWidth=976&amp;originalType=binary&amp;ratio=1&amp;size=19757&amp;status=done&amp;style=none&amp;width=488" alt="image.png"></p> <h3 id="sds升级"><a href="#sds升级" class="header-anchor">#</a> SDS升级</h3> <p>redis 3.2之前的数据结构，len和free都是int类型，int要占用4个字节；并且一般我们字符串的长度没有4个字节这么长，所以很浪费空间；3.2对SDS进行了升级：</p> <div class="language-c extra-class"><pre class="language-c"><code><span class="token comment">// 3.2</span>
+<span class="token comment">/* Note: sdshdr5 is never used, we just access the flags byte directly.
+ * However is here to document the layout of type 5 SDS strings. */</span>
+<span class="token keyword">struct</span> <span class="token keyword">__attribute__</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>__packed__<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">sdshdr5</span> <span class="token punctuation">{</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> flags<span class="token punctuation">;</span> <span class="token comment">/* 3 lsb of type, and 5 msb of string length */</span>
+    <span class="token keyword">char</span> buf<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> <span class="token keyword">__attribute__</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>__packed__<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">sdshdr8</span> <span class="token punctuation">{</span>
+    <span class="token class-name">uint8_t</span> len<span class="token punctuation">;</span> <span class="token comment">/* used */</span>
+    <span class="token class-name">uint8_t</span> alloc<span class="token punctuation">;</span> <span class="token comment">/* excluding the header and null terminator */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> flags<span class="token punctuation">;</span> <span class="token comment">/* 3 lsb of type, 5 unused bits */</span>
+    <span class="token keyword">char</span> buf<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> <span class="token keyword">__attribute__</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>__packed__<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">sdshdr16</span> <span class="token punctuation">{</span>
+    <span class="token class-name">uint16_t</span> len<span class="token punctuation">;</span> <span class="token comment">/* used */</span>
+    <span class="token class-name">uint16_t</span> alloc<span class="token punctuation">;</span> <span class="token comment">/* excluding the header and null terminator */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> flags<span class="token punctuation">;</span> <span class="token comment">/* 3 lsb of type, 5 unused bits */</span>
+    <span class="token keyword">char</span> buf<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> <span class="token keyword">__attribute__</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>__packed__<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">sdshdr32</span> <span class="token punctuation">{</span>
+    <span class="token class-name">uint32_t</span> len<span class="token punctuation">;</span> <span class="token comment">/* used */</span>
+    <span class="token class-name">uint32_t</span> alloc<span class="token punctuation">;</span> <span class="token comment">/* excluding the header and null terminator */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> flags<span class="token punctuation">;</span> <span class="token comment">/* 3 lsb of type, 5 unused bits */</span>
+    <span class="token keyword">char</span> buf<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> <span class="token keyword">__attribute__</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>__packed__<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token class-name">sdshdr64</span> <span class="token punctuation">{</span>
+    <span class="token class-name">uint64_t</span> len<span class="token punctuation">;</span> <span class="token comment">/* used */</span>
+    <span class="token class-name">uint64_t</span> alloc<span class="token punctuation">;</span> <span class="token comment">/* excluding the header and null terminator */</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> flags<span class="token punctuation">;</span> <span class="token comment">/* 3 lsb of type, 5 unused bits */</span>
+    <span class="token keyword">char</span> buf<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><p>3.2版本及之后，会根据字符串的长度来选择对应的数据结构：</p> <div class="language-c extra-class"><pre class="language-c"><code><span class="token keyword">static</span> <span class="token keyword">inline</span> <span class="token keyword">char</span> <span class="token function">sdsReqType</span><span class="token punctuation">(</span><span class="token class-name">size_t</span> string_size<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>string_size <span class="token operator">&lt;</span> <span class="token number">1</span><span class="token operator">&lt;&lt;</span><span class="token number">5</span><span class="token punctuation">)</span>  <span class="token comment">// 32</span>
+        <span class="token keyword">return</span> SDS_TYPE_5<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>string_size <span class="token operator">&lt;</span> <span class="token number">1</span><span class="token operator">&lt;&lt;</span><span class="token number">8</span><span class="token punctuation">)</span>  <span class="token comment">// 256</span>
+        <span class="token keyword">return</span> SDS_TYPE_8<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>string_size <span class="token operator">&lt;</span> <span class="token number">1</span><span class="token operator">&lt;&lt;</span><span class="token number">16</span><span class="token punctuation">)</span>   <span class="token comment">// 65536 64k</span>
+        <span class="token keyword">return</span> SDS_TYPE_16<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>string_size <span class="token operator">&lt;</span> <span class="token number">1ll</span><span class="token operator">&lt;&lt;</span><span class="token number">32</span><span class="token punctuation">)</span>  <span class="token comment">// 4294967296 4G</span>
+        <span class="token keyword">return</span> SDS_TYPE_32<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> SDS_TYPE_64<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>sdshdr5的数据结构如下：</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611762090597-c9bd42ce-d6f7-4e5a-af6a-dfcbcf430b93.png#height=326&amp;id=c5rkd&amp;name=68.png&amp;originHeight=326&amp;originWidth=774&amp;originalType=binary&amp;ratio=1&amp;size=17645&amp;status=done&amp;style=none&amp;width=774" alt="68.png"></p> <p>flags占用8bit，前3bit表示数据结构的类型，例如000表示sdshdr5，后5bit表示buf的字节数（长度），2^5 - 1 = 31，最好能表示31个字节的字符串；free：31 - len；如果字符串长度超过31，就要用sdshdr8表示：</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611921823970-09f1d7d3-0958-493f-bcae-526a2327fe92.png#height=666&amp;id=dTDQz&amp;name=73.png&amp;originHeight=666&amp;originWidth=1578&amp;originalType=binary&amp;ratio=1&amp;size=67886&amp;status=done&amp;style=none&amp;width=1578" alt="73.png"></p> <p>flags占用8bit，前3bit表示数据结构的类型，例如001表示sdshdr8，后5bit未使用；len表示buf的字节数，allo表示分配的字节数；最长能表示的字符串长度 = 2^8 - 1 = 255</p> <hr> <p>推测：
+sdshdr5申请的时候就会分配31个字节，然后31 - len就能求出free
+sdshdr8及更大的结构不会一下就分满，所以需要alloc记录分配的内存，alloc - len = free</p> <h3 id="内部编码"><a href="#内部编码" class="header-anchor">#</a> 内部编码</h3> <div class="language-c extra-class"><pre class="language-c"><code><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">redisObject</span> <span class="token punctuation">{</span>
+	<span class="token keyword">unsigned</span> type<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">;</span> <span class="token comment">// 4 bit</span>
+    <span class="token keyword">unsigned</span> encoding<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">;</span> <span class="token comment">// 4 bit</span>
+    <span class="token keyword">unsigned</span> lru<span class="token operator">:</span>LRU_BITS<span class="token punctuation">;</span> <span class="token comment">// 内存淘汰策略 24 bit</span>
+    <span class="token keyword">int</span> refcount<span class="token punctuation">;</span> <span class="token comment">// 引用计算法 4 byte</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>ptr； <span class="token comment">// 指向真正的数据内存空间 8 byte</span>
+    <span class="token comment">// 总空间： 4bit + 4 bit + 24 bit + 4 byte + 8 byte = 16byte</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="embstr"><a href="#embstr" class="header-anchor">#</a> embstr</h4> <p>一个redisObject一共是16byte，操作系统通常一下会读取一行数据（缓存行），一般缓存行是64byte；所以一次内存读取64 - redisObject（16byte)）= 48byte，会多读出来48byte的数据；如果我们的数据小于48byte，直接和redisObject放在一起就可以一次读出来；48byte的字符串使用sdshdr8，这个数据结构本身占用3个字节（len + alloc + flags），再加上会在字符串末尾自动加上\0（1byte），48 - 4 = 44（byte），如果key字符串长度小于等于44，就可以使用embstr</p> <h4 id="int"><a href="#int" class="header-anchor">#</a> int</h4> <p>C语言long类型就是8byte存储的，如果value是一个数值，就直接把value存在ptr的位置就好了，不用再重写申请内存空间了；不过如果value超过long的最大值就不行了</p> <h4 id="raw"><a href="#raw" class="header-anchor">#</a> raw</h4> <p>value长度大于44，使用raw</p> <h2 id="list"><a href="#list" class="header-anchor">#</a> list</h2> <h3 id="ziplist"><a href="#ziplist" class="header-anchor">#</a> ziplist</h3> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612088642106-7e7f5d20-077f-4288-924a-ec4bb0206c34.png#height=481&amp;id=vQSbx&amp;name=image.png&amp;originHeight=481&amp;originWidth=570&amp;originalType=binary&amp;ratio=1&amp;size=50436&amp;status=done&amp;style=none&amp;width=570" alt="image.png"></p> <ul><li>zlbytes：32bit，4个字节，记录ziplist占用的内存字节数；也就是说一个ziplist最大可以包含2^32 - 1个字节，接近4GB</li> <li>zltail：32bit，4个字节，记录最后一个entry在ziplist中的偏移字节数；方便从尾部遍历</li> <li>zlen：16bit，2个字节，记录ziplist中entry的个数，一个ziplist最多存放2^16 -1 = 65535个entry</li> <li>zlend：8bit，1个字节，固定值255，标志ziplist的尾巴；当从 ---&gt;<em>（左往右遍历）<em>到最后一个entry，再往下判断prevrawlen的时候发现是255就表示ziplist已结束</em>（再往下判断第一个字节是不是255，如果是表示ziplist结束，所以prevrawlen的第一个字节，最大只能254，如果prevrawlen值也能是255，从左往右就无法判断结束了）</em>；这也是prevrawlen最大只能是254的原因；当从右完整遍历_（&lt;---）_的时候，判断前一个元素的长度为0就代表ziplist结束了</li> <li>entry：list的值
+<ul><li>prevrawlen：记录前一个元素的长度，为了从右往左遍历_（&lt;---）_</li> <li>len：当前entry的长度</li> <li>data：当前entry的value</li></ul></li></ul> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612090444084-45801347-df4f-4e77-9899-b83bda857cfd.png#height=99&amp;id=RSBZm&amp;name=image.png&amp;originHeight=99&amp;originWidth=704&amp;originalType=binary&amp;ratio=1&amp;size=10224&amp;status=done&amp;style=none&amp;width=704" alt="image.png"></p> <p>（每个entry的大小都不一样，不能实现随机读取）</p> <p>len字段的用法：
+<em>（这里len是变长的，就是为了节约len的长度）</em></p> <table><thead><tr><th>序号</th> <th>字段</th> <th>说明</th></tr></thead> <tbody><tr><td>1</td> <td>00xxxxxx</td> <td>剩余的6个bit用来表示长度，最大长度2^6 - 1个byte</td></tr> <tr><td>2</td> <td>01xxxxxx xxxxxxxx</td> <td>前两个高位bit是01，len字段占用2byte，剩余14bit表示长度，最大长度2^14 - 1个byte</td></tr> <tr><td>3</td> <td>10xxxxxx xxxxxxxx xxxxxxxx xxxxxxxx</td> <td>前两个高位bit是10，len字段占用4bit，剩余32bit表示长度，最大长度2^32 - 1个byte</td></tr> <tr><td>4</td> <td>11000000</td> <td>前两个高位bit是11，值为OXC0，len字段占1byte，后面的data为2byte的int16类型</td></tr> <tr><td>5</td> <td>11010000</td> <td>前两个高位bit是1101，值为OXD0，len字段占1byte，后面的data为4byte的int32类型</td></tr> <tr><td>6</td> <td>...</td> <td>...</td></tr></tbody></table> <h3 id="linkedlist"><a href="#linkedlist" class="header-anchor">#</a> linkedlist</h3> <p>3.2之前，list底层的编码是ziplist和linkedlist实现的；当list对象中元素的长度比较小或者数量比较少的时候，采用ziplist来存储，当list对象中元素的长度比较大或者数量比较多的时候，则会转而使用双向列表linkedlist来存储</p> <p><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1677066081898-db014ac9-792d-4137-a4f4-2c435856df10.png?x-oss-process=image%2Fresize%2Cw_1462%2Climit_0" alt=""></p> <h3 id="quicklist"><a href="#quicklist" class="header-anchor">#</a> quicklist</h3> <p>3.2之后，一个list底层可以有多个ziplist，ziplist由quicklist关联起来；可以定义每个ziplist的大小，超过就分裂
+<img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612094125975-af056828-f216-4a4b-a5a7-10bf4f19e7c7.png#height=371&amp;id=b3CMj&amp;name=image.png&amp;originHeight=371&amp;originWidth=548&amp;originalType=binary&amp;ratio=1&amp;size=38871&amp;status=done&amp;style=none&amp;width=548" alt="image.png"></p> <table><thead><tr><th>quicklist</th> <th>quicklistNode</th> <th>list-max-ziplist-size</th></tr></thead> <tbody><tr><td></td> <td></td> <td></td></tr></tbody></table> <ul><li>管理quicklistNode组成的双向链表</li> <li>head：指向双向链表的头节点</li> <li>tail：指向双向链表的尾节点</li> <li>count：元素总个数</li> <li>length：quicklistNode节点数
+|</li> <li>每个ziplist由一个quicklickNode管理</li> <li>zl：指向ziplist的指针</li> <li>count：ziplist元素的个数</li> <li>prev：指向前一个quicklistNode</li> <li>next：指向后一个quicklistNode
+|</li> <li>当取正值的时候，表示按照数据项个数来限定每个quicklist节点上的ziplist长度。比如，当这个参数配置成5的时候，表示每个quicklist节点的ziplist最多包含5个数据项</li> <li>当取负值的时候，表示按照占用字节数来限定每个quicklist节点上的ziplist长度。这时，它只能取-1到-5这五个值，每个值含义如下：
+<ul><li>-5：每个ziplist大小不能超多64kb</li> <li>-4：不能超过32kb</li> <li>...
+|</li></ul></li></ul> <h2 id="hash"><a href="#hash" class="header-anchor">#</a> hash</h2> <p>当数据量比较小，或者单个元素比较小时，底层用ziplist存储（fied和name为一个entry），数据大小和元素阈值可以通过参数控制：</p> <div class="language-c extra-class"><pre class="language-c"><code><span class="token comment">// ziplist元素个数超过512，改为hashtable</span>
+hash<span class="token operator">-</span>max<span class="token operator">-</span>ziplist<span class="token operator">-</span>entries <span class="token number">512</span>
+<span class="token comment">// 单个元素超过64byte时，改为hashtable</span>
+hash<span class="token operator">-</span>max<span class="token operator">-</span>ziplist<span class="token operator">-</span>value <span class="token number">64</span>
+</code></pre></div><h2 id="set"><a href="#set" class="header-anchor">#</a> set</h2> <p>下面两个条件任意满足一个时，底层是hashtable:</p> <ul><li>元素个数大于set-max-intset-entries</li> <li>元素无法用整型表示</li></ul> <p>否则使用inset</p> <h3 id="inset"><a href="#inset" class="header-anchor">#</a> inset</h3> <div class="language-c extra-class"><pre class="language-c"><code><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">INTSET_ENC_INT16</span> <span class="token expression"><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">int16_t</span><span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">INTSET_ENC_INT32</span> <span class="token expression"><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">int32_t</span><span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">INTSET_ENC_INT64</span> <span class="token expression"><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">int64_t</span><span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">intset</span> <span class="token punctuation">{</span>
+    <span class="token class-name">uint32_t</span> encoding<span class="token punctuation">;</span> <span class="token comment">// 编码。</span>
+    <span class="token class-name">uint32_t</span> length<span class="token punctuation">;</span>   <span class="token comment">// 数组长度。</span>
+    <span class="token class-name">int8_t</span> contents<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// 整数值数值。</span>
+<span class="token punctuation">}</span> intset<span class="token punctuation">;</span>
+</code></pre></div><p>根据插入数值大小，决定contents数组的encoding格式。编码格式分别有int16_t，int32_t，int64_t。以最大的数值为准，如果最大的数值是int64_t那么数组的每个元素都是int64_t，contents还是一个有序的数组；优点是统一简单，提高数组查找效率——源码实现是通过二分法查找。如果数组不同数值用不同的编码存储，就很难用二分法查找了（这也是为什么使用inset的原因），只能使用hashtable来提高查询效率；
+但是这样做一方面提高了查找效率，另一方面也会导致内存浪费，如果所有数据中，只有一个数据是int64_t，其它数据都是int16_t，整个数组都以int64_t存储，显然会造成内存浪费</p> <h2 id="zset"><a href="#zset" class="header-anchor">#</a> zset</h2> <p>底层数据结构为hashtable + 跳表；当数据量比较少是，用ziplist</p> <div class="language-c extra-class"><pre class="language-c"><code><span class="token comment">// 元素个数超过128，使用跳表</span>
+zset<span class="token operator">-</span>max<span class="token operator">-</span>ziplist<span class="token operator">-</span>entries <span class="token number">128</span>
+<span class="token comment">// 单个元素大小超过64byte，使用跳表</span>
+zset<span class="token operator">-</span>max<span class="token operator">-</span>ziplist<span class="token operator">-</span>value <span class="token number">64</span>
+</code></pre></div><p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612097237983-383c0253-79e7-4797-ade8-9478180d348f.png#height=200&amp;id=MobTN&amp;name=image.png&amp;originHeight=200&amp;originWidth=918&amp;originalType=binary&amp;ratio=1&amp;size=33057&amp;status=done&amp;style=none&amp;width=918" alt="image.png"></p> <h3 id="skiplist"><a href="#skiplist" class="header-anchor">#</a> skiplist</h3> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612146074435-0dde4530-ec25-4789-b1dc-d7f4dc8e4caa.png#height=268&amp;id=LJnTb&amp;name=image.png&amp;originHeight=268&amp;originWidth=1142&amp;originalType=binary&amp;ratio=1&amp;size=122051&amp;status=done&amp;style=none&amp;width=1142" alt="image.png"></p> <p>想快速找到上图链表中的 10 这个元素，只能从头开始遍历链表，直到找到我们需要找的元素。查找路径：1、3、4、5、7、8、9、10。这样的查找效率很低，平均时间复杂度很高O(n)；那有没有办法提高链表的查找速度呢？如下图所示，我们从链表中每两个元素抽出来，加一级索引，一级索引指向了原始链表，即：通过一级索引 7 的down指针可以找到原始链表的 7 。那现在怎么查找 10 这个元素呢</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612146155740-f8c996de-8509-48c6-91b6-fb6162483875.png#height=486&amp;id=W47Le&amp;name=image.png&amp;originHeight=486&amp;originWidth=1142&amp;originalType=binary&amp;ratio=1&amp;size=241635&amp;status=done&amp;style=none&amp;width=1142" alt="image.png"></p> <p>先在索引找 1、4、7、9，遍历到一级索引的 9 时，发现 9 的后继节点是 13，比 10 大，于是不往后找了，而是通过 9 找到原始链表的 9，然后再往后遍历找到了我们要找的 10，遍历结束。有没有发现，加了一级索引后，查找路径：1、4、7、9、10，查找节点需要遍历的元素相对少了，我们不需要对 10 之前的所有数据都遍历，查找的效率提升了；那如果加二级索引呢？如下图所示，查找路径：1、7、9、10。是不是找 10 的效率更高了？这就是跳表的思想，用“空间换时间”，通过给链表建立索引，提高了查找的效率</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1612146221295-341ec8d9-0c69-422b-9bc7-8e1cfd639a5a.png#height=663&amp;id=r9OD1&amp;name=image.png&amp;originHeight=663&amp;originWidth=1142&amp;originalType=binary&amp;ratio=1&amp;size=311744&amp;status=done&amp;style=none&amp;width=1142" alt="image.png"></p> <p>跳表查询、插入、删除的时间复杂度为O(log n)</p> <h3 id="为什么选择跳表而不是红黑树"><a href="#为什么选择跳表而不是红黑树" class="header-anchor">#</a> 为什么选择跳表而不是红黑树</h3> <p>按照区间来查找数据这个操作，红黑树的效率没有跳表高。按照区间查找数据时，跳表可以做到O(logn)的时间复杂度定位区间的起点，然后在原始链表中顺序往后遍历就可以了，非常高效；对于树而言，要取同一层级的元素还是比较复杂的</p> <h3 id="跳表的随机层数"><a href="#跳表的随机层数" class="header-anchor">#</a> 跳表的随机层数</h3> <p><em>1.6.1 每一层链表的节点个数，是下面一层的节点个数的一半，这样查找过程就非常类似于一个二分查找；这种方法在插入数据的时候有很大的问题。新插入一个节点之后，就会打乱上下相邻两层链表上节点个数严格的 2:1 的对应关系。如果要维持这种对应关系，就必须把新插入的节点后面的所有节点重新进行调整</em></p> <p><em>skiplist 为了避免这一问题，它不要求上下相邻两层链表之间的节点个数有严格的对应关系，而是 为每个节点随机出一个层数(level)。比如，一个节点随机出的层数是 3，那么就把它链入到第 1 层到第 3 层这三层链表中。为了表达清楚，下图展示了如何通过一步步的插入操作从而形成一个 skiplist 的过程：</em> <img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1624522630579-ffddee08-7c4e-43a7-b384-e9fcad6789a1.png#clientId=uf7c452c2-cba3-4&amp;from=ui&amp;id=ufb8b158e&amp;name=aaa.png&amp;originHeight=1740&amp;originWidth=1240&amp;originalType=binary&amp;ratio=1&amp;size=943046&amp;status=done&amp;style=none&amp;taskId=u661e09f9-63fb-4491-8e55-957ed7dc966" alt="aaa.png"> <img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1624522639558-ee18efdd-45de-46a9-9020-30a2ef7c5ecb.png#clientId=uf7c452c2-cba3-4&amp;from=ui&amp;id=uf1b94c29&amp;name=bb.png&amp;originHeight=443&amp;originWidth=1240&amp;originalType=binary&amp;ratio=1&amp;size=241206&amp;status=done&amp;style=none&amp;taskId=u52eb49b9-fd48-41ce-9e8f-f0c30ed0bc8" alt="bb.png"></p> <p>参考：</p> <ol><li><a href="https://www.yuque.com/javadu/mid/gl46we?view=doc_embed" target="_blank" rel="noopener noreferrer">Redis从入门到高可用分布式实践<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://www.yuque.com/javadu/mid/kc36fc?view=doc_embed" target="_blank" rel="noopener noreferrer">Redis从入门到高可用分布式实践(sentinel和Cluster)<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://www.bilibili.com/video/BV1cZ4y1N7Zc?p=4" target="_blank" rel="noopener noreferrer">Redis6.0底层源码设计原理与核心数据结构详解<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li> <li><a href="https://www.bilibili.com/video/BV1o5411b7QJ?p=3" target="_blank" rel="noopener noreferrer">Redis中有哪些数据结构及底层实现原理<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ol></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/middleware/redis-cluster.html" class="prev">
+          Redis 集群
+        </a></span> <span class="next"><a href="/middleware/redis-others.html">
+          Redis 其他知识点
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/middleware/redis-principle.html#总体数据结构" class="sidebar-link reco-side-总体数据结构" data-v-b57cc07c>总体数据结构</a></li><li class="level-2" data-v-b57cc07c><a href="/middleware/redis-principle.html#string" class="sidebar-link reco-side-string" data-v-b57cc07c>string</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#二进制安全" class="sidebar-link reco-side-二进制安全" data-v-b57cc07c>二进制安全</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#内存预分配" class="sidebar-link reco-side-内存预分配" data-v-b57cc07c>内存预分配</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#兼容部分c字符串函数" class="sidebar-link reco-side-兼容部分c字符串函数" data-v-b57cc07c>兼容部分C字符串函数</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#c字符串与sds对比" class="sidebar-link reco-side-c字符串与sds对比" data-v-b57cc07c>C字符串与SDS对比</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#sds升级" class="sidebar-link reco-side-sds升级" data-v-b57cc07c>SDS升级</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#内部编码" class="sidebar-link reco-side-内部编码" data-v-b57cc07c>内部编码</a></li><li class="level-2" data-v-b57cc07c><a href="/middleware/redis-principle.html#list" class="sidebar-link reco-side-list" data-v-b57cc07c>list</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#ziplist" class="sidebar-link reco-side-ziplist" data-v-b57cc07c>ziplist</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#linkedlist" class="sidebar-link reco-side-linkedlist" data-v-b57cc07c>linkedlist</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#quicklist" class="sidebar-link reco-side-quicklist" data-v-b57cc07c>quicklist</a></li><li class="level-2" data-v-b57cc07c><a href="/middleware/redis-principle.html#hash" class="sidebar-link reco-side-hash" data-v-b57cc07c>hash</a></li><li class="level-2" data-v-b57cc07c><a href="/middleware/redis-principle.html#set" class="sidebar-link reco-side-set" data-v-b57cc07c>set</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#inset" class="sidebar-link reco-side-inset" data-v-b57cc07c>inset</a></li><li class="level-2" data-v-b57cc07c><a href="/middleware/redis-principle.html#zset" class="sidebar-link reco-side-zset" data-v-b57cc07c>zset</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#skiplist" class="sidebar-link reco-side-skiplist" data-v-b57cc07c>skiplist</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#为什么选择跳表而不是红黑树" class="sidebar-link reco-side-为什么选择跳表而不是红黑树" data-v-b57cc07c>为什么选择跳表而不是红黑树</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-principle.html#跳表的随机层数" class="sidebar-link reco-side-跳表的随机层数" data-v-b57cc07c>跳表的随机层数</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----></div></div>
+    <script src="/assets/js/app.ebc22a7e.js" defer></script><script src="/assets/js/3.055d3e19.js" defer></script><script src="/assets/js/1.e976497e.js" defer></script><script src="/assets/js/83.6c097929.js" defer></script>
+  </body>
+</html>

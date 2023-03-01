@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Redis 集群 | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.112c01f0.css" as="style"><link rel="preload" href="/assets/js/app.ebc22a7e.js" as="script"><link rel="preload" href="/assets/js/3.055d3e19.js" as="script"><link rel="preload" href="/assets/js/1.e976497e.js" as="script"><link rel="preload" href="/assets/js/80.1a1dcc9a.js" as="script"><link rel="prefetch" href="/assets/js/10.130f488d.js"><link rel="prefetch" href="/assets/js/11.b3cf3d1c.js"><link rel="prefetch" href="/assets/js/12.82d05f80.js"><link rel="prefetch" href="/assets/js/13.711ee55a.js"><link rel="prefetch" href="/assets/js/14.e78a33da.js"><link rel="prefetch" href="/assets/js/15.9711c905.js"><link rel="prefetch" href="/assets/js/16.bc820f0d.js"><link rel="prefetch" href="/assets/js/17.a72ef59e.js"><link rel="prefetch" href="/assets/js/18.15b69bd7.js"><link rel="prefetch" href="/assets/js/19.656e8c8b.js"><link rel="prefetch" href="/assets/js/20.6acf7c10.js"><link rel="prefetch" href="/assets/js/21.28ecd056.js"><link rel="prefetch" href="/assets/js/22.f51f09ce.js"><link rel="prefetch" href="/assets/js/23.16196448.js"><link rel="prefetch" href="/assets/js/24.774e0b81.js"><link rel="prefetch" href="/assets/js/25.4f0c3574.js"><link rel="prefetch" href="/assets/js/26.476ac42e.js"><link rel="prefetch" href="/assets/js/27.adb08033.js"><link rel="prefetch" href="/assets/js/28.c66df867.js"><link rel="prefetch" href="/assets/js/29.6f707d72.js"><link rel="prefetch" href="/assets/js/30.9eb4194f.js"><link rel="prefetch" href="/assets/js/31.b1740634.js"><link rel="prefetch" href="/assets/js/32.4e86cbf4.js"><link rel="prefetch" href="/assets/js/33.4d485781.js"><link rel="prefetch" href="/assets/js/34.91d03838.js"><link rel="prefetch" href="/assets/js/35.55e2ad26.js"><link rel="prefetch" href="/assets/js/36.1bede787.js"><link rel="prefetch" href="/assets/js/37.d0f9ca3d.js"><link rel="prefetch" href="/assets/js/38.f445eba6.js"><link rel="prefetch" href="/assets/js/39.07a0da36.js"><link rel="prefetch" href="/assets/js/4.af96fb9f.js"><link rel="prefetch" href="/assets/js/40.2b632790.js"><link rel="prefetch" href="/assets/js/41.3fea5474.js"><link rel="prefetch" href="/assets/js/42.d2289409.js"><link rel="prefetch" href="/assets/js/43.f6bfd24e.js"><link rel="prefetch" href="/assets/js/44.7e258a27.js"><link rel="prefetch" href="/assets/js/45.85116dbe.js"><link rel="prefetch" href="/assets/js/46.5e88dd0c.js"><link rel="prefetch" href="/assets/js/47.d7edbd52.js"><link rel="prefetch" href="/assets/js/48.3549aa87.js"><link rel="prefetch" href="/assets/js/49.42e66eaf.js"><link rel="prefetch" href="/assets/js/5.2cb7b5e8.js"><link rel="prefetch" href="/assets/js/50.48a54609.js"><link rel="prefetch" href="/assets/js/51.828abcb3.js"><link rel="prefetch" href="/assets/js/52.69dc5033.js"><link rel="prefetch" href="/assets/js/53.903b3787.js"><link rel="prefetch" href="/assets/js/54.e0469f30.js"><link rel="prefetch" href="/assets/js/55.f7d098ec.js"><link rel="prefetch" href="/assets/js/56.7b725893.js"><link rel="prefetch" href="/assets/js/57.6003dc74.js"><link rel="prefetch" href="/assets/js/58.cb383c55.js"><link rel="prefetch" href="/assets/js/59.9847b5f8.js"><link rel="prefetch" href="/assets/js/6.2eb56668.js"><link rel="prefetch" href="/assets/js/60.4f4ce018.js"><link rel="prefetch" href="/assets/js/61.4b082158.js"><link rel="prefetch" href="/assets/js/62.1414ca04.js"><link rel="prefetch" href="/assets/js/63.0e9159a8.js"><link rel="prefetch" href="/assets/js/64.ba992a44.js"><link rel="prefetch" href="/assets/js/65.34c94177.js"><link rel="prefetch" href="/assets/js/66.edf3335f.js"><link rel="prefetch" href="/assets/js/67.d4754d7b.js"><link rel="prefetch" href="/assets/js/68.95636628.js"><link rel="prefetch" href="/assets/js/69.823672ef.js"><link rel="prefetch" href="/assets/js/7.c5c6188d.js"><link rel="prefetch" href="/assets/js/70.ba125afe.js"><link rel="prefetch" href="/assets/js/71.336ce76e.js"><link rel="prefetch" href="/assets/js/72.d9f726a7.js"><link rel="prefetch" href="/assets/js/73.055cee2e.js"><link rel="prefetch" href="/assets/js/74.86194036.js"><link rel="prefetch" href="/assets/js/75.e1e486a0.js"><link rel="prefetch" href="/assets/js/76.e7630e5d.js"><link rel="prefetch" href="/assets/js/77.cf2209a2.js"><link rel="prefetch" href="/assets/js/78.e3b29d5f.js"><link rel="prefetch" href="/assets/js/79.51f43ebc.js"><link rel="prefetch" href="/assets/js/8.c08cf1ce.js"><link rel="prefetch" href="/assets/js/81.f2c6009b.js"><link rel="prefetch" href="/assets/js/82.b384ccf9.js"><link rel="prefetch" href="/assets/js/83.6c097929.js"><link rel="prefetch" href="/assets/js/84.ba5c9d85.js"><link rel="prefetch" href="/assets/js/9.2f614fd5.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.112c01f0.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/middleware/redis-map.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" class="nav-link"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/middleware/redis-others.html" class="nav-link"><i class="undefined"></i>
+  缓存穿透 击穿 雪崩
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  管理
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li><li class="dropdown-item"><h4>作者博文</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/about/about-independent-develop.html" class="nav-link"><i class="undefined"></i>
+  关于独立开发的失败尝试
+</a></li></ul></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>74</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  计算机基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/middleware/redis-map.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" class="nav-link"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/middleware/redis-others.html" class="nav-link"><i class="undefined"></i>
+  缓存穿透 击穿 雪崩
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  算法
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  管理
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li><li class="dropdown-item"><h4>作者博文</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/about/about-independent-develop.html" class="nav-link"><i class="undefined"></i>
+  关于独立开发的失败尝试
+</a></li></ul></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>企业级架构</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/" aria-current="page" class="sidebar-link">Spring</a></li><li><a href="/" aria-current="page" class="sidebar-link">Spring MVC</a></li><li><a href="/" aria-current="page" class="sidebar-link">Mybatis</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>中间件</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/middleware/redis-map.html" class="sidebar-link">Redis 知识地图</a></li><li><a href="/middleware/redis.html" class="sidebar-link">Redis 入门</a></li><li><a href="/middleware/redis-cluster.html" aria-current="page" class="active sidebar-link">Redis 集群</a></li><li><a href="/middleware/redis-principle.html" class="sidebar-link">Redis 底层数据结构原理</a></li><li><a href="/middleware/redis-others.html" class="sidebar-link">Redis 其他知识点</a></li><li><a href="/" aria-current="page" class="sidebar-link">Zookeeper</a></li><li><a href="/" aria-current="page" class="sidebar-link">RocketMQ</a></li><li><a href="/" aria-current="page" class="sidebar-link">Dubbo</a></li><li><a href="/" aria-current="page" class="sidebar-link">Netty</a></li><li><a href="/" aria-current="page" class="sidebar-link">Kafka</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>Redis 集群</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">Redis 集群</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/2/22</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/middleware/redis-cluster.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><blockquote><p><a href="/middleware/redis.html">接上文：Redis 入门</a></p></blockquote> <img width="380" height="253" align="bottom" src="https://cdn.nlark.com/yuque/0/2023/png/375413/1677049520574-ed36d995-3b54-414d-b870-f5b67e46c502.png"> <h2 id="_4-主从复制"><a href="#_4-主从复制" class="header-anchor">#</a> 4 主从复制</h2> <p>作用：备份、读写分离</p> <h3 id="_4-1-实现方式"><a href="#_4-1-实现方式" class="header-anchor">#</a> 4.1 实现方式</h3> <p>假如现在有两个redis，一个6379；一个6380；让6379成为master节点；6380成为slave节点</p> <ol><li>命令方式：
+<ol><li>redis-6380：slaveof 127.0.0.1 6379；主从关系建立后，slave先删除所有数据再从master同步</li> <li>去掉redis-6380：slaveof no one 127.0.0.1 6379</li></ol></li> <li>配置方式：
+<ol><li>配置文件：
+<ol><li>slaveof ip port</li> <li>slave-read-only：是否现在slave只读</li></ol></li></ol></li></ol> <h3 id="_4-2-全量-部分复制"><a href="#_4-2-全量-部分复制" class="header-anchor">#</a> 4.2 全量/部分复制</h3> <h4 id="_4-2-1-runid和偏移量"><a href="#_4-2-1-runid和偏移量" class="header-anchor">#</a> 4.2.1 runid和偏移量</h4> <p><strong>runid：</strong></p> <ol><li>redis每次启动的时候都会有一个随机的id来保障redis的标识，每次重启之后都是不一样的</li> <li>查看runid：</li></ol> <div class="language-java extra-class"><pre class="language-java"><code>redis<span class="token operator">-</span>cli <span class="token operator">-</span>p <span class="token number">6979</span> info server <span class="token operator">|</span> grep run
+run_id<span class="token operator">:</span>dsfsdf34234wfdsdf23432fdsdf
+</code></pre></div><p><strong>偏移量：</strong></p> <ul><li>一个数据写入量的字节，记录写了多少数据。主服务器会把偏移量同步给从服务器，当主从的偏移量一致，则数据是完全同步的</li> <li>如果主从服务的偏移量大于从服务器，则主从不同步</li> <li>查看offset：</li></ul> <div class="language-java extra-class"><pre class="language-java"><code>redis<span class="token operator">-</span>cli <span class="token operator">-</span>p <span class="token number">6979</span> info replication   <span class="token comment">//查看命令</span>
+slave_repl_offset：<span class="token number">1978</span>    <span class="token comment">// 偏移量参数</span>
+</code></pre></div><p><em><strong>redis选择选择全量复制还是部分复制</strong>：从节点将 runId，offset 发送给主节点后，主节点根据runId，偏移量和复制缓冲区（repl_back_buffer）大小来决定是否执行部分复制</em></p> <ul><li><em>如果runId和master的相同，并且offset 偏移量之后的数据，仍然在复制积压缓冲区的话，使用部分复制</em></li> <li><em>如果runId和master的不同，或者offset 偏移量之后的数据，已经不在积压缓冲区的话，说明数据已经被挤出，所以进行全量复制</em></li></ul> <p><em><strong>复制缓冲区（积压队列，repl_back_buffer）</strong>：是一个固定长度的循环队列，默认情况下积压队列的大小为 1 MB；每次写操作会往这个缓冲区写，循环写</em></p> <h4 id="_4-2-2-全量复制"><a href="#_4-2-2-全量复制" class="header-anchor">#</a> 4.2.2 全量复制</h4> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1610984975731-f211592b-a5b8-49e8-aa9a-21533858870f.png#height=283&amp;id=CKiGC&amp;name=19.png&amp;originHeight=390&amp;originWidth=680&amp;originalType=binary&amp;ratio=1&amp;size=103074&amp;status=done&amp;style=none&amp;width=494" alt="19.png"></p> <p>流程：</p> <ul><li>slave 向 master 传递命令 psync? -1 （因为第一次通信不知道master的runid和偏移量，所以传-1）</li> <li>master 向 slave 返回runid 和偏移量（为什么要返回runid给slave呢，因为可能master重启了，但是slave没有重启，slave还是老的runid）</li> <li>slave 保存 master 的信息</li> <li>master 执行 bgsave 生产RDB快照</li> <li>master 做send RDB 操作 向 slave 同步快照信息</li> <li>master 在生成RDB文件及传输过程中执行的命令写到repl_back_buffer，然后把repl_back_buffer也传送也slave</li> <li>slave清空之前的数据</li> <li>slave 加载 RDB文件及数据</li> <li>slave执行repl_back_buffer中的命令</li></ul> <p>开销：</p> <ul><li>bgsave时间</li> <li>RDB文件网络传输时间</li> <li>从节点清空数据时间</li> <li>从节点加载RDB的时间</li></ul> <h4 id="_4-2-3-部分复制"><a href="#_4-2-3-部分复制" class="header-anchor">#</a> 4.2.3 部分复制</h4> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1610985019735-6fea13b2-b89c-4ef8-bb52-0c4d76b5c08a.png#height=280&amp;id=nCaf1&amp;name=20.png&amp;originHeight=365&amp;originWidth=583&amp;originalType=binary&amp;ratio=1&amp;size=82009&amp;status=done&amp;style=none&amp;width=448" alt="20.png"></p> <p>流程：</p> <ul><li>当网络发生抖动，slave会与master断开</li> <li>master 写命令时，会写一份复制缓冲区的命令</li> <li>当slave在此连接master时 ，传递命令 psync {offset} {runid} ,告诉 master 自己当前的偏移量是多少</li> <li>master 向 slave 返回CONTINUE 把 缺失的内容 传递过去</li></ul> <h4 id="_4-2-4-命令持续复制"><a href="#_4-2-4-命令持续复制" class="header-anchor">#</a> 4.2.4 命令持续复制</h4> <p>当完成了上面的同步之后，主从服务器就会进入命令传播阶段，主节点会持续地把写命令发送给从节点</p> <h4 id="_4-2-5-心跳检测"><a href="#_4-2-5-心跳检测" class="header-anchor">#</a> 4.2.5 心跳检测</h4> <p>当完成了上面的同步之后，主从之间维护着长连接并彼此发送心跳命令，便以后续持续发送写命令，主从心跳检测如下图所示：</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611027750094-7517088e-2f27-4925-9f18-7d9ee99f3a66.png#height=277&amp;id=cnXwM&amp;name=58737ABA-018F-4613-99D3-0A1E11B0AC65.png&amp;originHeight=277&amp;originWidth=638&amp;originalType=binary&amp;ratio=1&amp;size=49962&amp;status=done&amp;style=none&amp;width=638" alt="58737ABA-018F-4613-99D3-0A1E11B0AC65.png"></p> <p>主从节点彼此都有心跳检测机制，各自模拟成对方的客户端进行通信，主从心跳检测的规则如下：</p> <ul><li>主节点默认每隔 10 秒对从节点发送 ping 命令，判断从节点的存活性和连接状态。可通过修改 redis.conf 配置文件里面的 repl-ping-replica-period 参数来控制发送频率</li> <li>从节点在主线程中每隔 1 秒发送 replconf ack {offset} 命令，给主节点 上报自身当前的复制偏移量，这条命令除了检测主从节点网络之外，还通过发送复制偏移量来保证主从的数据一致</li></ul> <h3 id="_4-3-故障处理"><a href="#_4-3-故障处理" class="header-anchor">#</a> 4.3 故障处理</h3> <h4 id="_4-3-1-slave节点故障"><a href="#_4-3-1-slave节点故障" class="header-anchor">#</a> 4.3.1 slave节点故障</h4> <p>没太大影响</p> <h4 id="_4-3-2-master节点故障"><a href="#_4-3-2-master节点故障" class="header-anchor">#</a> 4.3.2 master节点故障</h4> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1610985089674-0d888f7b-f7f6-4ede-b658-07f28ec0dfd6.png#height=183&amp;id=iJkPc&amp;name=21.png&amp;originHeight=312&amp;originWidth=817&amp;originalType=binary&amp;ratio=1&amp;size=149028&amp;status=done&amp;style=none&amp;width=480" alt="21.png"></p> <p>手动对某个slave执行，slaveof no one</p> <h3 id="_4-4-常见问题"><a href="#_4-4-常见问题" class="header-anchor">#</a> 4.4 常见问题</h3> <h4 id="_4-4-1-读写分离"><a href="#_4-4-1-读写分离" class="header-anchor">#</a> 4.4.1 读写分离</h4> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1610985131861-5af4ce4a-764e-41ce-ad62-5f96a313dbca.png#height=261&amp;id=zP9ll&amp;name=22.png&amp;originHeight=261&amp;originWidth=406&amp;originalType=binary&amp;ratio=1&amp;size=59558&amp;status=done&amp;style=none&amp;width=406" alt="22.png"></p> <p>问题：</p> <ul><li>复制数据延迟</li> <li>读到之前的数据</li></ul> <h4 id="_4-4-2-配置不一致"><a href="#_4-4-2-配置不一致" class="header-anchor">#</a> 4.4.2 配置不一致</h4> <ul><li>主从maxmemory不一致，例如master设置成4G，slave设置成2G，那么slave加载4G的RDB文件内存不够，会触发slave的淘汰策略</li> <li>对主节点做了一些数据结构优化参数（例如hash-max-ziplist-entries），导致从节点的内存不够</li></ul> <h4 id="_4-4-3-避免全量复制"><a href="#_4-4-3-避免全量复制" class="header-anchor">#</a> 4.4.3 避免全量复制</h4> <ul><li>第一次全量复制无法避免，好的方法就是对redis进行分片，每个redis不要这么大</li> <li>节点运行id不匹配（例如主节点重启）：这个时候从节点发现主节点runid变了，会触发全量复制
+<ul><li>故障转移，将slave转化为master</li></ul></li> <li>rel_back_buffer不足：默认是1M，假如slave节点和master节点偏移量超过了1M，就会触发全量复制
+<ul><li>可以通过参数：rel_backlog_size，设置大一些，例如10M</li></ul></li></ul> <h4 id="_4-4-5-避免复制风暴"><a href="#_4-4-5-避免复制风暴" class="header-anchor">#</a> 4.4.5 避免复制风暴</h4> <ul><li>例如主节点重启，runid变化了，所有slave都需要全量复制
+<ul><li>将一个slave上升为master</li> <li>更换复制拓扑</li></ul></li></ul> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1610985208417-461d9997-af98-410c-be63-e91549df0b82.png#height=163&amp;id=wZrfX&amp;name=23.png&amp;originHeight=163&amp;originWidth=302&amp;originalType=binary&amp;ratio=1&amp;size=31847&amp;status=done&amp;style=none&amp;width=302" alt="23.png"></p> <h2 id="_5-redis-哨兵-sentinel"><a href="#_5-redis-哨兵-sentinel" class="header-anchor">#</a> 5 Redis 哨兵 —— sentinel</h2> <p>主从复制，如果master节点挂掉了，需要手动进行以下操作：</p> <ul><li>对一个slave节点执行slaveof no one，让其成为master节点</li> <li>然后对其他slave节点执行slave of newmaster</li> <li>修改代码，把写节点配置成新的master；可以在diamond里配置</li></ul> <p>更进一步是把这个过程写成一个脚本，redis有解决方案：sentinel</p> <h3 id="_5-1-整体架构"><a href="#_5-1-整体架构" class="header-anchor">#</a> 5.1 整体架构</h3> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611135218010-e2df1f1d-6a2c-4da6-b824-ccf6b9d486a5.png#height=478&amp;id=vq1I6&amp;name=39.png&amp;originHeight=956&amp;originWidth=898&amp;originalType=binary&amp;ratio=1&amp;size=92293&amp;status=done&amp;style=none&amp;width=449" alt="39.png">
+客户端通过sentinel获取redis连接，sentinel知道谁是master谁是slave，客户端不需要知道谁是master；当master节点发生故障时，sentinel自动进行故障转移；</p> <p>sentinel故障转移流程：</p> <ol><li>多个sentinel发现并确认master有问题</li> <li>选举一个sentinel作为领导</li> <li>选出一个slave作为master</li> <li>通知其余slave成为新的master的slave</li> <li>通知客户端主从变化</li> <li>等待老的master复活成为新master的slave</li></ol> <p>一套sentinel可以监控多套主从：
+<img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611136139331-a4b4189d-0e04-4506-a7a8-ea6a88e7d061.png#height=397&amp;id=g5P8K&amp;name=41.png&amp;originHeight=794&amp;originWidth=1244&amp;originalType=binary&amp;ratio=1&amp;size=105011&amp;status=done&amp;style=none&amp;width=622" alt="41.png"></p> <h3 id="_5-2-安装与配置"><a href="#_5-2-安装与配置" class="header-anchor">#</a> 5.2 安装与配置</h3> <p>实现如下目标，26379是sentinel默认端口：</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611136600733-88417d5c-f838-40ad-84ce-4d2b356d3153.png#height=341&amp;id=Vmknk&amp;name=42.png&amp;originHeight=341&amp;originWidth=466&amp;originalType=binary&amp;ratio=1&amp;size=28774&amp;status=done&amp;style=none&amp;width=466" alt="42.png"></p> <h4 id="_5-2-1-redis节点"><a href="#_5-2-1-redis节点" class="header-anchor">#</a> 5.2.1 redis节点</h4> <p>redis主节点：</p> <table><thead><tr><th>启动</th> <th>redis-server redis-7000.conf</th></tr></thead> <tbody><tr><td>配置</td> <td>port 7000 <br>daemonize yes <br>pidfile /.../redis-7000.pid <br> logfile &quot;7000.log&quot; <br> dir/....</td></tr></tbody></table> <ul><li>daemonize设置yes：代表开启守护进程模式。在该模式下，redis会在后台运行，除非手动kill该进程；</li> <li>daemonize设置no：当前界面将进入redis的命令行界面，exit强制退出或者关闭连接工具都会导致redis进程退出</li></ul> <p>redis从节点：</p> <table><thead><tr><th>启动</th> <th>redis-server redis-7001.conf <br>redis-server redis-7002.conf</th></tr></thead> <tbody><tr><td>配置</td> <td>port 7001/7002 <br>daemonize yes <br>pidfile /.../redis-7001/7002.pid <br>logfile &quot;7001/7002.log&quot; <br>dir /.... <br>slaveof 127.0.0.1 7000</td></tr></tbody></table> <h4 id="_5-2-2-sentinel配置"><a href="#_5-2-2-sentinel配置" class="header-anchor">#</a> 5.2.2 sentinel配置</h4> <table><thead><tr><th><strong>命令</strong></th> <th><strong>说明</strong></th></tr></thead> <tbody><tr><td>port ${port}</td> <td></td></tr> <tr><td>dir /...</td> <td>sentinel和redis是两个应用，所以可以使用两个工作目录</td></tr> <tr><td>logfile &quot;${port}.log&quot;</td> <td></td></tr> <tr><td>sentinel monitor mymaster 127.0.0.1 7000 2</td> <td>当前sentinel要监控的master <br> mymaster：监控的master名称 <br> 127.0.0.1 7000：监控的master地址及端口 <br> 2：表示几个sentinel认为它有问题了才是真的有问题</td></tr> <tr><td>sentinel down-after-milliseconds mymaster 30000</td> <td>master超过多长时间没响应就认为有故障，默认30s <br><em>sentinel会向master发送心跳PING来确认master是否存活</em></td></tr> <tr><td>sentinel parallel-syncs mymaster 1</td> <td>故障转移的时候最多几个slave同时同步数据 <br><em>新的master别切换之后，同时有多少个slave被切换到去连接新master，重新做同步，可以少设置点防止复制风暴</em></td></tr> <tr><td>sentinel failover-timeout mymaster 180000</td> <td>故障转移的超时时间</td></tr></tbody></table> <h4 id="_5-2-3-jedis连接sentinel"><a href="#_5-2-3-jedis连接sentinel" class="header-anchor">#</a> 5.2.3 jedis连接sentinel</h4> <ul><li>client遍历sentinel节点集合</li> <li>获取一个可用的sentinel节点，执行：sentinel get-master-addr-by-name masterName</li> <li>sentinel返回master节点地址和端口</li> <li>client向master节点执行 role或者role replication（role或role replication是redis命令，可以判断当前节点的角色），确定是不是master节点</li> <li>client订阅一个频道（订阅的是sentinel里的频道），这个频道里发布有关master节点变更的消息</li></ul> <div class="language-java extra-class"><pre class="language-java"><code><span class="token class-name">String</span> masterName <span class="token operator">=</span> <span class="token string">&quot;mymaster&quot;</span><span class="token punctuation">;</span>
+<span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> sentinelSet <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashSet</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+sentinelSet<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">&quot;127.0.0.1:26379&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+sentinelSet<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">&quot;127.0.0.1:26380&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+sentinelSet<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">&quot;127.0.0.1:26381&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">JedisSentinelPool</span> sentinelPool 
+	<span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">JedisSentinelPool</span><span class="token punctuation">(</span>masterName<span class="token punctuation">,</span>sentinelSet<span class="token punctuation">,</span>poolConfig<span class="token punctuation">,</span>timeout<span class="token punctuation">)</span>
+<span class="token class-name">Jedis</span> jedis <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+	jedis <span class="token operator">=</span> sentinelPool<span class="token punctuation">.</span><span class="token function">getResource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// jedis命令</span>
+<span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>jedis <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    	jedis<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="_5-3-故障转移原理"><a href="#_5-3-故障转移原理" class="header-anchor">#</a> 5.3 故障转移原理</h3> <h4 id="_5-3-1-三个定时任务"><a href="#_5-3-1-三个定时任务" class="header-anchor">#</a> 5.3.1 三个定时任务</h4> <ol><li>每个sentinel每10秒对master和slave执行info
+<ol><li>sentinel从master节点中获取从节点的消息</li> <li>目的：确认主从关系</li></ol></li> <li>每个sentinel每2秒通过master节点的channel交换信息：第一个sentinel可以在第一个master节点的频道发布信息，其他sentinel节点会订阅这个频道，从而达到sentinel之间的交流
+<ol><li>频道名称：<strong>sentinel</strong>:hello</li> <li>交互对节点的“看法”和自身信息</li> <li>新加入的sentinel节点也会去订阅这个频道，感知其他sentinel的存在</li></ol></li> <li>每个sentinel每1秒对其他sentinel和redis节点（master和slave节点）执行ping，用于故障检测</li></ol> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611142990366-44846da8-2997-47ac-9df3-5fdf9a329e6a.png#height=297&amp;id=NvYK6&amp;name=43.png&amp;originHeight=297&amp;originWidth=423&amp;originalType=binary&amp;ratio=1&amp;size=31467&amp;status=done&amp;style=none&amp;width=423" alt="43.png"></p> <h4 id="_5-3-2-主观下线和客观下线"><a href="#_5-3-2-主观下线和客观下线" class="header-anchor">#</a> 5.3.2 主观下线和客观下线</h4> <ul><li>主观下线：每个sentinel节点对redis节点失败的“偏见”，每秒对master节点ping，超过配置的时间没有响应，当前sentinel则认为下线了</li> <li>客观下线：所有sentinel节点对redis节点失败“达成共识”（大于等于quorum）</li></ul> <h4 id="_5-3-3-领导者选举-raft算法"><a href="#_5-3-3-领导者选举-raft算法" class="header-anchor">#</a> 5.3.3 领导者选举（Raft算法）</h4> <ul><li>原因：只要一个sentinel节点就能完成故障转移</li> <li>选举：通过sentinel is-master-down-by-addr命令都希望成为领导者
+<ul><li>每个做主观下线的sentinel节点向其他sentinel节点发送命令，要求将它设置为领导者</li> <li>收到命令的sentinel节点如果没有同意过其他sentinel，那么将同意该请求，否则拒绝</li> <li>如果该sentinel节点发现自己的票数已经超过sentinel半数且超过quorum（<em>这里的quorum和sentinel monitor配置的quorum有关系吗？</em>），那么它将成为领导者</li> <li>如果此过程有多个sentinel节点成为了领导者，那么将等待一段时间重新进行选举</li></ul></li></ul> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611144479559-6cbb5fa6-43e2-4f64-8651-096c3867b49d.png#height=262&amp;id=oMpkM&amp;name=44.png&amp;originHeight=262&amp;originWidth=596&amp;originalType=binary&amp;ratio=1&amp;size=31157&amp;status=done&amp;style=none&amp;width=596" alt="44.png"></p> <h4 id="_5-3-4-故障转移"><a href="#_5-3-4-故障转移" class="header-anchor">#</a> 5.3.4 故障转移</h4> <ol><li>从slave节点中选出一个“合适的”节点作为新的master节点
+<ol><li>选择slave-priority最高的slave节点，如果存在则返回，不存在则继续，一般不设置，大家都是一样的，不过可以考虑把所在机器性能更好的slave设置高一点优先级，master节点的性能就更好。存在则返回，不存在则继续</li> <li>选择复制偏移量更大的slave节点（复制的最完整），存在则返回，不存在则继续</li> <li>选择runId最小的slave节点（启动最早的slave）</li></ol></li> <li>对上面的slave节点执行slave of no one命令让其成为master节点</li> <li>向剩余的slave节点发送命令，让它们成为新master的slave节点，复制规则和parallel-syncs参数有关</li> <li>对原来的master节点配置为slave，并保持对其“关注”，当其恢复后命令它去复制新的master节点</li></ol> <h2 id="_6-redis-cluster"><a href="#_6-redis-cluster" class="header-anchor">#</a> 6 Redis Cluster</h2> <h3 id="_6-1-为什么需要集群"><a href="#_6-1-为什么需要集群" class="header-anchor">#</a> 6.1 为什么需要集群</h3> <ul><li>并发量：主从只有一个master节点可以写，远远无法满足需要</li> <li>数据量：如果数据量很大，只有一台master，那么复制就会很慢很慢</li></ul> <h3 id="_6-2-理论基础"><a href="#_6-2-理论基础" class="header-anchor">#</a> 6.2 理论基础</h3> <h4 id="_6-2-1-顺序分区和哈希分区"><a href="#_6-2-1-顺序分区和哈希分区" class="header-anchor">#</a> 6.2.1 顺序分区和哈希分区</h4> <p>顺序分区：</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611148312469-4bdaf336-e008-48fa-9938-32ccde2b5875.png#height=245&amp;id=gjZwh&amp;name=image.png&amp;originHeight=490&amp;originWidth=722&amp;originalType=binary&amp;ratio=1&amp;size=223734&amp;status=done&amp;style=none&amp;width=361" alt="image.png"></p> <p>哈希分区：例如节点取模，hash(key)%3</p> <table><thead><tr><th><strong>分布方式</strong></th> <th><strong>特点</strong></th> <th><strong>典型产品</strong></th></tr></thead> <tbody><tr><td>哈希分布</td> <td><br> 数据分散度高 <br> 分布与业务无关 <br> 无法顺序访问</td> <td><br> 一致性哈希Memcache <br> Redis Cluster <br> 其他缓存产品</td></tr> <tr><td>顺序分布</td> <td><br> 数据分散易倾斜 <br> 分布与业务相关 <br> 可顺序访问</td> <td><br> BigTable <br> HBase</td></tr></tbody></table> <h4 id="_6-2-2-哈希分布详解"><a href="#_6-2-2-哈希分布详解" class="header-anchor">#</a> 6.2.2 哈希分布详解</h4> <h5 id="_6-2-2-1-节点取余分区"><a href="#_6-2-2-1-节点取余分区" class="header-anchor">#</a> 6.2.2.1 节点取余分区</h5> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611148887114-5c2c206d-cdd4-4dbc-adfa-68bcf8f9b2ff.png#height=214&amp;id=mx3EA&amp;name=image.png&amp;originHeight=600&amp;originWidth=1598&amp;originalType=binary&amp;ratio=1&amp;size=588403&amp;status=done&amp;style=none&amp;width=571" alt="image.png"></p> <p>如果之前redis有3个点，现在扩容成4个点，哈希算法由hash(key)%3变成hash(key)%4，发现大约有80%的请求不在原来的节点上了，就会导致这80%的请求缓存失效，要重新从数据库里取；建议使用翻倍扩容的方法，如果变成6个节点，大约这有50%请求缓存失效，不过这种方法也不好</p> <h5 id="_6-2-2-2-一致性哈希分区"><a href="#_6-2-2-2-一致性哈希分区" class="header-anchor">#</a> 6.2.2.2 一致性哈希分区</h5> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611150700181-af3abfb9-75fb-4271-a0f8-f8508d59e39b.png#height=371&amp;id=iIiop&amp;name=48.png&amp;originHeight=371&amp;originWidth=777&amp;originalType=binary&amp;ratio=1&amp;size=45044&amp;status=done&amp;style=none&amp;width=777" alt="48.png"></p> <p>规则：</p> <ol><li>确定node1~node2、node2~node4、node4～node3、node3~node1之间的数据范围</li> <li>hash(key)%节点数，确定key应该落在哪个区间</li> <li>顺时针取节点，例如key落到了node4~node3，则key的节点为node3</li></ol> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611150612305-2f942d1b-ab36-4a78-9ecb-8a666512e23a.png#height=369&amp;id=vSctw&amp;name=47.png&amp;originHeight=369&amp;originWidth=455&amp;originalType=binary&amp;ratio=1&amp;size=35693&amp;status=done&amp;style=none&amp;width=455" alt="47.png"></p> <p>可以看到新增node5，只会影响node1~node5之间的数据</p> <table><thead><tr><th>保证最小迁移数据</th></tr></thead> <tbody><tr><td><em>但是有数据倾斜（热点问题），虚拟节点解决数据倾斜问题</em></td></tr></tbody></table> <h5 id="_6-2-2-3-虚拟槽分区"><a href="#_6-2-2-3-虚拟槽分区" class="header-anchor">#</a> 6.2.2.3 虚拟槽分区</h5> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611209882716-34e51b7a-d6c2-4f82-a162-76856f7fe95c.png#height=267&amp;id=wQ75D&amp;name=49.png&amp;originHeight=267&amp;originWidth=495&amp;originalType=binary&amp;ratio=1&amp;size=25036&amp;status=done&amp;style=none&amp;width=495" alt="49.png"></p> <p>16383是redis cluster默认的槽数量</p> <h4 id="_6-2-3-meet操作"><a href="#_6-2-3-meet操作" class="header-anchor">#</a> 6.2.3 meet操作</h4> <p>节点之间可以相互通信，遵守gossip协议，节点之间相互知道自己负责的槽范围
+<img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611213578221-7ea363f3-c4fc-4e60-ab1e-a75f89999219.png#height=207&amp;id=Wo69A&amp;name=51.png&amp;originHeight=207&amp;originWidth=334&amp;originalType=binary&amp;ratio=1&amp;size=18561&amp;status=done&amp;style=none&amp;width=334" alt="51.png"></p> <p>A联系到B，A联系到C；那么B和C就相当于通过A知道对方了</p> <h3 id="_6-3-安装与配置"><a href="#_6-3-安装与配置" class="header-anchor">#</a> 6.3 安装与配置</h3> <h4 id="_6-3-1-原生安装"><a href="#_6-3-1-原生安装" class="header-anchor">#</a> 6.3.1 原生安装</h4> <table><thead><tr><th><strong>安装流程</strong></th> <th><strong>配置</strong></th></tr></thead> <tbody><tr><td>1. 配置开启节点</td> <td><br> port ${port} <br> daemonize yes <br> dir ... <br> dbfilename &quot;dump-${port}.db&quot; <br> logfile ... <br> cluster-enabled yes（标志是否是cluster节点） <br> cluster-config-file nodes-${port}.conf（cluster节点配置文件） <br> cluster-require-full-coverage no（是否只要集群内一个节点不可用，整个集群都不再向外提供服务了，默认是yes要改成no）<em>（当cluster-require-full-coverage为no时，表示当负责一个插槽的master下线且没有相应的从库进行故障恢复时，集群仍然可用）</em></td></tr> <tr><td>2. meet</td> <td>6个节点，然后按照第一步的配置执行： <br>  redis-server redis-7000.conf（master） <br>  redis-server redis-7001.conf（master）<br>  redis-server redis-7002.conf（master）<br>  redis-server redis-7003.conf（slave）<br>  redis-server redis-7004.conf（slave）<br>  redis-server redis-7005.conf（slave）<br><br>  执行meet：<br>  redis-cli -h 127.0.0.1 -p 7000 cluster meet 127.0.0.1 7001<br>  redis-cli -h 127.0.0.1 -p 7000 cluster meet 127.0.0.1 7002<br>  redis-cli -h 127.0.0.1 -p 7000 cluster meet 127.0.0.1 7003<br>  redis-cli -h 127.0.0.1 -p 7000 cluster meet 127.0.0.1 7004<br>  redis-cli -h 127.0.0.1 -p 7000 cluster meet 127.0.0.1 7005<br>  执行完之后，6个节点之间就可以相互感知了</td></tr> <tr><td>3. 分配槽</td> <td>redis-cli -h 127.0.0.1 -p 7000 cluster addslots {0...5461}<br> redis-cli -h 127.0.0.1 -p 7001 cluster addslots {5462...10922}<br> redis-cli -h 127.0.0.1 -p 7002 cluster addslots {10923...16383}</td></tr> <tr><td>4. 主从配置</td> <td>redis-cli -h 127.0.0.1 -p 7003 cluster replicate ${node-id-7000} <br>  redis-cli -h 127.0.0.1 -p 7004 cluster replicate ${node-id-7001} <br>  redis-cli -h 127.0.0.1 -p 7005 cluster replicate ${node-id-7002}</td></tr></tbody></table> <h4 id="_6-3-2-ruby安装-推荐"><a href="#_6-3-2-ruby安装-推荐" class="header-anchor">#</a> 6.3.2 Ruby安装（推荐）</h4> <ul><li>下载、编译、安装Ruby</li> <li>安装ruby客户端</li> <li>安装redis-trib.rb（redis的ruby安装工具）</li></ul> <p>原生命令安装：</p> <ul><li>理解Redis Cluster架构</li> <li>生产环境不使用</li></ul> <p>官方工具安装：高效、准确</p> <h3 id="_6-4-集群伸缩"><a href="#_6-4-集群伸缩" class="header-anchor">#</a> 6.4 集群伸缩</h3> <h4 id="_6-4-1-扩容"><a href="#_6-4-1-扩容" class="header-anchor">#</a> 6.4.1 扩容</h4> <p><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1677055057078-e3d34c4e-82c7-4f12-960b-d9eab6fba68d.png?x-oss-process=image%2Fresize%2Cw_1214%2Climit_0" alt=""></p> <p>槽迁移计划：</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611220089585-016ba690-833b-4439-83b4-069bea31507a.png#height=534&amp;id=EARLn&amp;name=54.png&amp;originHeight=534&amp;originWidth=613&amp;originalType=binary&amp;ratio=1&amp;size=68318&amp;status=done&amp;style=none&amp;width=613" alt="54.png"></p> <p>迁移数据：</p> <ol><li>对target节点发送：cluster setslot {slot} import {sourceNodeId}命令，<s>让目标节点准备导入槽的数据</s><em>（把源节点中的槽slot导入到目标节点，先让目标节点把槽创建出来）</em></li> <li>对源节点发送：cluster setslot {slot} migrating {targetNodeId}命令，<s>让源节点准备准备迁出槽的数据（</s><em>迁移槽数据）</em> <ol><li>源节点循环执行cluster getkeysinslot {slot} {count}命令，每次获取count个属于槽的键</li> <li>在源节点上执行migrate {targetIp} {targetPort} key 0 {timeout}命令，把指定key迁移目标节点</li> <li><em>删除原节点上的槽</em></li></ol></li> <li>重复步骤2直到槽下所有的键数据迁移到目标节点</li> <li>向集群内所有主节点发送cluster setslot {slot} node {targetNodeId}命令，通知槽分配给目标节点</li></ol> <p>在3.0.6版本，支持批量迁移key，pipeline migrate，但是有bug：</p> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611220658323-741de082-82c8-470b-95d8-28d1e48dc39d.png#height=211&amp;id=WR7GB&amp;name=55.png&amp;originHeight=211&amp;originWidth=492&amp;originalType=binary&amp;ratio=1&amp;size=13657&amp;status=done&amp;style=none&amp;width=492" alt="55.png"></p> <p>如果迁移的key中既有过期的也有没过期的，迁移到新节点都会当成过期的；3.2.8修复</p> <h4 id="_6-4-2-缩容"><a href="#_6-4-2-缩容" class="header-anchor">#</a> 6.4.2 缩容</h4> <ul><li>下线迁移槽</li></ul> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611221040346-300b14c2-e0e6-4b34-b66a-d112387ffea8.png#height=297&amp;id=JryXo&amp;name=56.png&amp;originHeight=297&amp;originWidth=384&amp;originalType=binary&amp;ratio=1&amp;size=30176&amp;status=done&amp;style=none&amp;width=384" alt="56.png"></p> <ul><li>其他节点忘记该节点：cluster forget {downNodeId}</li></ul> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611221293076-08a7b8eb-6585-4390-a06d-4b1d910b8ff0.png#height=301&amp;id=PyS4D&amp;name=57.png&amp;originHeight=301&amp;originWidth=518&amp;originalType=binary&amp;ratio=1&amp;size=37560&amp;status=done&amp;style=none&amp;width=518" alt="57.png"></p> <p>集群中的每一个节点都应该去忘记，不然60s后大家又会检测到它，认为它又活了</p> <ul><li>下线该节点</li></ul> <h3 id="_6-5-客户端路由"><a href="#_6-5-客户端路由" class="header-anchor">#</a> 6.5 客户端路由</h3> <h4 id="_6-5-1-moved重定向-moved异常"><a href="#_6-5-1-moved重定向-moved异常" class="header-anchor">#</a> 6.5.1 moved重定向（moved异常）</h4> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611222037067-ee188e48-79d1-40d1-b47b-cb025c221490.png#height=363&amp;id=k9KA9&amp;name=58.png&amp;originHeight=363&amp;originWidth=533&amp;originalType=binary&amp;ratio=1&amp;size=37687&amp;status=done&amp;style=none&amp;width=533" alt="58.png"></p> <div class="language-java extra-class"><pre class="language-java"><code># <span class="token operator">-</span>c，会自动重定向
+redis<span class="token operator">-</span>cli <span class="token operator">-</span>c <span class="token operator">-</span>p <span class="token number">7000</span>
+<span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">7000</span> <span class="token operator">&gt;</span> set hello world
+<span class="token constant">OK</span>
+<span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">7000</span> <span class="token operator">&gt;</span> set php best
+<span class="token operator">-&gt;</span> <span class="token class-name">Redirected</span> <span class="token keyword">to</span> <span class="token namespace">slot</span><span class="token punctuation">[</span><span class="token number">9244</span><span class="token punctuation">]</span>located at <span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">7001</span>
+<span class="token constant">OK</span>
+<span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">7000</span> <span class="token operator">&gt;</span> get php
+<span class="token string">&quot;best&quot;</span>
+</code></pre></div><div class="language-java extra-class"><pre class="language-java"><code># 不使用<span class="token operator">-</span>c
+redis<span class="token operator">-</span>cli <span class="token operator">-</span>p <span class="token number">7000</span>
+<span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">7000</span> <span class="token operator">&gt;</span> set php best
+<span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token constant">MOVED</span> <span class="token number">9244</span> <span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token operator">:</span><span class="token number">7001</span>
+</code></pre></div><p><em>加入-c参数，支持自动的请求重定向，redis-cli接收到moved之后，会自动重定向到对应的节点执行命令</em></p> <h4 id="_6-5-2-ask重定向"><a href="#_6-5-2-ask重定向" class="header-anchor">#</a> 6.5.2 ask重定向</h4> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611222773016-51251408-946b-4dbe-84a1-0a65f1b8b988.png#height=288&amp;id=mRHyp&amp;name=59.png&amp;originHeight=288&amp;originWidth=447&amp;originalType=binary&amp;ratio=1&amp;size=28478&amp;status=done&amp;style=none&amp;width=447" alt="59.png"></p> <p>背景：原来的槽在node1上，但是正在进行扩容，已经迁移到node2上了</p> <h4 id="_6-5-3-smart客户端-例如jediscluster"><a href="#_6-5-3-smart客户端-例如jediscluster" class="header-anchor">#</a> 6.5.3 smart客户端（例如JedisCluster）</h4> <ol><li>从集群中选一个可运行的节点，使用cluster slots获取节点和槽的映射关系</li> <li>将cluster slots的结果映射到本地，为每个节点创建JedisPool</li> <li>当客户端要执行命令的时候，直接在本地crc(key)%16383，然后从本地的表中找到具体的节点</li> <li>向具体节点发出命令</li></ol> <p><img src="https://cdn.nlark.com/yuque/0/2021/png/375413/1611234113057-ef08f456-2fe5-4456-9cba-08ec629d41ee.png#height=532&amp;id=CXimG&amp;name=60.png&amp;originHeight=532&amp;originWidth=787&amp;originalType=binary&amp;ratio=1&amp;size=70158&amp;status=done&amp;style=none&amp;width=787" alt="60.png"></p> <p><em>（上图中少画中ask重定向）</em></p> <h3 id="_6-6-批量操作mget-mset的实现"><a href="#_6-6-批量操作mget-mset的实现" class="header-anchor">#</a> 6.6 批量操作mget/mset的实现</h3> <h4 id="_6-6-1-串行mget-mset"><a href="#_6-6-1-串行mget-mset" class="header-anchor">#</a> 6.6.1 串行mget/mset</h4> <p>本地方法，不用mget/mset，用循环实现</p> <h4 id="_6-6-2-串行io"><a href="#_6-6-2-串行io" class="header-anchor">#</a> 6.6.2 串行IO</h4> <p>在客户端对key进行分组，然后执行</p> <h4 id="_6-6-3-并行io"><a href="#_6-6-3-并行io" class="header-anchor">#</a> 6.6.3 并行IO</h4> <p>对key分组后，使用多线程去获取结果</p> <h4 id="_6-6-4-hash-tag"><a href="#_6-6-4-hash-tag" class="header-anchor">#</a> 6.6.4 hash_tag</h4> <p>对key加相同的前缀，那么这些key就很大可能落在同一个节点上</p> <p><em>（就是让相同业务的key落到同一个节点上；Hash Tag：允许用key的部分字符串来计算hash；当一个key包含 {} 的时候，就不对整个key做hash，而仅对 {} 包括的字符串做hash，{}可以是()、[]，这个是可以配置的）</em></p> <table><thead><tr><th>方案</th> <th>优点</th> <th>缺点</th></tr></thead> <tbody><tr><td>串行化</td> <td>编程简单</td> <td>大量keys请求延迟严重</td></tr> <tr><td>串行IO</td> <td>编程简单，少量节点满足需求</td> <td>大量节点延迟严重</td></tr> <tr><td>并行IO</td> <td>利用并行特性，延迟取决于最慢的节点</td> <td>编程复杂，超时定位问题难</td></tr> <tr><td>hash_tag</td> <td>性能最高</td> <td>读写增加tag维护成本，容易出现数据倾斜</td></tr></tbody></table> <h3 id="_6-7-故障转移"><a href="#_6-7-故障转移" class="header-anchor">#</a> 6.7 故障转移</h3> <p>redis cluster不用sentinel，自己实现了故障转移</p> <h4 id="_6-7-1-故障发现"><a href="#_6-7-1-故障发现" class="header-anchor">#</a> 6.7.1 故障发现</h4> <blockquote><p>节点之间的ping/pong消息，节点之间不止沟通槽信息，还可以监控节点的主从状态，节点的故障等</p></blockquote> <p>主观下线：某个节点认为另外一个节点不可用，A节点定时去ping B节点，A节点收到回复后会记录回复时间，当A节点再去ping B节点的时候，如果发现上次的回复时间于当前时间的差超过cluster-node-timeout，则标记该节点pfail；</p> <p>客观下线：当半数以上持有槽的主节点都标记某节点主观下线；</p> <p>当C节点收到A节点的Pong消息，这个消息中携带者故障节点B，这个时候C节点会判断是否认有大于半数的master认为B节点下线，如果是则通知集群内所有节点B节点客观下线，还会通知故障节点的从节点触发故障转移流程</p> <h4 id="_6-7-2-故障恢复"><a href="#_6-7-2-故障恢复" class="header-anchor">#</a> 6.7.2 故障恢复</h4> <table><thead><tr><th>检查从节点资格</th> <th>每个从节点与故障master的断线时间，如果超过cluster-node-timeout<em>cluster-slave-validity-factor（默认15s</em>默认10s = 150s），则取消成为新master的资格</th></tr></thead> <tbody><tr><td>从节点选举</td> <td>就是从节点发起选举的延迟，偏移量约大，越早发起选举，约有机会成为新的master</td></tr> <tr><td>选举投票</td> <td>（其他master）投票超过半数，成为新master</td></tr> <tr><td>替换主节点</td> <td><br> 当前从节点取消复制，变成主节点（slaveof no one） <br> 执行clusterDelSlot撤销故障主节点负责的槽，并执行clusterAddSlot把这些槽分配给自己<br> 向集群广播自己的pong消息，表明自己已经替换成为主节点</td></tr></tbody></table></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/middleware/redis.html" class="prev">
+          Redis 入门
+        </a></span> <span class="next"><a href="/middleware/redis-principle.html">
+          Redis 底层数据结构原理
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_4-主从复制" class="sidebar-link reco-side-_4-主从复制" data-v-b57cc07c>4 主从复制</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_4-1-实现方式" class="sidebar-link reco-side-_4-1-实现方式" data-v-b57cc07c>4.1 实现方式</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_4-2-全量-部分复制" class="sidebar-link reco-side-_4-2-全量-部分复制" data-v-b57cc07c>4.2 全量/部分复制</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_4-3-故障处理" class="sidebar-link reco-side-_4-3-故障处理" data-v-b57cc07c>4.3 故障处理</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_4-4-常见问题" class="sidebar-link reco-side-_4-4-常见问题" data-v-b57cc07c>4.4 常见问题</a></li><li class="level-2" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_5-redis-哨兵-sentinel" class="sidebar-link reco-side-_5-redis-哨兵-sentinel" data-v-b57cc07c>5 Redis 哨兵 —— sentinel</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_5-1-整体架构" class="sidebar-link reco-side-_5-1-整体架构" data-v-b57cc07c>5.1 整体架构</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_5-2-安装与配置" class="sidebar-link reco-side-_5-2-安装与配置" data-v-b57cc07c>5.2 安装与配置</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_5-3-故障转移原理" class="sidebar-link reco-side-_5-3-故障转移原理" data-v-b57cc07c>5.3 故障转移原理</a></li><li class="level-2" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_6-redis-cluster" class="sidebar-link reco-side-_6-redis-cluster" data-v-b57cc07c>6 Redis Cluster</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_6-1-为什么需要集群" class="sidebar-link reco-side-_6-1-为什么需要集群" data-v-b57cc07c>6.1 为什么需要集群</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_6-2-理论基础" class="sidebar-link reco-side-_6-2-理论基础" data-v-b57cc07c>6.2 理论基础</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_6-3-安装与配置" class="sidebar-link reco-side-_6-3-安装与配置" data-v-b57cc07c>6.3 安装与配置</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_6-4-集群伸缩" class="sidebar-link reco-side-_6-4-集群伸缩" data-v-b57cc07c>6.4 集群伸缩</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_6-5-客户端路由" class="sidebar-link reco-side-_6-5-客户端路由" data-v-b57cc07c>6.5 客户端路由</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_6-6-批量操作mget-mset的实现" class="sidebar-link reco-side-_6-6-批量操作mget-mset的实现" data-v-b57cc07c>6.6 批量操作mget/mset的实现</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/redis-cluster.html#_6-7-故障转移" class="sidebar-link reco-side-_6-7-故障转移" data-v-b57cc07c>6.7 故障转移</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----></div></div>
+    <script src="/assets/js/app.ebc22a7e.js" defer></script><script src="/assets/js/3.055d3e19.js" defer></script><script src="/assets/js/1.e976497e.js" defer></script><script src="/assets/js/80.1a1dcc9a.js" defer></script>
+  </body>
+</html>
