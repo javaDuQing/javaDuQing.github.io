@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>RabbitMQ 原理 | 奇风 Java 工程师知识体系</title>
+    <meta name="generator" content="VuePress 1.9.8">
+    <link rel="icon" href="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png">
+    <meta name="description" content="">
+    <meta name="referrer" content="no-referrer">
+    
+    <link rel="preload" href="/assets/css/0.styles.112c01f0.css" as="style"><link rel="preload" href="/assets/js/app.52ddb80d.js" as="script"><link rel="preload" href="/assets/js/3.055d3e19.js" as="script"><link rel="preload" href="/assets/js/1.e976497e.js" as="script"><link rel="preload" href="/assets/js/83.93c88ceb.js" as="script"><link rel="prefetch" href="/assets/js/10.6a7508d8.js"><link rel="prefetch" href="/assets/js/11.08ed1d65.js"><link rel="prefetch" href="/assets/js/12.82d05f80.js"><link rel="prefetch" href="/assets/js/13.711ee55a.js"><link rel="prefetch" href="/assets/js/14.c609b159.js"><link rel="prefetch" href="/assets/js/15.6fd2ee9b.js"><link rel="prefetch" href="/assets/js/16.49d903d0.js"><link rel="prefetch" href="/assets/js/17.4615af89.js"><link rel="prefetch" href="/assets/js/18.a35d842c.js"><link rel="prefetch" href="/assets/js/19.4a9a65eb.js"><link rel="prefetch" href="/assets/js/20.1e2f13cb.js"><link rel="prefetch" href="/assets/js/21.bc4c505e.js"><link rel="prefetch" href="/assets/js/22.499c0484.js"><link rel="prefetch" href="/assets/js/23.0c7c443f.js"><link rel="prefetch" href="/assets/js/24.355046ed.js"><link rel="prefetch" href="/assets/js/25.e527923e.js"><link rel="prefetch" href="/assets/js/26.1b6146d9.js"><link rel="prefetch" href="/assets/js/27.d6277aca.js"><link rel="prefetch" href="/assets/js/28.783c6261.js"><link rel="prefetch" href="/assets/js/29.e250d2b0.js"><link rel="prefetch" href="/assets/js/30.848f8a9b.js"><link rel="prefetch" href="/assets/js/31.30ef5183.js"><link rel="prefetch" href="/assets/js/32.84c07ae3.js"><link rel="prefetch" href="/assets/js/33.028f63f5.js"><link rel="prefetch" href="/assets/js/34.2de17ca3.js"><link rel="prefetch" href="/assets/js/35.1583edcb.js"><link rel="prefetch" href="/assets/js/36.9097fb96.js"><link rel="prefetch" href="/assets/js/37.67bd9375.js"><link rel="prefetch" href="/assets/js/38.4171c61c.js"><link rel="prefetch" href="/assets/js/39.07a0da36.js"><link rel="prefetch" href="/assets/js/4.af96fb9f.js"><link rel="prefetch" href="/assets/js/40.2b632790.js"><link rel="prefetch" href="/assets/js/41.dca58e8c.js"><link rel="prefetch" href="/assets/js/42.d2289409.js"><link rel="prefetch" href="/assets/js/43.497e842b.js"><link rel="prefetch" href="/assets/js/44.506bf15d.js"><link rel="prefetch" href="/assets/js/45.1e58ed01.js"><link rel="prefetch" href="/assets/js/46.1e6edde4.js"><link rel="prefetch" href="/assets/js/47.d7edbd52.js"><link rel="prefetch" href="/assets/js/48.f280b06b.js"><link rel="prefetch" href="/assets/js/49.42e66eaf.js"><link rel="prefetch" href="/assets/js/5.2cb7b5e8.js"><link rel="prefetch" href="/assets/js/50.48a54609.js"><link rel="prefetch" href="/assets/js/51.828abcb3.js"><link rel="prefetch" href="/assets/js/52.69dc5033.js"><link rel="prefetch" href="/assets/js/53.903b3787.js"><link rel="prefetch" href="/assets/js/54.e0469f30.js"><link rel="prefetch" href="/assets/js/55.f7d098ec.js"><link rel="prefetch" href="/assets/js/56.7b725893.js"><link rel="prefetch" href="/assets/js/57.6003dc74.js"><link rel="prefetch" href="/assets/js/58.cb383c55.js"><link rel="prefetch" href="/assets/js/59.9847b5f8.js"><link rel="prefetch" href="/assets/js/6.2eb56668.js"><link rel="prefetch" href="/assets/js/60.958ee998.js"><link rel="prefetch" href="/assets/js/61.212e18f1.js"><link rel="prefetch" href="/assets/js/62.2edb5aba.js"><link rel="prefetch" href="/assets/js/63.0e9159a8.js"><link rel="prefetch" href="/assets/js/64.a9a6dfbc.js"><link rel="prefetch" href="/assets/js/65.37885ab4.js"><link rel="prefetch" href="/assets/js/66.70a0be54.js"><link rel="prefetch" href="/assets/js/67.60449682.js"><link rel="prefetch" href="/assets/js/68.f6ea7c77.js"><link rel="prefetch" href="/assets/js/69.83ebab1a.js"><link rel="prefetch" href="/assets/js/7.c5c6188d.js"><link rel="prefetch" href="/assets/js/70.55b8f211.js"><link rel="prefetch" href="/assets/js/71.f9231218.js"><link rel="prefetch" href="/assets/js/72.749c6492.js"><link rel="prefetch" href="/assets/js/73.4214374e.js"><link rel="prefetch" href="/assets/js/74.5105fa33.js"><link rel="prefetch" href="/assets/js/75.95a538a6.js"><link rel="prefetch" href="/assets/js/76.48500d37.js"><link rel="prefetch" href="/assets/js/77.97631d08.js"><link rel="prefetch" href="/assets/js/78.3104a522.js"><link rel="prefetch" href="/assets/js/79.5e820562.js"><link rel="prefetch" href="/assets/js/8.c08cf1ce.js"><link rel="prefetch" href="/assets/js/80.2f7c4e47.js"><link rel="prefetch" href="/assets/js/81.b378af70.js"><link rel="prefetch" href="/assets/js/82.c3028be0.js"><link rel="prefetch" href="/assets/js/84.e4a1dc05.js"><link rel="prefetch" href="/assets/js/85.4744ae10.js"><link rel="prefetch" href="/assets/js/86.922ef2bd.js"><link rel="prefetch" href="/assets/js/87.c36c249e.js"><link rel="prefetch" href="/assets/js/88.837c1299.js"><link rel="prefetch" href="/assets/js/9.e833dac8.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.112c01f0.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>奇风 Java 工程师知识体系</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="https://cdn.nlark.com/yuque/0/2023/png/375413/1675405507715-d39c0d59-ff2f-48e2-916e-70c5c8a2e62d.png" alt="奇风 Java 工程师知识体系" class="logo"> <span class="site-name">奇风 Java 工程师知识体系</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/middleware/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/middleware/RabbitMQ.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  RabbitMQ
+</a></li><li class="dropdown-subitem"><a href="/middleware/JMS-AMQP.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  ElasticSearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" class="nav-link"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/middleware/redis-others.html" class="nav-link"><i class="undefined"></i>
+  缓存穿透 击穿 雪崩
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  算法
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      管理
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/manage/career.html" class="nav-link"><i class="undefined"></i>
+  职业方向有哪些
+</a></li><li class="dropdown-item"><h4>管理方向</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/manage/suitable.html" class="nav-link"><i class="undefined"></i>
+  你是否适合做管理
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li><li class="dropdown-item"><h4>作者博文</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/about/about-independent-develop.html" class="nav-link"><i class="undefined"></i>
+  关于独立开发的失败尝试
+</a></li></ul></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><!----> <h3 class="name" data-v-1fad0c41>
+    奇风
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>78</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>0</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      面试
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>常见面试题</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/interview/java-base.html" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></li><li class="dropdown-subitem"><a href="/interview/multi-thread.html" class="nav-link"><i class="undefined"></i>
+  多线程
+</a></li><li class="dropdown-subitem"><a href="/interview/mysql.html" class="nav-link"><i class="undefined"></i>
+  MySql
+</a></li><li class="dropdown-subitem"><a href="/interview/jvm.html" class="nav-link"><i class="undefined"></i>
+  JVM
+</a></li><li class="dropdown-subitem"><a href="/interview/SSM.html" class="nav-link"><i class="undefined"></i>
+  企业级框架
+</a></li><li class="dropdown-subitem"><a href="/interview/zk.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/interview/dubbo-netty.html" class="nav-link"><i class="undefined"></i>
+  Dubbo 和 netty
+</a></li><li class="dropdown-subitem"><a href="/interview/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/interview/RocketMQ.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/interview/hr.html" class="nav-link"><i class="undefined"></i>
+  非技术问题
+</a></li><li class="dropdown-subitem"><a href="/interview/Linux.html" class="nav-link"><i class="undefined"></i>
+  Linux
+</a></li><li class="dropdown-subitem"><a href="/interview/http tcp.html" class="nav-link"><i class="undefined"></i>
+  Http 和 TCP/IP
+</a></li><li class="dropdown-subitem"><a href="/interview/distributed.html" class="nav-link"><i class="undefined"></i>
+  分布式相关
+</a></li><li class="dropdown-subitem"><a href="/interview/project.html" class="nav-link"><i class="undefined"></i>
+  项目相关
+</a></li><li class="dropdown-subitem"><a href="/interview/es.html" class="nav-link"><i class="undefined"></i>
+  Elasticsearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  Java 基础
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  数据库
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      框架与中间件
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>企业级框架</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  Spring
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  Mybatis
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  Spring MVC
+</a></li></ul></li><li class="dropdown-item"><h4>中间件</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/middleware/redis.html" class="nav-link"><i class="undefined"></i>
+  Redis
+</a></li><li class="dropdown-subitem"><a href="/middleware/RabbitMQ.html" aria-current="page" class="nav-link router-link-exact-active router-link-active"><i class="undefined"></i>
+  RabbitMQ
+</a></li><li class="dropdown-subitem"><a href="/middleware/JMS-AMQP.html" class="nav-link"><i class="undefined"></i>
+  RocketMQ
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Kafka
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Dubbo
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Netty
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zookeeper
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  ElasticSearch
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-beian"></i>
+      架构
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>架构基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/frameworkbase/base/framework-all.html" class="nav-link"><i class="undefined"></i>
+  基础知识
+</a></li><li class="dropdown-subitem"><a href="/framework/frameworkbase/expand/visual-angle.html" class="nav-link"><i class="undefined"></i>
+  拓展知识
+</a></li></ul></li><li class="dropdown-item"><h4>单机高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/zero-copy.html" class="nav-link"><i class="undefined"></i>
+  ❤ 零拷贝技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/linux-5-io.html" class="nav-link"><i class="undefined"></i>
+  Linux 5 种 IO 模型
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/Reactor-Proactor.html" class="nav-link"><i class="undefined"></i>
+  Reactor 与 Proactor
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/onemachine/network opt.html" class="nav-link"><i class="undefined"></i>
+  网络方面的优化
+</a></li></ul></li><li class="dropdown-item"><h4>高性能架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/index-high.html" class="nav-link"><i class="undefined"></i>
+  指标 - 吞吐量、延迟、TP99
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highperformance/high/how2design.html" class="nav-link"><i class="undefined"></i>
+  设计高性能系统
+</a></li></ul></li><li class="dropdown-item"><h4>高可用架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highavailable/5-9.html" class="nav-link"><i class="undefined"></i>
+  指标 - 几个9、影响请求占比
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/monitor.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 监控
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highavailable/conception.html" class="nav-link"><i class="undefined"></i>
+  设计高可用系统 - 方案
+</a></li></ul></li><li class="dropdown-item"><h4>可扩展架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highextend/base.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构的基本思想和模式
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highextend/layered-framework.html" class="nav-link"><i class="undefined"></i>
+  可扩展架构 — SOA、微内核架构、微服务
+</a></li></ul></li><li class="dropdown-item"><h4>高安全架构设计</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/high/highsafe/encryption-tech.html" class="nav-link"><i class="undefined"></i>
+  ❤ 信息加密技术
+</a></li><li class="dropdown-subitem"><a href="/framework/high/highsafe/attack-mode.html" class="nav-link"><i class="undefined"></i>
+  常见的攻击方式与防火墙
+</a></li></ul></li><li class="dropdown-item"><h4>推荐书籍</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/framework/book/start-from-0-framework.html" class="nav-link"><i class="undefined"></i>
+  《从 0 开始学架构》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/big-website.html" class="nav-link"><i class="undefined"></i>
+  《大型网站技术架构：核心原理与案例分析》
+</a></li><li class="dropdown-subitem"><a href="/framework/book/DDIA.html" class="nav-link"><i class="undefined"></i>
+  《DDIA（数据密集型应用系统设计）》
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-api"></i>
+      分布式
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>分布式基础</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/distributed-base.html" class="nav-link"><i class="undefined"></i>
+  cap 与 base 理论
+</a></li><li class="dropdown-subitem"><a href="/distributed/consistence-classification.html" class="nav-link"><i class="undefined"></i>
+  一致性的分类
+</a></li><li class="dropdown-subitem"><a href="/distributed/Consensus-alg.html" class="nav-link"><i class="undefined"></i>
+  共识算法
+</a></li></ul></li><li class="dropdown-item"><h4>共识算法（一致性算法）</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/2-stage-commit.html" class="nav-link"><i class="undefined"></i>
+  2(3)阶段提交算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/paxos-alg.html" class="nav-link"><i class="undefined"></i>
+  Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Multi-Paxos.html" class="nav-link"><i class="undefined"></i>
+  Multi Paxos 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Gossip.html" class="nav-link"><i class="undefined"></i>
+  Gossip 协议
+</a></li><li class="dropdown-subitem"><a href="/distributed/Raft.html" class="nav-link"><i class="undefined"></i>
+  Raft 算法
+</a></li><li class="dropdown-subitem"><a href="/distributed/Zab.html" class="nav-link"><i class="undefined"></i>
+  Zab 算法
+</a></li></ul></li><li class="dropdown-item"><h4>分布式解决方案</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  分布式锁
+</a></li><li class="dropdown-subitem"><a href="/distributed/Distributed-transaction.html" class="nav-link"><i class="undefined"></i>
+  分布式事务
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-transaction-demo.html" class="nav-link"><i class="undefined"></i>
+  分布式事务实现 —— Seata
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-cache.html" class="nav-link"><i class="undefined"></i>
+  分布式缓存一致性
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-id.html" class="nav-link"><i class="undefined"></i>
+  全局唯一 ID
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-session.html" class="nav-link"><i class="undefined"></i>
+  分布式 session
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-mideng.html" class="nav-link"><i class="undefined"></i>
+  幂等实现方案
+</a></li><li class="dropdown-subitem"><a href="/distributed/distributed-select.html" class="nav-link"><i class="undefined"></i>
+  高性能负载均衡及算法
+</a></li><li class="dropdown-subitem"><a href="/middleware/redis-others.html" class="nav-link"><i class="undefined"></i>
+  缓存穿透 击穿 雪崩
+</a></li><li class="dropdown-subitem"><a href="/distributed/multi-database.html" class="nav-link"><i class="undefined"></i>
+  分库分表方案
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  项目剖析
+</a></div><div class="nav-item"><a href="/" class="nav-link"><i class="undefined"></i>
+  算法
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      管理
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/manage/career.html" class="nav-link"><i class="undefined"></i>
+  职业方向有哪些
+</a></li><li class="dropdown-item"><h4>管理方向</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/manage/suitable.html" class="nav-link"><i class="undefined"></i>
+  你是否适合做管理
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="undefined"></i>
+      关于本站
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  关于作者
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  错误反馈
+</a></li><li class="dropdown-item"><!----> <a href="/distributed/Distributed-lock.html" class="nav-link"><i class="undefined"></i>
+  最新更新
+</a></li><li class="dropdown-item"><h4>作者博文</h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/about/about-independent-develop.html" class="nav-link"><i class="undefined"></i>
+  关于独立开发的失败尝试
+</a></li></ul></li></ul></div></div> <!----></nav> <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>企业级架构</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/" aria-current="page" class="sidebar-link">Spring</a></li><li><a href="/" aria-current="page" class="sidebar-link">Spring MVC</a></li><li><a href="/" aria-current="page" class="sidebar-link">Mybatis</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>缓存</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/middleware/redis.html" class="sidebar-link">Redis 入门</a></li><li><a href="/middleware/redis-cluster.html" class="sidebar-link">Redis 集群</a></li><li><a href="/middleware/redis-principle.html" class="sidebar-link">Redis 底层数据结构原理</a></li><li><a href="/middleware/redis-others.html" class="sidebar-link">Redis 其他知识点</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>消息队列</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/middleware/JMS-AMQP.html" class="sidebar-link">JMS 与 AMQP 协议</a></li><li><a href="/middleware/RabbitMQ.html" aria-current="page" class="active sidebar-link">RabbitMQ</a></li><li><a href="/" aria-current="page" class="sidebar-link">RocketMQ</a></li><li><a href="/" aria-current="page" class="sidebar-link">Kafka</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>RPC 框架</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/" aria-current="page" class="sidebar-link">Zookeeper</a></li><li><a href="/" aria-current="page" class="sidebar-link">Dubbo</a></li><li><a href="/" aria-current="page" class="sidebar-link">Netty</a></li></ul></section></li></ul> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>RabbitMQ 原理</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>奇风</span>
+          
+        <!---->
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page"><section style="display:;"><div class="page-title"><h1 class="title">RabbitMQ 原理</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>奇风</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2023/3/16</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/middleware/RabbitMQ.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <!----></div></div> <div class="theme-reco-content content__default"><p>整理自：<a href="https://book.douban.com/subject/27591386/" target="_blank" rel="noopener noreferrer">《RabbitMQ 实战指南》<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p> <hr> <ul><li><a href="#%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5">相关概念</a> <ul><li><a href="#%E6%95%B4%E4%BD%93%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84">整体模型架构</a></li> <li><a href="#%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86">组成部分</a></li> <li><a href="#RabbitMQ%E8%BF%90%E8%BD%AC%E6%B5%81%E7%A8%8B">RabbitMQ 运转流程</a></li></ul></li> <li><a href="#%E5%85%B7%E4%BD%93%E7%89%B9%E6%80%A7">具体特性</a> <ul><li><a href="#%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%BC%8F">消费模式</a></li> <li><a href="#%E6%B6%88%E8%B4%B9%E7%AB%AF%E7%9A%84%E7%A1%AE%E8%AE%A4%E4%B8%8E%E6%8B%92%E7%BB%9D">消费端的确认与拒绝（保证消息被消费）</a></li> <li><a href="#%E6%B6%88%E6%81%AF%E4%BD%95%E5%8E%BB%E4%BD%95%E4%BB%8E">消息何去何从</a> <ul><li><a href="#mandatory%E5%8F%82%E6%95%B0">mandatory参数</a></li> <li><a href="#%E5%A4%87%E4%BB%BD%E4%BA%A4%E6%8D%A2%E5%99%A8">备份交换器</a></li></ul></li> <li><a href="#%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4">过期时间（TTL）</a></li> <li><a href="#%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97">死信队列</a></li> <li><a href="#%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97">延迟队列</a></li> <li><a href="#%E6%8C%81%E4%B9%85%E5%8C%96">持久化（消息丢失问题）</a></li> <li><a href="#%E7%94%9F%E4%BA%A7%E8%80%85%E7%A1%AE%E8%AE%A4">生产者确认</a> <ul><li><a href="#%E4%BA%8B%E5%8A%A1%E6%9C%BA%E5%88%B6">事务机制</a></li> <li><a href="#%E5%8F%91%E9%80%81%E6%96%B9%E7%A1%AE%E8%AE%A4%E6%9C%BA%E5%88%B6">发送方确认机制（轻量级的方法）</a></li> <li><a href="#%E4%B8%A4%E7%A7%8D%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BC%98%E5%8A%A3%E5%8A%BF">两种机制的优劣势</a></li></ul></li> <li><a href="#%E6%B6%88%E6%81%AF%E5%88%86%E5%8F%91">消息分发</a></li> <li><a href="#%E6%B6%88%E6%81%AF%E9%A1%BA%E5%BA%8F%E6%80%A7">消息顺序性</a></li> <li><a href="#%E6%B6%88%E6%81%AF%E4%BC%A0%E8%BE%93%E4%BF%9D%E9%9A%9C">消息传输保障</a></li></ul></li> <li><a href="#RabbitMQ%E9%9B%86%E7%BE%A4">RabbitMQ 集群</a> <ul><li><a href="#%E6%99%AE%E9%80%9A%E9%9B%86%E7%BE%A4">普通集群</a></li> <li><a href="#%E9%95%9C%E5%83%8F%E9%9B%86%E7%BE%A4">镜像集群</a></li></ul></li></ul> <hr> <h2 id="相关概念"><a href="#相关概念" class="header-anchor">#</a> 相关概念</h2> <p>RabbitMQ 整体上是一个生产者与消费者模型，主要负责接收、存储和转发消息。可以把消息传递的过程想象成：当你将一个包裹送到邮局，邮局会暂存并最终将邮件通过邮递员送到收件人的手上，RabbitMQ 就好比由邮局、邮箱和邮递员组成的一个系统。从计算机术语层面来说 RabbitMQ 模型更像是一种交换机模型</p> <h3 id="整体模型架构"><a href="#整体模型架构" class="header-anchor">#</a> 整体模型架构</h3> <img width="400" height="213" align="bottom" src="https://cdn.nlark.com/yuque/0/2023/png/375413/1678935152707-82850cda-281f-42c0-8b29-eaa5ecb07070.png#averageHue=%23f1f1f0&amp;clientId=uaa882c3e-2aee-4&amp;from=paste&amp;height=314&amp;id=u06c01aea&amp;name=image.png&amp;originHeight=628&amp;originWidth=1238&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=713345&amp;status=done&amp;style=none&amp;taskId=u62da48f9-a760-440d-9b3e-33a36a30d12&amp;title=&amp;width=619)![image.png](https://cdn.nlark.com/yuque/0/2023/png/375413/1678935089693-3e654759-7b6e-4616-9b4d-1b380f61d8f1.png#averageHue=%23000000&amp;clientId=uaa882c3e-2aee-4&amp;from=paste&amp;height=1&amp;id=ud05a5fbc&amp;name=image.png&amp;originHeight=1&amp;originWidth=1&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=162&amp;status=done&amp;style=none&amp;taskId=u02f56a3a-fcd7-4912-9767-a5f537445cb&amp;title=&amp;width=0.5"> <p>消息流转模型：</p> <img width="600" height="333" align="bottom" src="https://cdn.nlark.com/yuque/0/2023/png/375413/1678936073131-962b6efc-556f-48ec-aa0d-52f9bac79c74.png#averageHue=%23f0f0ef&amp;clientId=uaa882c3e-2aee-4&amp;from=paste&amp;height=377&amp;id=u2c8d6ab0&amp;name=image.png&amp;originHeight=754&amp;originWidth=1336&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=1017588&amp;status=done&amp;style=none&amp;taskId=u215874a8-4d97-4b51-af87-e07443874b0&amp;title=&amp;width=668"> <p>多个消费者可以订阅同一个队列，这时队列中的消息会被平均分摊（Round-Robin，即轮询）给多个消费者进行处理，而不是每个消费者都收到所有的消息并处理；RabbitMQ 不支持队列层面的广播消费，如果需要广播消费，需要在其上进行二次开发，处理逻辑会变得异常复杂，同时也不建议这么做</p> <h3 id="组成部分"><a href="#组成部分" class="header-anchor">#</a> 组成部分</h3> <ul><li>生产者和消费者</li> <li>队列</li> <li>交换器、路由键、绑定键：生产者将消息发给交换器的时候，一般会指定一个路由键（就像分库分表中的partition key），而这个路由键需要与交换器类型和绑定键（BindingKey）联合使用才能最终生效
+<ul><li>交换器类型：direct、fanout、topic、headers</li></ul></li></ul> <h3 id="rabbitmq运转流程"><a href="#rabbitmq运转流程" class="header-anchor">#</a> RabbitMQ运转流程</h3> <p>生产者发送消息流程：</p> <ol><li>生产者连接到 RabbitMQBroker，建立一个连接（Connection），开启一个信道（Channel）</li> <li>生产者声明一个交换器，并设置相关属性，比如交换机类型</li> <li>生产者声明一个队列并设置相关属性，比如是否排他、是否持久化、是否自动删除等</li> <li>生产者通过路由键将交换器和队列绑定起来</li> <li>生产者发送消息至 RabbitMQBroker，其中包含路由键、交换器等信息</li> <li>相应的交换器根据接收到的路由键查找相匹配的队列</li> <li>如果找到，则将从生产者发送过来的消息存入相应的队列中</li> <li>如果没有找到，则根据生产者配置的属性选择丢弃还是回退给生产者</li> <li>关闭信道、关闭连接</li></ol> <p>消费者接收消息流程：</p> <ol><li>消费者连接到 RabbitMQBroker，建立一个连接（Connection），开启一个信道（Channel）</li> <li>消费者向 RabbitMOBroker 请求消费相应队列中的消息，可能会设置相应的回调函数，以及做一些准备工作</li> <li>等待RabbitMQBroker回应并投递相应队列中的消息，消费者接收消息</li> <li>消费者确认（ack）接收到的消息</li> <li>RabbitMO从队列中删除相应已经被确认的消息</li> <li>关闭信道、关闭连接</li></ol> <h2 id="具体特性"><a href="#具体特性" class="header-anchor">#</a> 具体特性</h2> <h3 id="消费模式"><a href="#消费模式" class="header-anchor">#</a> 消费模式</h3> <p>RabbitMQ的消费模式分两种：推（Push）模式和拉（Pull）模式</p> <h3 id="消费端的确认与拒绝"><a href="#消费端的确认与拒绝" class="header-anchor">#</a> 消费端的确认与拒绝</h3> <p>为了保证消息从队列可靠地达到消费者，RabbitMQ 提供了消息确认机制（message acknowledgement）。消费者在订阅队列时，可以指定 autoAck 参数，当 autoAck 等于 false时，RabbitMQ 会等待消费者显式地回复确认信号后才从内存（或者磁盘）中移去消息（实质上是先打上删除标记，，之后再删除）。当 autoAck 等于 true时，RabbitMQ 会自动把发送出去的消息置为确认，然后从内存（或者磁盘）中删除，而不管消费者是否真正地消费到了这些消息</p> <p>采用消息确认机制后，只要设置 autoAck 参数为 false，消费者就有足够的时间处理消息（任务），不用担心处理消息过程中消费者进程挂掉后消息丢失的问题，因为 RabbitMQ 会一直等待持有消息直到消费者显式调用Basic.Ack 命令为止</p> <p>当 autoAck 参数置为 false，对于 RabbitMQ 服务端而言，队列中的消息分成了两个部分：一部分是等待投递给消费者的消息；一部分是已经投递给消费者，但是还没有收到消费者确认信号的消息。如果 RabbitMQ 一直没有收到消费者的确认信号，并且消费此消息的消费者已经新开连接，则 RabbitMQ会安排该消息重新进入队列，等待投递给下一个消费者，当然也有可能还是原来的那个消费者</p> <p>RabbitMQ 不会为未确认的消息设置过期时间，它判断此消息是否需要重新投递给消费者的唯一依据是消费该消息的消费者连接是否已经断开，这么设计的原因是 RabbitMQ 允许消费者消费一条消息的时间可以很久很久</p> <h3 id="消息何去何从"><a href="#消息何去何从" class="header-anchor">#</a> 消息何去何从</h3> <h4 id="mandatory参数"><a href="#mandatory参数" class="header-anchor">#</a> mandatory参数</h4> <ol><li>当 mandatory 参数设为 true 时，交换器无法根据自身的类型和路由键找到一个符合条件的队列，那么RabbitMQ会调用 Basic.Return 命令将消息返回给生产者</li> <li>当 mandatory 参数设置为 false 时，出现上述情形，则消息直接被丢弃<div class="custom-block warning"><p class="title"></p><p>那么生产者如何获取到没有被正确路由到合适队列的消息呢？这时候可以通过调用
+channel.addReturnListener 来添加 ReturnListener 监听器实现</p></div></li></ol> <h4 id="备份交换器"><a href="#备份交换器" class="header-anchor">#</a> 备份交换器</h4> <p>备份交换器，或者更直白地称之为“备胎交换器”
+生产者在发送消息的时候如果不设置 mandatory 参数，那么消息在未被路由的情况下将会丢失；如果设置了；mandatory 参数，那么需要添加 ReturnListener 的编程逻辑，生产者的代码将变得复杂。如果既不想复杂化生产者的编程逻辑，又不想消息丢失，那么可以使用备份交换器，这样可以将未被路由的消息存储在 RabbitMQ 中，再在需要的时候去处理这些消息</p> <img width="500" height="313" align="bottom" src="https://cdn.nlark.com/yuque/0/2023/png/375413/1678948291940-4d7f018d-28f2-48e8-9a98-e9d214ef3c2a.png#averageHue=%23f3f3f2&amp;clientId=u7c08f124-6c06-4&amp;from=paste&amp;height=379&amp;id=ud4189756&amp;name=image.png&amp;originHeight=758&amp;originWidth=1150&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=564135&amp;status=done&amp;style=none&amp;taskId=uffd6c06d-a67a-4fc3-ab57-2e9ee427a11&amp;title=&amp;width=575"> <h3 id="过期时间"><a href="#过期时间" class="header-anchor">#</a> 过期时间</h3> <p>消息和队列都可以设置过期时间</p> <h3 id="死信队列"><a href="#死信队列" class="header-anchor">#</a> 死信队列</h3> <p>DLX，全称为Dead-Letter-Exchange，可以称之为死信交换器，也有人称之为死信邮箱。当消息在一个队列中变成死信（deadmessage）之后，它能被重新被发送到另一个交换器中，这个交换器就是 DLX，绑定 DLXI 的队列就称之为死信队列</p> <p>消息变成死信一般是由于以下几种情况：</p> <ol><li>消息被拒绝（Basic.Reject/Basic.Nack），并且设置 requeue 参数为 false</li> <li>消息过期</li> <li>队列达到最大长度</li></ol> <p>DLX 也是一个正常的交换器，和一般的交换器没有区别；当队列中存在死信时，RabbitMO就会自动地将这个消息重新发布到设置的 DLX 上去，进而被路由到另一个队列，即死信队列。可以监听这个队列中的消息以进行相应的处理</p> <h3 id="延迟队列"><a href="#延迟队列" class="header-anchor">#</a> 延迟队列</h3> <p>延退队列存储的对象是对应的延退消息，所请“延退消息”是指当消息被发送以后，并不想让消费者立刻拿到消息，而是等待特定时间后，消费者才能拿到这个消息进行消费。延退队列的使用场景有很多，比如：</p> <ul><li>在订单系统中，一个用户下单之后通常有 30 分钟的时间进行支付，如果 30 分钟之内没有支付成功，那么这个订单将进行异常处理，这时就可以使用延退队列来处理这些订单了</li> <li>用户希望通过手机远程遥控家里的智能设备在指定的时间进行工作。这时候就可以将用户指令发送到延退队列，当指令设定的时间到了再将指令推送到智能设备</li></ul> <p><strong>在 AMQP 协议中，或者 RabbitMQ 本身没有直接支持延退队列的功能，但是可以通过前面所介绍的 DLX 和 TTL模拟出延迟队列的功能</strong></p> <img width="600" height="413" align="bottom" src="https://cdn.nlark.com/yuque/0/2023/png/375413/1678949685999-31c7665c-8c74-43de-8d9c-16fdcd8566f1.png#averageHue=%23ededec&amp;clientId=u8cbbdfe2-32ac-4&amp;from=paste&amp;height=430&amp;id=u76676aef&amp;name=image.png&amp;originHeight=860&amp;originWidth=1106&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=897273&amp;status=done&amp;style=none&amp;taskId=u072cc41c-d567-45d8-9046-598243ff800&amp;title=&amp;width=553"> <p>在上图中，不仅展示的是死信队列的用法，也是延退队列的用法，对于。queue.dlx这个死信队列来说，同样可以看作延退队列。假设一个应用中需要将每条消息都设置为10秒的延退，生产者通过exchange.normal这个交换器将发送的消息存储在queue.normal这个队列中。消费者订阅的并非是queue.normal这个队列，而是gqueue.dlx这个队列。当消息从queue.normal这个队列中过期之后被存入queue.dlx这个队列中，消费者就恰巧消费到了延迟10秒的这条消息</p> <p>在真实应用中，对于延退队列可以根据延退时间的长短分为多个等级，一般分为5秒、10秒、30秒、1分钟、5分钟、10分钟、30分钟、1小时这几个维度，当然也可以再细化一下</p> <h3 id="持久化"><a href="#持久化" class="header-anchor">#</a> 持久化</h3> <p>持久化可以提高 RabbitMQ 的可靠性，防在异常情况（重启、关闭、右机等）下的数据丢失
+RabbitMQ 的持久化分为三个部分：</p> <ol><li>交换器的持久化：交换器元数据</li> <li>队列的持久化：队列元数据</li> <li>消息的持久化<div class="custom-block warning"><p class="title"></p><p>如果交换器不设置持久化，那么在RabbitMO服务重启之后，相关的交换器元数据会丢失，不过消息不会丢失
+如果队列不设置持久化，那么在RabbitMO服务重启之后，相关队列的元数据会丢失，此时数据也会丢失。正所请“皮之不存，毛将意附”</p></div></li></ol> <p><strong>将交换器、队列、消息都设置了持久化之后就能百分之百保证数据不丢失了吗？答案是否定的。</strong>
+首先从消费者来说，如果在订阅消费队列时将 autoAck 参数设置为 tue，那么当消费者接收到相关消息之后，还没来得及处理就岩机了，这样也算数据丢失。这种情况很好解决，将 autoAck 参数设置为 false</p> <p>其次，在持久化的消息正确存入 RabbitMQ 之后，还需要有一段时间（虽然很短，但是不可忽视）才能存入磁盘之中。RabbitMQ 并不会为每条消息都进行同步存盘（调用内核的 fsync 方法）的处理，可能仅仅保存到操作系统缓存之中而不是物理磁盘之中。如果在这段时间内 RabbitMQ 服务节点发生了岩机、重启等异常情况，消息保存还没来得及落盘，那么这些消息将会丢失</p> <p>这个问题怎么解决呢？这里可以引入 RabbitMQ 的镜像队列机制，相当于配置了副本，如果主节点（master）在此特殊时间内挂掉，可以自动切换到从节点（slave），这样有效地保证了高可用性，除非整个集群都挂掉。虽然这样也不能完全保证 RabbitMQ 消息不丢失，但是配置了镜像队列要比没有配置镜像队列的可靠性要高很多，在实际生产环境中的关键业务队列一般都会设置镜像队列</p> <p>还可以在发送端引入事务机制或者发送方确认机制来保证消息已经正确地发送并存储至 RabbitMQ 中</p> <h3 id="生产者确认"><a href="#生产者确认" class="header-anchor">#</a> 生产者确认</h3> <p>在使用 RabbitMQ 的时候，可以通过消息持久化操作来解决因为服务器的异常崩溃而导致的消息丢失，除此之外，我们还会遇到一个问题，当消息的生产者将消息发送出去之后，消息到底有没有正确地到达服务器呢？如果不进行特殊配置，默认情况下发送消息的操作是不会返回任何信息给生产者的，也就是默认情况下生产者是不知道消息有没有正确地到达服务器。如果在消息到达服务器之前已经丢失，持久化操作也解决不了这个问题，因为消息根本没有到达服务器，何谈持久化？</p> <p>RabbitMQ 针对这个问题，提供了两种解决方式</p> <ol><li>通过事务机制实现</li> <li>通过发送方确认（publisher confirm）机制实现</li></ol> <h4 id="事务机制"><a href="#事务机制" class="header-anchor">#</a> 事务机制</h4> <p>RabbitMQ 客户端中与事务机制相关的方法有三个：channel.txSelect、channel.txCommit 、channel.txRollback</p> <p>channel.txSelect 用于将当前的信道设置成事务模式，channel.txCommit 用于提交事务，channel.txRo11back 用于事务回滚。在通过 channel.txSelect 方法开启事务之后，我们便可以发布消息给 RabbitMQ 了，如果事务提交成功，则消息一定到达了 RabbitMQ 中，如果在事务提交执行之前由于 RabbitMQ 异常崩溃或者其他原因抛出异常，这个时候我们便可以将其捕获，进而通过执行 channel.txRo11back 方法来实现事务回滚。注意这里的RabbitMQ 中的事务机制与大多数数据库中的事务概念并不相同，需要注意区分</p> <p>事务确实能够解决消息发送方和 RabbitMQ 之间消息确认的问题，只有消息成功被 RabbitMQ 接收，事务才能提交成功，否则便可在捕获异常之后进行事务回滚，与此同时可以进行消息重发。但是使用事务机制会“吸干”RabbitMQ 的性能，那么有没有更好的方法既能保证消息发送方确认消息已经正确送达，又能基本上不带来性能上的损失呢？RabbitMO提供了一个改进方案，即发送方确认机制</p> <h4 id="发送方确认机制-轻量级的方法"><a href="#发送方确认机制-轻量级的方法" class="header-anchor">#</a> 发送方确认机制（轻量级的方法）</h4> <p>生产者将信道设置成 confirm（确认）模式，一旦信道进入 confirm 模式，所有在该信道上面发布的消息都会被指派一个唯一的 ID（从1开始），一旦消息被投递到所有匹配的队列之后，RabbitMQ 就会发送一个确认（Basic.Ack）给生产者（包含消息的唯一 ID），这就使得生产者知晓消息已经正确到达了目的地了。如果消息和队列是可持久化的，那么确认消息会在消息写入之后发出（其实不一定到磁盘，RabbitMQ 并不会为每条消息都进行同步存盘）。RabbitMQ 回传给生产者的确认消息中的deliveryTag 包含了确认消息的序号，此外 RabbitMQ 也可以设置 channel.basicAck 方法中的 multiple 参数，表示到这个序号之前的所有消息都已经得到了处理</p> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">try</span> <span class="token punctuation">{</span>
+        channel<span class="token punctuation">.</span><span class="token function">confirmSelect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">// 将信道置为confirm模式</span>
+        <span class="token comment">// 之后正常发送消息</span>
+        channel<span class="token punctuation">.</span><span class="token function">basicPublish</span><span class="token punctuation">(</span><span class="token string">&quot;exchange&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;routingKey&quot;</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token string">&quot;publisher confirm test&quot;</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>channel<span class="token punctuation">.</span><span class="token function">waitForConfirms</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">&quot;send message failed&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// do something else....</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token punctuation">}</span>
+</code></pre></div><h4 id="两种机制的优劣势"><a href="#两种机制的优劣势" class="header-anchor">#</a> 两种机制的优劣势</h4> <p>事务机制在一条消息发送之后会使发送端阻塞，以等待 RabbitMQ 的回应，之后才能继续发送下一条消息。相比之下，发送方确认机制最大的好处在于它是异步的，一旦发布一条消息，生产者应用程序就可以在等信道返回确认的同时继续发送下一条消息，当消息最终得到确认之后，生产者应用程序便可以通过回调方法来处理该确认消息</p> <h3 id="消息分发"><a href="#消息分发" class="header-anchor">#</a> 消息分发</h3> <p>当 RabbitMQ 队列拥有多个消费者时，队列收到的消息将以轮询（round-robin）的分发方式发送给消费者。每条消息只会发送给订阅列表里的一个消费者。这种方式非常适合扩展，而且它是专门为并发程序设计的。如果现在负载加重，那么只需要创建更多的消费者来消费处理消息即可</p> <p>很多时候轮询的分发机制也不是那么优雅。默认情况下，如果有 n 个消费者，那么 RabbitMQ 会将第 m 条消息分发给第 m%n（取余的方式）个消费者，RabbitMQ 不管消费者是否消费并已经确认（Basic.Ack）了消息。试想一下，如果某些消费者任务繁重，来不及消费那么多的消息，而某些其他消费者由于某些原因（比如业务逻辑简单、机器性能卓越等）很快地处理完了所分配到的消息，进而进程空闲，这样就会造成整体应用吞吐量的下降</p> <p>那么该如何处理这种情况呢？这里就要用到 channel.basicQos（intprefetchCount）这个方法，如前面章节所述，channel.basicoos方法允许限制信道上的消费者所能保持的最大未确认消息的数量</p> <p>举例说明，在订阅消费队列之前，消费端程序调用了channel.basicQos（5），之后订阅了某个队列进行消费。RabbitMQ 会保存一个消费者的列表，每发送一条消息都会为对应的消费者计数，如果达到了所设定的上限，那么RabbitMQ 就不会向这个消费者再发送任何消息。直到消费者确认了某条消息之后，RabbitMQ 将相应的计数减1，之后消费者可以继续接收消息直到再次到达计数上限。这种机制可以类比于 TCP/IP 中的“滑动窗口”</p> <h3 id="消息顺序性"><a href="#消息顺序性" class="header-anchor">#</a> 消息顺序性</h3> <p>消息的顺序性是指消费者消费到的消息和发送者发布的消息的顺序是一致的。举个例子，不考虑消息重复的情况，如果生产者发布的消息分别为 msgl、msg2、msg3，那么消费者必然也是按照 msgl、msg2、msg3 自的顺序进行消费的。</p> <p>日前很多资料显示 RabbitMQ 的消息能够保障顺序性，这是不正确的，或者说这个观点有很大的局限性。在不使用任何 RabbitMQ 的高级特性，也没有消息丢失、网络故障之类异常的情况发生，并且只有一个消费者的情况下，最好也只有一个生产者的情况下可以保证消息的顺序性。如果有多个生产者同时发送消息，无法确定消息到达Broker 的前后顺序，也就无法验证消息的顺序性。</p> <p>那么哪些情况下 RabbitMQ 的消息顺序性会被打破呢？下面介绍几种常见的情形：</p> <ol><li>如果生产者使用了事务机制，在发送消息之后遇到异常进行了事务回滚，那么需要重新补偿发送这条消息，如果补偿发送是在另一个线程实现的，那么消息在生产者这个源头就出现了错序。同样，如果启用publisherconfirm时，在发生超时、中断，又或者是收到RabbitMQ的Basic.Nack命令时，那么同样需要补偿发送，结果与事务机制一样会错序</li> <li>考虑另一种情形，如果生产者发送的消息设置了不同的超时时间，并且也设置了死信队列，整体上来说相当于一个延退队列，那么消费者在消费这个延退队列的时候，消息的顺序必然不会和生产者发送消息的顺序一致</li> <li>再考虑一种情形，如果消息设置了优先级，那么消费者消费到的消息也必然不是顺序性的</li> <li>如果一个队列按照前后顺序分有 msgl、msg2、msg3、msg4 这 4 个消息，同时有 ConsumerA 和ConsumerB 这两个消费者同时订阅了这个队列。队列中的消息轮询分发到各个消费者之中，ConsumerA 中的消息为 msgl 和 msg3，ConsumerB 中的消息为 msg2、msg4。ConsumerA 收到消息 msgl 之后并不想处理而调用了 Basic.Nack/.Reject 将消息拒绝，与此同时将 requeue 设置为 true，这样这条消息就可以重新存入队列中。消息 msgl 之后被发送到了 ConsumerB 中，此时 ConsumerB 已经消费了 msg2、msg4，之后再消费 msgl，这样消息顺序性也就错乱了</li></ol> <h3 id="消息传输保障"><a href="#消息传输保障" class="header-anchor">#</a> 消息传输保障</h3> <p>消息可靠传输一般是业务系统接入消息中间件时首要考虑的问题，一般消息中间件的消息传输保障分为三个层级：</p> <ol><li>At most once：最多一次。消息可能会丢失，但绝不会重复传输</li> <li>At least once：最少一次。消息绝不会丢失，但可能会重复传输</li> <li>Exactly once：怡好一次。每条消息肯定会被传输一次且仅传输一次</li></ol> <p>RabbitMQ 支持其中的 “最多一次” 和 “最少一次”。其中 “最少一次”（不考虑异步同步刷盘） 投递实现需要考虑以下这个几个方面的内容：</p> <ol><li>消息生产者需要开启事务机制或者 confirm 机制，以确保消息可以可靠地传输到 RabbitMQ 中</li> <li>消息生产者需要配合使用 mandatory 参数或者备份交换器来确保消息能够从交换器路由到队列中，进而能够保存下来而不会被丢弃</li> <li>消息和队列都需要进行持久化处理，以确保 RabbitMQ 服务器在遇到异常情况时不会造成消息丢失</li> <li>消费者在消费消息的同时需要将 autoAck 设置为 false，然后通过手动确认的方式去确认已经正确消费的消息，以避免在消费端引起不必要的消息丢失</li></ol> <p>“最多一次”的方式就无须考虑以上那些方面，生产者随意发送，消费者随意消费，不过这样很难确保消息不会去失</p> <h2 id="rabbitmq集群"><a href="#rabbitmq集群" class="header-anchor">#</a> RabbitMQ集群</h2> <h3 id="普通集群"><a href="#普通集群" class="header-anchor">#</a> 普通集群</h3> <p>RabbitMQ 集群中的所有节点都会备份所有的元数据信息，包括以下内容：</p> <ol><li>队列元数据：队列的名称及属性</li> <li>交换器：交换器的名称及属性</li> <li>绑定关系元数据：交换器与队列或者交换器与交换器之间的绑定关系</li></ol> <p>但是不会备份消息。基于存储空间和性能的考虑，在 RabbitMQ 集群中创建队列，集群只会在单个节点而不是在所有节点上创建队列的进程并包含完整的队列信息（元数据、状态、内容）。这样只有队列的宿主节点，即所有者节点知道队列的所有信息，所有其他非所有者节点只知道队列的元数据和指向该队列存在的那个节点的指针。因此当集群节点崩溃时，该节点的队列进程和关联的绑定都会消失</p> <p><strong>客户端连接到非队列数据所在节点</strong>
+如果消息生产者向往集群中节点1的队列中发送数据，但是连接到节点 2 或节点 3，队列1的完整数据不在这两个节点上，那么这两个节点在发送消息的过程中主要起到路由转发的作用，根据这两个节点上的元数据被转发到节点1，最终发送的消息仍然会存储在节点1的队列1中。同样，如果消息消费者连接的节点2或节点3，这两个节点也会充当路由节点转发消息，消息会从节点1的队列1中拉取消费</p> <h3 id="镜像集群"><a href="#镜像集群" class="header-anchor">#</a> 镜像集群</h3> <p>引入镜像队列（MirrorQueue）的机制，可以将队列镜像到集群中的其他 Broker 节点之上，如果集群中的一个节点失效了，队列能自动地切换到镜像中的另一个节点上以保证服务的可用性。在通常的用法中，针对每一个配置镜像的队列（以下简称镜像队列）都包含一个主节点（master）和若干个从节点（slave）</p> <img width="500" height="313" align="bottom" src="https://cdn.nlark.com/yuque/0/2023/png/375413/1678965996147-74fe39ee-61d3-4526-8ec7-68d05bc52a31.png#averageHue=%23f0f1f0&amp;clientId=u0514ce83-d0af-4&amp;from=paste&amp;height=315&amp;id=yvExc&amp;name=image.png&amp;originHeight=630&amp;originWidth=882&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=543286&amp;status=done&amp;style=none&amp;taskId=u498af8c0-1391-4370-9766-d0cdefdcf5a&amp;title=&amp;width=441"> <p>slave 会准确地按照 master 执行命令的顺序进行动作，故 slave 与 master 上维护的状态应该是相同的。如果master 由于某种原因失效，那么“资历最老”的 slave 会被提升为新的 master。根据 slave 加入的时间排序，时间最长的 slave 即为“资历最老”。发送到镜像队列的所有消息会被同时发往 master 和所有的 slave上，如果此时master 挂掉了，消息还会在 slave 上，这样 slave 提升为 master 的时候消息也不会丢失</p> <p><strong>注意要点：</strong></p> <p>RabbitMQ 的镜像队列支持 publisher confirm 和事务两种机制。在事务机制中，只有当前事务在全部镜像中执行之后，客户端才会收到 Tx.Commit-ok 的消息。同样的，在 publisher confirm 机制中，生产者进行当前消息确认的前提是该消息被全部进行所接收了</p></div></section> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev"><a href="/middleware/JMS-AMQP.html" class="prev">
+          JMS 与 AMQP 协议
+        </a></span> <span class="next"><a href="/" class="router-link-active">
+          RocketMQ
+        </a></span></p></div> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:12rem;" data-v-b57cc07c data-v-7dd95ae2><li class="level-2" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#相关概念" class="sidebar-link reco-side-相关概念" data-v-b57cc07c>相关概念</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#整体模型架构" class="sidebar-link reco-side-整体模型架构" data-v-b57cc07c>整体模型架构</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#组成部分" class="sidebar-link reco-side-组成部分" data-v-b57cc07c>组成部分</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#rabbitmq运转流程" class="sidebar-link reco-side-rabbitmq运转流程" data-v-b57cc07c>RabbitMQ运转流程</a></li><li class="level-2" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#具体特性" class="sidebar-link reco-side-具体特性" data-v-b57cc07c>具体特性</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#消费模式" class="sidebar-link reco-side-消费模式" data-v-b57cc07c>消费模式</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#消费端的确认与拒绝" class="sidebar-link reco-side-消费端的确认与拒绝" data-v-b57cc07c>消费端的确认与拒绝</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#消息何去何从" class="sidebar-link reco-side-消息何去何从" data-v-b57cc07c>消息何去何从</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#过期时间" class="sidebar-link reco-side-过期时间" data-v-b57cc07c>过期时间</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#死信队列" class="sidebar-link reco-side-死信队列" data-v-b57cc07c>死信队列</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#延迟队列" class="sidebar-link reco-side-延迟队列" data-v-b57cc07c>延迟队列</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#持久化" class="sidebar-link reco-side-持久化" data-v-b57cc07c>持久化</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#生产者确认" class="sidebar-link reco-side-生产者确认" data-v-b57cc07c>生产者确认</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#消息分发" class="sidebar-link reco-side-消息分发" data-v-b57cc07c>消息分发</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#消息顺序性" class="sidebar-link reco-side-消息顺序性" data-v-b57cc07c>消息顺序性</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#消息传输保障" class="sidebar-link reco-side-消息传输保障" data-v-b57cc07c>消息传输保障</a></li><li class="level-2" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#rabbitmq集群" class="sidebar-link reco-side-rabbitmq集群" data-v-b57cc07c>RabbitMQ集群</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#普通集群" class="sidebar-link reco-side-普通集群" data-v-b57cc07c>普通集群</a></li><li class="level-3" data-v-b57cc07c><a href="/middleware/RabbitMQ.html#镜像集群" class="sidebar-link reco-side-镜像集群" data-v-b57cc07c>镜像集群</a></li></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----></div></div>
+    <script src="/assets/js/app.52ddb80d.js" defer></script><script src="/assets/js/3.055d3e19.js" defer></script><script src="/assets/js/1.e976497e.js" defer></script><script src="/assets/js/83.93c88ceb.js" defer></script>
+  </body>
+</html>
